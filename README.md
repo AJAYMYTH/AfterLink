@@ -5,8 +5,9 @@
   <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-20+-green.svg" alt="Node.js 20+"></a>
-    <a href="https://github.com/AJAYMYTH/AfterLink"><img src="https://img.shields.io/badge/version-1.0.0-orange.svg" alt="Version 1.0.0"></a>
-    <a href="https://github.com/AJAYMYTH/AfterLink/actions"><img src="https://img.shields.io/badge/tests-15%2F15%20passing-brightgreen.svg" alt="Tests"></a>
+    <a href="https://www.npmjs.com/package/afterlink"><img src="https://img.shields.io/badge/version-1.0.0-orange.svg" alt="Version 1.0.0"></a>
+    <a href="https://www.npmjs.com/package/afterlink"><img src="https://img.shields.io/npm/dt/afterlink.svg" alt="npm downloads"></a>
+    <a href="https://www.npmjs.com/package/afterlink"><img src="https://img.shields.io/npm/v/afterlink.svg" alt="npm version"></a>
   </p>
 </p>
 
@@ -17,6 +18,15 @@
 AfterLink is a **custom application-layer binary communication protocol** designed to be a faster, simpler, and more developer-friendly alternative to HTTP for modern applications. It provides structured request/response, real-time pub/sub, automatic schema validation, and persistent connections — all over a compact **10-byte binary frame**.
 
 Built for developers who spend too much time on HTTP boilerplate and want a protocol that just works.
+
+### npm Packages
+
+| Package | Description | Link |
+|---|---|---|
+| **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
+| **`@afterlink/core`** | Frame codec and serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
+| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub) | [npm](https://www.npmjs.com/package/@afterlink/server) |
+| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@afterlink/client) |
 
 ---
 
@@ -91,11 +101,17 @@ Built for developers who spend too much time on HTTP boilerplate and want a prot
 ### Installation
 
 ```bash
-# Clone the repository
+# Install all packages (recommended)
+npm install afterlink
+
+# Or install individual packages
+npm install @afterlink/core @afterlink/server @afterlink/client
+```
+
+**From source:**
+```bash
 git clone https://github.com/AJAYMYTH/AfterLink.git
 cd AfterLink
-
-# Install dependencies
 npm install -g pnpm
 pnpm install
 ```

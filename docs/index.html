@@ -48,7 +48,7 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          <span>v1.0.0 — Now Available</span>
+          <span>v1.0.0 — Available on npm</span>
         </div>
         <h1 class="hero-title">
           Communication Protocol for<br>
@@ -62,9 +62,13 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Get Started
           </a>
+          <a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0v24h24V0H0zm1.5 1.5h21v21h-21v-21zm3.75 4.5v15h4.5v-6h3v6h4.5v-15h-12z"/></svg>
+            View on npm
+          </a>
           <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener" class="btn btn-secondary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            View on GitHub
+            GitHub
           </a>
         </div>
         <div class="hero-stats">
@@ -86,6 +90,11 @@
           <div class="stat">
             <span class="stat-value">16</span>
             <span class="stat-label">Frame Types</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-value">4</span>
+            <span class="stat-label">npm Packages</span>
           </div>
         </div>
       </div>
@@ -189,6 +198,7 @@
         <div class="install-tabs">
           <button class="install-tab active" data-tab="npm">npm</button>
           <button class="install-tab" data-tab="pnpm">pnpm</button>
+          <button class="install-tab" data-tab="yarn">yarn</button>
           <button class="install-tab" data-tab="github">GitHub</button>
         </div>
         <div class="install-content">
@@ -201,13 +211,11 @@
                   Copy
                 </button>
               </div>
-              <pre><code id="code-npm"># Install server and client SDKs
-npm install @afterlink/server @afterlink/client
+              <pre><code id="code-npm"># Install all packages (recommended)
+npm install afterlink
 
-# Or clone the full project with demos
-git clone https://github.com/AJAYMYTH/AfterLink.git
-cd AfterLink
-npm install</code></pre>
+# Or install individual packages
+npm install @afterlink/core @afterlink/server @afterlink/client</code></pre>
             </div>
           </div>
           <div class="install-panel" id="panel-pnpm">
@@ -219,13 +227,27 @@ npm install</code></pre>
                   Copy
                 </button>
               </div>
-              <pre><code id="code-pnpm"># Install server and client SDKs
-pnpm add @afterlink/server @afterlink/client
+              <pre><code id="code-pnpm"># Install all packages (recommended)
+pnpm add afterlink
 
-# Or clone the full project with demos
-git clone https://github.com/AJAYMYTH/AfterLink.git
-cd AfterLink
-pnpm install</code></pre>
+# Or install individual packages
+pnpm add @afterlink/core @afterlink/server @afterlink/client</code></pre>
+            </div>
+          </div>
+          <div class="install-panel" id="panel-yarn">
+            <div class="code-block">
+              <div class="code-header">
+                <span>Terminal</span>
+                <button class="copy-btn" data-target="code-yarn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code id="code-yarn"># Install all packages (recommended)
+yarn add afterlink
+
+# Or install individual packages
+yarn add @afterlink/core @afterlink/server @afterlink/client</code></pre>
             </div>
           </div>
           <div class="install-panel" id="panel-github">
@@ -591,6 +613,7 @@ const server = new Server({ port: 4001 });</code></pre>
                 <li class="release-feature">Zod schema validation for automatic payload verification</li>
                 <li class="release-feature">Interactive demo showcase with 7 real-world examples</li>
                 <li class="release-feature">Production hardening: buffer limits, connection tracking, error isolation</li>
+                <li class="release-feature">Published to npm — <code>npm install afterlink</code></li>
                 <li class="release-feature">MIT License — free for personal and commercial use</li>
               </ul>
             </div>
@@ -724,6 +747,7 @@ const server = new Server({ port: 4001 });</code></pre>
           <div class="footer-col">
             <h4>Resources</h4>
             <a href="#releases">Release Notes</a>
+            <a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener">npm</a>
             <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">GitHub</a>
             <a href="#contact">Contact</a>
             <a href="https://github.com/AJAYMYTH/AfterLink/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>

@@ -3,6 +3,28 @@
   "version": "1.0.0",
   "description": "AfterLink Protocol Core - Frame codec and serialization",
   "main": "src/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AJAYMYTH/AfterLink.git",
+    "directory": "packages/core"
+  },
+  "keywords": [
+    "afterlink",
+    "protocol",
+    "binary",
+    "codec",
+    "tcp",
+    "messaging",
+    "pubsub",
+    "msgpack"
+  ],
+  "files": [
+    "src/**/*.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "vitest run"
   },
