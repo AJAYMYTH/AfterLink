@@ -217,75 +217,103 @@
         </div>
         <div class="install-content">
           <div class="install-panel active" id="panel-npm">
-            <div class="code-block">
-              <div class="code-header">
-                <span>Terminal</span>
-                <button class="copy-btn" data-target="code-npm">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <div class="terminal">
+              <div class="terminal-header">
+                <div class="terminal-buttons">
+                  <span class="terminal-btn close"></span>
+                  <span class="terminal-btn minimize"></span>
+                  <span class="terminal-btn maximize"></span>
+                </div>
+                <span class="terminal-title">Terminal — npm</span>
+                <button class="copy-btn-terminal" data-target="code-npm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copy
                 </button>
               </div>
-              <pre><code id="code-npm"># Install all packages (recommended)
-npm install afterlink
+              <div class="terminal-body">
+                <pre><code id="code-npm"><span class="terminal-comment"># Install all packages (recommended)</span>
+<span class="terminal-prompt">$</span> npm install afterlink
 
-# Or install individual packages
-npm install @afterlink/core @afterlink/server @afterlink/client</code></pre>
+<span class="terminal-comment"># Or install individual packages</span>
+<span class="terminal-prompt">$</span> npm install @afterlink/core @afterlink/server @afterlink/client</code></pre>
+              </div>
             </div>
           </div>
           <div class="install-panel" id="panel-pnpm">
-            <div class="code-block">
-              <div class="code-header">
-                <span>Terminal</span>
-                <button class="copy-btn" data-target="code-pnpm">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <div class="terminal">
+              <div class="terminal-header">
+                <div class="terminal-buttons">
+                  <span class="terminal-btn close"></span>
+                  <span class="terminal-btn minimize"></span>
+                  <span class="terminal-btn maximize"></span>
+                </div>
+                <span class="terminal-title">Terminal — pnpm</span>
+                <button class="copy-btn-terminal" data-target="code-pnpm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copy
                 </button>
               </div>
-              <pre><code id="code-pnpm"># Install all packages (recommended)
-pnpm add afterlink
+              <div class="terminal-body">
+                <pre><code id="code-pnpm"><span class="terminal-comment"># Install all packages (recommended)</span>
+<span class="terminal-prompt">$</span> pnpm add afterlink
 
-# Or install individual packages
-pnpm add @afterlink/core @afterlink/server @afterlink/client</code></pre>
+<span class="terminal-comment"># Or install individual packages</span>
+<span class="terminal-prompt">$</span> pnpm add @afterlink/core @afterlink/server @afterlink/client</code></pre>
+              </div>
             </div>
           </div>
           <div class="install-panel" id="panel-yarn">
-            <div class="code-block">
-              <div class="code-header">
-                <span>Terminal</span>
-                <button class="copy-btn" data-target="code-yarn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <div class="terminal">
+              <div class="terminal-header">
+                <div class="terminal-buttons">
+                  <span class="terminal-btn close"></span>
+                  <span class="terminal-btn minimize"></span>
+                  <span class="terminal-btn maximize"></span>
+                </div>
+                <span class="terminal-title">Terminal — yarn</span>
+                <button class="copy-btn-terminal" data-target="code-yarn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copy
                 </button>
               </div>
-              <pre><code id="code-yarn"># Install all packages (recommended)
-yarn add afterlink
+              <div class="terminal-body">
+                <pre><code id="code-yarn"><span class="terminal-comment"># Install all packages (recommended)</span>
+<span class="terminal-prompt">$</span> yarn add afterlink
 
-# Or install individual packages
-yarn add @afterlink/core @afterlink/server @afterlink/client</code></pre>
+<span class="terminal-comment"># Or install individual packages</span>
+<span class="terminal-prompt">$</span> yarn add @afterlink/core @afterlink/server @afterlink/client</code></pre>
+              </div>
             </div>
           </div>
           <div class="install-panel" id="panel-github">
-            <div class="code-block">
-              <div class="code-header">
-                <span>Terminal</span>
-                <button class="copy-btn" data-target="code-github">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <div class="terminal">
+              <div class="terminal-header">
+                <div class="terminal-buttons">
+                  <span class="terminal-btn close"></span>
+                  <span class="terminal-btn minimize"></span>
+                  <span class="terminal-btn maximize"></span>
+                </div>
+                <span class="terminal-title">Terminal — GitHub</span>
+                <button class="copy-btn-terminal" data-target="code-github">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copy
                 </button>
               </div>
-              <pre><code id="code-github"># Clone the repository
-git clone https://github.com/AJAYMYTH/AfterLink.git
-cd AfterLink
+              <div class="terminal-body">
+                <pre><code id="code-github"><span class="terminal-comment"># Clone the repository</span>
+<span class="terminal-prompt">$</span> git clone https://github.com/AJAYMYTH/AfterLink.git
+<span class="terminal-prompt">$</span> cd AfterLink
 
-# Install pnpm if needed
-npm install -g pnpm
+<span class="terminal-comment"># Install pnpm if needed</span>
+<span class="terminal-prompt">$</span> npm install -g pnpm
 
-# Install all dependencies
-pnpm install
+<span class="terminal-comment"># Install all dependencies</span>
+<span class="terminal-prompt">$</span> pnpm install
 
-# Run the demo showcase
-cd examples/demo-runner
-node index.js</code></pre>
+<span class="terminal-comment"># Run the demo showcase</span>
+<span class="terminal-prompt">$</span> cd examples/demo-runner
+<span class="terminal-prompt">$</span> node index.js</code></pre>
+              </div>
             </div>
           </div>
         </div>
@@ -711,11 +739,11 @@ const server = new Server({ port: 4001 });</code></pre>
             <input type="text" name="_honey" style="display:none">
             <div class="form-group">
               <label for="name">Name</label>
-              <input type="text" id="name" name="name" required placeholder="Your name">
+              <input type="text" id="name" name="name" required placeholder="Your name" autocomplete="name">
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" required placeholder="your@email.com">
+              <input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email">
             </div>
             <div class="form-group">
               <label for="subject">Subject</label>
@@ -730,7 +758,7 @@ const server = new Server({ port: 4001 });</code></pre>
             </div>
             <div class="form-group">
               <label for="message">Message</label>
-              <textarea id="message" name="message" required placeholder="Describe your issue, feature request, or question..." rows="5"></textarea>
+              <textarea id="message" name="message" required placeholder="Describe your issue, feature request, or question..." rows="5" autocomplete="off"></textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-full">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>

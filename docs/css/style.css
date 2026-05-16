@@ -678,6 +678,117 @@ body {
   flex-shrink: 0;
 }
 
+/* ─── macOS Terminal ─────────────────────────────────── */
+.terminal {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #1e1e1e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #2d2d2d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.terminal-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+}
+
+.terminal-btn.close {
+  background: #ff5f57;
+}
+
+.terminal-btn.minimize {
+  background: #febc2e;
+}
+
+.terminal-btn.maximize {
+  background: #28c840;
+}
+
+.terminal-title {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.terminal-header {
+  position: relative;
+}
+
+.copy-btn-terminal {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.copy-btn-terminal:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.copy-btn-terminal.copied {
+  color: #28c840;
+  border-color: rgba(40, 200, 64, 0.3);
+}
+
+.terminal-body {
+  padding: 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #d4d4d4;
+}
+
+.terminal-body pre {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.terminal-body code {
+  font-family: inherit;
+  color: inherit;
+}
+
+.terminal-comment {
+  color: #6a9955;
+}
+
+.terminal-prompt {
+  color: #569cd6;
+  font-weight: 600;
+  user-select: none;
+}
+
 /* ─── Code Blocks ────────────────────────────────────── */
 .code-block {
   border-radius: var(--radius-lg);
@@ -1590,6 +1701,20 @@ body {
   .section-description {
     font-size: 0.9375rem;
   }
+
+  .terminal-body {
+    padding: 16px;
+    font-size: 0.8125rem;
+  }
+
+  .terminal-title {
+    font-size: 0.75rem;
+  }
+
+  .copy-btn-terminal {
+    padding: 3px 8px;
+    font-size: 0.6875rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1762,5 +1887,32 @@ body {
 
   .footer-links {
     gap: 20px;
+  }
+
+  .terminal-body {
+    padding: 14px;
+    font-size: 0.75rem;
+  }
+
+  .terminal-header {
+    padding: 10px 12px;
+  }
+
+  .terminal-title {
+    font-size: 0.6875rem;
+  }
+
+  .copy-btn-terminal {
+    padding: 3px 6px;
+    font-size: 0.625rem;
+  }
+
+  .install-tabs {
+    gap: 6px;
+  }
+
+  .install-tab {
+    padding: 8px 16px;
+    font-size: 0.8125rem;
   }
 }
