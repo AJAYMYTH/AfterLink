@@ -40,7 +40,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 100px;
 }
 
 body {
@@ -62,26 +62,30 @@ body {
 /* ─── Navbar ─────────────────────────────────────────── */
 #navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 1200px;
   z-index: 1000;
-  background: rgba(10, 10, 15, 0.8);
+  background: rgba(10, 10, 15, 0.4);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-color);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
   transition: var(--transition-base);
 }
 
 #navbar.scrolled {
-  background: rgba(10, 10, 15, 0.95);
-  box-shadow: var(--shadow-md);
+  background: rgba(10, 10, 15, 0.7);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 64px;
+  height: 60px;
   display: flex;
   align-items: center;
   gap: 32px;
@@ -1431,16 +1435,26 @@ body {
 
 /* ─── Responsive ─────────────────────────────────────── */
 @media (max-width: 1024px) {
+  #navbar {
+    top: 12px;
+    width: calc(100% - 24px);
+    border-radius: 12px;
+  }
+
   .nav-links {
     display: none;
     position: absolute;
-    top: 64px;
+    top: calc(100% + 8px);
     left: 0;
     right: 0;
-    background: var(--bg-secondary);
+    background: rgba(18, 18, 26, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     flex-direction: column;
     padding: 16px;
-    border-bottom: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
   }
 
   .nav-links.open {
@@ -1549,6 +1563,18 @@ body {
 }
 
 @media (max-width: 640px) {
+  #navbar {
+    top: 8px;
+    width: calc(100% - 16px);
+    border-radius: 12px;
+  }
+
+  .nav-container {
+    height: 56px;
+    padding: 0 16px;
+    gap: 16px;
+  }
+
   .hero {
     padding: 100px 16px 60px;
     min-height: auto;
@@ -1715,6 +1741,22 @@ body {
 }
 
 @media (max-width: 480px) {
+  #navbar {
+    top: 6px;
+    width: calc(100% - 12px);
+    border-radius: 10px;
+  }
+
+  .nav-container {
+    height: 52px;
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+  }
+
   .container {
     padding: 0 16px;
   }
