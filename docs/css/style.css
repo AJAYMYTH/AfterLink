@@ -92,8 +92,8 @@ body {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1.25rem;
+  font-weight: 800;
+  font-size: 1.35rem;
   color: var(--text-primary);
 }
 
@@ -891,23 +891,21 @@ body {
   word-break: normal;
   overflow-wrap: normal;
 }
-  line-height: 1.6;
-}
 
 /* ─── Releases / Timeline ────────────────────────────── */
 .timeline {
   max-width: 700px;
   margin: 0 auto;
   position: relative;
-  padding-left: 40px;
+  padding-left: 60px;
 }
 
 .timeline::before {
   content: '';
   position: absolute;
-  left: 15px;
-  top: 0;
-  bottom: 0;
+  left: 20px;
+  top: 10px;
+  bottom: 10px;
   width: 2px;
   background: var(--border-color);
 }
@@ -923,13 +921,13 @@ body {
 
 .timeline-badge {
   position: absolute;
-  left: -40px;
-  top: 0;
+  left: -60px;
+  top: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  width: 100px;
+  width: 40px;
 }
 
 .timeline-badge::before {
@@ -962,6 +960,7 @@ body {
   font-size: 0.625rem;
   color: var(--text-muted);
   white-space: nowrap;
+  text-align: center;
 }
 
 .timeline-content {
@@ -1284,11 +1283,67 @@ body {
   .api-grid {
     grid-template-columns: 1fr;
   }
+
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .section {
+    padding: 80px 0;
+  }
+
+  .section-header {
+    margin-bottom: 48px;
+  }
+
+  .quickstart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-table-wrapper {
+    margin: 0 -20px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .install-tabs {
+    flex-wrap: wrap;
+  }
+
+  .hero-glow {
+    width: 400px;
+    height: 400px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-col {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .back-to-top {
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 @media (max-width: 640px) {
   .hero {
     padding: 100px 16px 60px;
+    min-height: auto;
   }
 
   .section {
@@ -1309,22 +1364,27 @@ body {
     justify-content: center;
   }
 
+  .hero-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .footer-bottom {
     flex-direction: column;
     text-align: center;
   }
 
   .timeline {
-    padding-left: 28px;
+    padding-left: 40px;
   }
 
   .timeline::before {
-    left: 11px;
+    left: 12px;
   }
 
   .timeline-badge {
-    left: -28px;
-    width: 80px;
+    left: -40px;
+    width: 32px;
   }
 
   .timeline-badge::before {
@@ -1345,6 +1405,19 @@ body {
     padding: 16px;
   }
 
+  .timeline-content h3 {
+    font-size: 1rem;
+  }
+
+  .release-list li {
+    font-size: 0.875rem;
+  }
+
+  .faq-question {
+    padding: 16px;
+    font-size: 0.9375rem;
+  }
+
   .faq-answer pre {
     margin: 12px 16px;
     padding: 12px;
@@ -1357,5 +1430,128 @@ body {
 
   .faq-answer ul {
     padding: 0 16px 10px 36px;
+  }
+
+  .contact-form {
+    padding: 20px;
+  }
+
+  .feature-card,
+  .quickstart-card,
+  .api-card {
+    padding: 24px;
+  }
+
+  .code-block pre {
+    padding: 16px;
+    font-size: 0.8125rem;
+  }
+
+  .nav-logo {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .hero {
+    padding: 90px 12px 48px;
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-description {
+    font-size: 0.9375rem;
+  }
+
+  .timeline {
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    left: 8px;
+  }
+
+  .timeline-badge {
+    left: -32px;
+    width: 28px;
+  }
+
+  .timeline-badge::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  .version-tag {
+    font-size: 0.5625rem;
+    padding: 2px 4px;
+  }
+
+  .date-tag {
+    font-size: 0.5rem;
+  }
+
+  .timeline-content {
+    padding: 12px;
+  }
+
+  .timeline-content h3 {
+    font-size: 0.9375rem;
+    margin-bottom: 12px;
+  }
+
+  .release-list li {
+    padding: 6px 0;
+    padding-left: 20px;
+    font-size: 0.8125rem;
+  }
+
+  .release-list li::before {
+    width: 6px;
+    height: 6px;
+    top: 12px;
+  }
+
+  .faq-answer pre {
+    margin: 8px 12px;
+    padding: 10px;
+    max-width: calc(100% - 24px);
+    font-size: 0.75rem;
+  }
+
+  .faq-answer p {
+    padding: 0 12px 8px;
+    font-size: 0.875rem;
+  }
+
+  .faq-answer ul {
+    padding: 0 12px 8px 32px;
+    font-size: 0.875rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.8125rem;
+  }
+
+  .footer-col h4 {
+    font-size: 0.8125rem;
+  }
+
+  .footer-col a {
+    font-size: 0.8125rem;
   }
 }
