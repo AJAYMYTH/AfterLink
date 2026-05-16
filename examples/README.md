@@ -153,6 +153,52 @@ client.publish('chat', { text: 'Hello everyone!' });
 await client.disconnect();
 ```
 
+## Backend-Agnostic Design
+
+AfterLink is a **communication protocol**, not a database. It works with **any** backend provider.
+
+### How to connect AfterLink to your backend:
+
+```javascript
+const { Server } = require('@afterlink/server');
+
+// Choose YOUR backend - AfterLink doesn't care which one:
+// const supabase = require('@supabase/supabase-js').createClient(url, key);
+// const insforge = require('@insforge/sdk').createClient(config);
+// const firebase = require('firebase-admin');
+// const { MongoClient } = require('mongodb');
+
+const server = new Server({ port: 4000 });
+
+// AfterLink handles communication, your backend handles data
+server.on('getData', async (req, res) => {
+  // Call your backend of choice:
+  // const { data } = await supabase.from('items').select();
+  // const items = await insforge.db.list('items');
+  // const items = await mongoDb.collection('items').find().toArray();
+  res.send({ items: [] });
+});
+
+// AfterLink Pub/Sub broadcasts your backend changes to clients
+server.on('createItem', async (req, res) => {
+  // const { data } = await supabase.from('items').insert(req.body);
+  server.publish('items.created', data); // Broadcast to subscribers
+  res.send({ item: data });
+});
+
+await server.listen();
+```
+
+| Your Backend | SDK to Install | AfterLink Role |
+|---|---|---|
+| Supabase | `@supabase/supabase-js` | Real-time layer + auth gateway |
+| InsForge | `@insforge/sdk` | Fast binary transport + pub/sub |
+| Firebase | `firebase-admin` | Multi-client sync layer |
+| AWS | `@aws-sdk/*` | Persistent connection manager |
+| MongoDB | `mongodb` | Real-time change broadcasting |
+| PostgreSQL | `pg` | Connection pooling + routing |
+| Custom REST | `node-fetch` | Protocol upgrade layer |
+
 ## Project Structure
 
 ```

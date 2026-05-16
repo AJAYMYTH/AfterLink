@@ -109,6 +109,86 @@ node server.js
 node client.js
 ```
 
+## Backend-Agnostic Architecture
+
+AfterLink is a **communication layer**, not a database or backend provider. It works as a universal protocol that sits between your clients and **any** backend service.
+
+### How It Works
+
+```
+┌─────────────┐    AfterLink Protocol    ┌──────────────┐    Any Backend
+│   Client    │ ────────────────────────▶ │  AfterLink   │ ───────────────▶
+│  (Mobile)   │ ◀──────────────────────── │   Server     │ ◀───────────────
+├─────────────┤    Binary TCP Frames     ├──────────────┤    Your Choice
+│   Client    │ ────────────────────────▶ │  (Routes,    │ ───────────────▶
+│  (Browser)  │ ◀──────────────────────── │   Auth,      │ ◀───────────────
+├─────────────┤                          │   Pub/Sub)   │
+│   Client    │ ────────────────────────▶ │              │ ───────────────▶
+│  (Desktop)  │ ◀──────────────────────── │              │ ◀───────────────
+└─────────────┘                          └──────────────┘
+                                              │
+                                              │ Connects to ANY backend:
+                                              │
+                                              │  • Supabase
+                                              │  • InsForge
+                                              │  • Firebase
+                                              │  • AWS (DynamoDB, RDS, Lambda)
+                                              │  • MongoDB / PostgreSQL / MySQL
+                                              │  • Custom REST APIs
+                                              │  • gRPC services
+                                              │  • Redis / NATS / RabbitMQ
+                                              ▼
+```
+
+### Pattern: AfterLink + Any Backend
+
+```javascript
+const { Server } = require('@afterlink/server');
+
+// Import your backend SDK of choice
+// const { createClient } = require('@supabase/supabase-js');
+// const { InsForge } = require('@insforge/sdk');
+// const admin = require('firebase-admin');
+// const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+
+const server = new Server({ port: 4000 });
+
+// Example: AfterLink route that calls Supabase
+server.on('getUser', async (req, res) => {
+  // Replace with your backend call:
+  // const { data } = await supabase.from('users').select().eq('id', req.body.id);
+  // const user = await insforge.db.get('users', req.body.id);
+  // const user = await firebaseDb.collection('users').doc(req.body.id).get();
+
+  res.send({ user: { id: req.body.id, name: 'Example' } });
+});
+
+// Example: AfterLink Pub/Sub that broadcasts backend changes
+server.on('createOrder', async (req, res) => {
+  // const { data } = await supabase.from('orders').insert(req.body);
+  // Broadcast to all subscribers
+  server.publish('orders.created', data);
+  res.send({ order: data });
+});
+
+await server.listen();
+```
+
+### Supported Backend Providers
+
+| Provider | How to Connect | Use Case |
+|---|---|---|
+| **Supabase** | `@supabase/supabase-js` | PostgreSQL, Auth, Realtime, Storage |
+| **InsForge** | `@insforge/sdk` | Database, Auth, Functions, AI |
+| **Firebase** | `firebase-admin` | Firestore, Auth, Cloud Functions |
+| **AWS** | `@aws-sdk/*` | DynamoDB, RDS, Lambda, SQS |
+| **MongoDB** | `mongodb` | Document database |
+| **PostgreSQL** | `pg` | Relational database |
+| **Redis** | `ioredis` | Cache, Pub/Sub, Sessions |
+| **Custom REST** | `node-fetch` / `axios` | Any HTTP API |
+
+AfterLink does not lock you into any provider. Switch backends without changing your client code.
+
 ## Writing Your Own AfterLink Application
 
 ### Server
