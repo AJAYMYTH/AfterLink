@@ -849,41 +849,34 @@ body {
 /* ─── Quick Start ────────────────────────────────────── */
 .quickstart-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 24px;
-  align-items: stretch;
 }
 
 .quickstart-card {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
+  padding: 32px;
   border-radius: var(--radius-lg);
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   transition: var(--transition-base);
-  height: 100%;
 }
 
 .quickstart-card:hover {
   border-color: var(--accent-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 .quickstart-step {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--accent-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: white;
   margin-bottom: 16px;
-  flex-shrink: 0;
 }
 
 .quickstart-card h3 {
@@ -891,18 +884,10 @@ body {
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 16px;
-  flex-shrink: 0;
 }
 
 .quickstart-card .code-block {
-  margin-top: auto;
-  flex: 1;
-}
-
-.quickstart-card .code-block pre {
-  padding: 16px;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  margin-top: 0;
 }
 
 /* ─── API Reference ──────────────────────────────────── */
@@ -1501,10 +1486,6 @@ body {
   .features-grid {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
-
-  .quickstart-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 768px) {
@@ -1700,22 +1681,6 @@ body {
     padding: 20px;
   }
 
-  .quickstart-step {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8125rem;
-  }
-
-  .quickstart-card h3 {
-    font-size: 1rem;
-    margin-bottom: 12px;
-  }
-
-  .quickstart-card .code-block pre {
-    padding: 14px;
-    font-size: 0.75rem;
-  }
-
   .code-block pre {
     padding: 16px;
     font-size: 0.8125rem;
@@ -1906,24 +1871,6 @@ body {
   .quickstart-card,
   .api-card {
     padding: 16px;
-  }
-
-  .quickstart-step {
-    width: 28px;
-    height: 28px;
-    font-size: 0.75rem;
-    margin-bottom: 12px;
-  }
-
-  .quickstart-card h3 {
-    font-size: 0.9375rem;
-    margin-bottom: 10px;
-  }
-
-  .quickstart-card .code-block pre {
-    padding: 12px;
-    font-size: 0.6875rem;
-    line-height: 1.5;
   }
 
   .contact-grid {
