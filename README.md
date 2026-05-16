@@ -450,11 +450,32 @@ cd examples/demo-runner && node index.js
 
 ## Production Deployment
 
-### PM2
+See the complete [Deployment Guide](DEPLOYMENT.md) for:
+
+| Platform | Time | Difficulty |
+|---|---|---|
+| **PM2** (single server) | 2 min | Easy |
+| **Docker** | 5 min | Easy |
+| **Railway** | 2 min | Easy |
+| **Render** | 3 min | Easy |
+| **Fly.io** | 3 min | Easy |
+| **AWS EC2** | 5 min | Medium |
+| **Kubernetes** | 15 min | Advanced |
+| **VPS + Nginx** | 10 min | Medium |
+
+### Quick Start with PM2
+
 ```bash
 npm install -g pm2
 pm2 start server.js --name afterlink
 pm2 save && pm2 startup
+```
+
+### Quick Start with Docker
+
+```bash
+docker build -t afterlink-server .
+docker run -d -p 4000:4000 afterlink-server
 ```
 
 ### Docker
