@@ -448,6 +448,19 @@ cd examples/demo-runner && node index.js
 
 ---
 
+## Security
+
+AfterLink is designed to be secure by default. See [SECURITY.md](SECURITY.md) for details.
+
+* **Supply Chain Safe:** Minimal dependencies, locked versions, no postinstall scripts.
+* **Protocol Hardened:** Strict frame validation, buffer limits, and MessagePack deserialization.
+* **Network Secure:** TLS support, JWT auth, and rate limiting built-in.
+
+To verify your installation:
+```bash
+pnpm audit --prod
+```
+
 ## Production Deployment
 
 See the complete [Deployment Guide](DEPLOYMENT.md) for:

@@ -11,5 +11,11 @@
     "test:core": "pnpm --filter @afterlink/core test",
     "test:server": "pnpm --filter @afterlink/server test",
     "test:client": "pnpm --filter @afterlink/client test"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": ">=0.24.3",
+      "vite": ">=6.4.2"
+    }
   }
 }
