@@ -66,6 +66,16 @@ async function main() {
   });
 
   // Keep alive
+  const durationArg = process.argv.find((a) => a.startsWith('--duration='));
+  if (durationArg) {
+    const durationMs = parseInt(durationArg.split('=')[1], 10);
+    setTimeout(async () => {
+      await client.disconnect();
+      console.log('\nDemo duration complete.');
+      process.exit(0);
+    }, durationMs);
+  }
+
   process.on('SIGINT', async () => {
     await client.disconnect();
     console.log('\nDisconnected.');

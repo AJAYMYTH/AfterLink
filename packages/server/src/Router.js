@@ -3,9 +3,6 @@ const {
     REQUEST,
     RESPONSE,
     ERROR,
-    STREAM_START,
-    STREAM_DATA,
-    STREAM_END,
     SUBSCRIBE,
     UNSUBSCRIBE,
     PUBLISH,
@@ -21,10 +18,16 @@ class Router {
   }
 
   register(route, handler, schema = null) {
+    if (typeof handler !== 'function') {
+      throw new TypeError(`Handler for route '${route}' must be a function`);
+    }
     this.routes.set(route, { handler, schema });
   }
 
   addMiddleware(middleware) {
+    if (typeof middleware !== 'function') {
+      throw new TypeError('Middleware must be a function');
+    }
     this.middlewares.push(middleware);
   }
 
@@ -45,14 +48,22 @@ class Router {
         this._handlePublish(payload, connection);
         break;
       default:
-        connection.sendError('PROTOCOL_ERROR', `Unexpected frame type: ${type}`, messageId);
+        connection.sendError('PROTOCOL_ERROR', `Unexpected frame type: 0x${type.toString(16)}`, messageId);
     }
   }
 
   async _handleRequest(payload, messageId, connection) {
-    const { route, body } = Serializer.decode(payload);
-    const routeConfig = this.routes.get(route);
+    let route, body;
+    try {
+      const decoded = Serializer.decode(payload);
+      route = decoded.route;
+      body = decoded.body || {};
+    } catch (err) {
+      connection.sendError('PROTOCOL_ERROR', 'Invalid request payload', messageId);
+      return;
+    }
 
+    const routeConfig = this.routes.get(route);
     if (!routeConfig) {
       connection.sendError('ROUTE_NOT_FOUND', `Route '${route}' not found`, messageId);
       return;
@@ -62,16 +73,24 @@ class Router {
       try {
         routeConfig.schema.parse(body);
       } catch (err) {
-        connection.sendError('VALIDATION_ERROR', err.errors?.[0]?.message || err.message, messageId);
+        const message = err.errors?.[0]?.message || err.message;
+        connection.sendError('VALIDATION_ERROR', message, messageId);
         return;
       }
     }
 
+    let responseSent = false;
     const req = { body, session: connection.session, route };
     const res = {
       send: (data) => {
-        const responsePayload = Serializer.encode({ status: 'ok', body: data });
-        connection.send(RESPONSE, 0, messageId, responsePayload);
+        if (responseSent) return;
+        responseSent = true;
+        try {
+          const responsePayload = Serializer.encode({ status: 'ok', body: data });
+          connection.send(RESPONSE, 0, messageId, responsePayload);
+        } catch (err) {
+          connection.sendError('INTERNAL_ERROR', 'Failed to encode response', messageId);
+        }
       },
     };
 
@@ -80,7 +99,9 @@ class Router {
         await routeConfig.handler(req, res);
       });
     } catch (err) {
-      connection.sendError('INTERNAL_ERROR', err.message, messageId);
+      if (!responseSent) {
+        connection.sendError('INTERNAL_ERROR', err.message, messageId);
+      }
     }
   }
 
@@ -97,21 +118,48 @@ class Router {
   }
 
   _handleSubscribe(payload, messageId, connection) {
-    const { topic } = Serializer.decode(payload);
+    let topic;
+    try {
+      topic = Serializer.decode(payload).topic;
+    } catch {
+      connection.sendError('PROTOCOL_ERROR', 'Invalid subscribe payload', messageId);
+      return;
+    }
+
+    if (!topic || typeof topic !== 'string') {
+      connection.sendError('VALIDATION_ERROR', 'Topic must be a non-empty string', messageId);
+      return;
+    }
+
     this.pubSubBroker.subscribe(topic, connection);
     const ackPayload = Serializer.encode({ topic, sub_id: `s_${Date.now()}` });
     connection.send(RESPONSE, 0, messageId, ackPayload);
   }
 
   _handleUnsubscribe(payload, messageId, connection) {
-    const { topic } = Serializer.decode(payload);
+    let topic;
+    try {
+      topic = Serializer.decode(payload).topic;
+    } catch {
+      connection.sendError('PROTOCOL_ERROR', 'Invalid unsubscribe payload', messageId);
+      return;
+    }
+
     this.pubSubBroker.unsubscribe(topic, connection);
     const ackPayload = Serializer.encode({ topic });
     connection.send(RESPONSE, 0, messageId, ackPayload);
   }
 
   _handlePublish(payload, connection) {
-    const { topic, data } = Serializer.decode(payload);
+    let topic, data;
+    try {
+      const decoded = Serializer.decode(payload);
+      topic = decoded.topic;
+      data = decoded.data;
+    } catch {
+      return;
+    }
+
     this.pubSubBroker.publish(topic, data, connection);
   }
 
@@ -121,6 +169,15 @@ class Router {
 
   onDisconnect(connection) {
     this.pubSubBroker.cleanupConnection(connection);
+  }
+
+  getRouteCount() {
+    return this.routes.size;
+  }
+
+  getSubscribers(topic) {
+    const subs = this.pubSubBroker.topics.get(topic);
+    return subs ? subs.size : 0;
   }
 }
 
@@ -148,11 +205,17 @@ class PubSubBroker {
 
   publish(topic, data, excludeConnection) {
     const subs = this.topics.get(topic);
-    if (!subs) return;
+    if (!subs || subs.size === 0) return;
 
-    const payload = Serializer.encode({ topic, data });
+    let payload;
+    try {
+      payload = Serializer.encode({ topic, data });
+    } catch {
+      return;
+    }
+
     for (const conn of subs) {
-      if (conn !== excludeConnection) {
+      if (conn !== excludeConnection && conn.isActive()) {
         conn.send(PUBLISH, 0, 0, payload);
       }
     }
@@ -160,11 +223,19 @@ class PubSubBroker {
 
   publishToAll(topic, data) {
     const subs = this.topics.get(topic);
-    if (!subs) return;
+    if (!subs || subs.size === 0) return;
 
-    const payload = Serializer.encode({ topic, data });
+    let payload;
+    try {
+      payload = Serializer.encode({ topic, data });
+    } catch {
+      return;
+    }
+
     for (const conn of subs) {
-      conn.send(PUBLISH, 0, 0, payload);
+      if (conn.isActive()) {
+        conn.send(PUBLISH, 0, 0, payload);
+      }
     }
   }
 

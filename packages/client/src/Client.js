@@ -24,19 +24,26 @@ class Client {
     this.url = new URL(url);
     this.options = {
       timeout: 30000,
-      autoReconnect: true,
-      maxReconnectAttempts: 10,
+      autoReconnect: false,
+      maxReconnectAttempts: 5,
       reconnectDelay: 1000,
+      reconnectMaxDelay: 30000,
       pingInterval: 30000,
+      connectTimeout: 5000,
       ...options,
     };
     this.pending = new PendingRequests(this.options.timeout);
     this._msgId = 0;
     this._connected = false;
+    this._connecting = false;
     this._reconnectAttempts = 0;
+    this._reconnectTimer = null;
     this._pingTimer = null;
     this._handlers = new Map();
     this._eventListeners = new Map();
+    this._buffer = Buffer.alloc(0);
+    this.socket = null;
+    this.sessionId = null;
   }
 
   _nextId() {
@@ -44,21 +51,55 @@ class Client {
   }
 
   async connect() {
+    if (this._connected) {
+      throw new Error('Already connected');
+    }
+    if (this._connecting) {
+      throw new Error('Connection in progress');
+    }
+
+    this._connecting = true;
+    this._buffer = Buffer.alloc(0);
+
     return new Promise((resolve, reject) => {
       const port = parseInt(this.url.port, 10) || 4000;
-      this.socket = net.connect({
-        host: this.url.hostname,
-        port,
-      });
+      const connectTimeout = setTimeout(() => {
+        this._connecting = false;
+        if (this.socket) {
+          this.socket.destroy();
+          this.socket = null;
+        }
+        reject(new Error(`Connection to ${this.url.hostname}:${port} timed out`));
+      }, this.options.connectTimeout);
+
+      try {
+        this.socket = net.connect({
+          host: this.url.hostname,
+          port,
+          timeout: this.options.connectTimeout,
+        });
+      } catch (err) {
+        this._connecting = false;
+        clearTimeout(connectTimeout);
+        reject(err);
+        return;
+      }
 
       this.socket.on('data', (d) => this._handleData(d));
       this.socket.once('connect', () => {
+        clearTimeout(connectTimeout);
         this._connected = true;
+        this._connecting = false;
         this._reconnectAttempts = 0;
         this._startPingInterval();
-        this._doHandshake().then(resolve).catch(reject);
+        this._doHandshake().then(resolve).catch((err) => {
+          this._connected = false;
+          reject(err);
+        });
       });
       this.socket.once('error', (err) => {
+        clearTimeout(connectTimeout);
+        this._connecting = false;
         this._connected = false;
         reject(err);
       });
@@ -87,25 +128,32 @@ class Client {
         resolve(data);
       }, reject);
 
-      this.socket.write(frame);
+      if (this.socket && !this.socket.destroyed) {
+        this.socket.write(frame);
+      } else {
+        clearTimeout(timeout);
+        reject(new Error('Socket closed before handshake'));
+      }
     });
   }
 
   async request(route, body = {}) {
     if (!this._connected) throw new Error('Not connected');
+    if (!this.socket || this.socket.destroyed) throw new Error('Socket destroyed');
 
     const id = this._nextId();
     const payload = Serializer.encode({ route, body });
     const frame = Frame.encode(REQUEST, 0, id, payload);
 
     return new Promise((resolve, reject) => {
-      this.pending.add(id, (data) => resolve(data), reject);
+      this.pending.add(id, resolve, reject);
       this.socket.write(frame);
     });
   }
 
-  subscribe(topic, handler) {
+  async subscribe(topic, handler) {
     if (!this._connected) throw new Error('Not connected');
+    if (typeof handler !== 'function') throw new TypeError('Handler must be a function');
 
     const id = this._nextId();
     const payload = Serializer.encode({ topic });
@@ -142,39 +190,57 @@ class Client {
   }
 
   async disconnect() {
-    if (!this._connected) return;
+    this._clearReconnect();
+
+    if (!this._connected && !this._connecting) return;
 
     this._stopPingInterval();
     this.pending.clear();
 
     return new Promise((resolve) => {
+      if (!this.socket || this.socket.destroyed) {
+        this._cleanup();
+        return resolve();
+      }
+
       const id = this._nextId();
       const frame = Frame.encode(CLOSE, 0, id, Buffer.alloc(0));
-      this.socket.write(frame);
 
+      let resolved = false;
       const timeout = setTimeout(() => {
-        this.socket.destroy();
-        resolve();
+        if (!resolved) {
+          resolved = true;
+          this.socket.destroy();
+          this._cleanup();
+          resolve();
+        }
       }, 2000);
 
       this.socket.once('close', () => {
-        clearTimeout(timeout);
-        resolve();
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timeout);
+          this._cleanup();
+          resolve();
+        }
       });
+
+      try {
+        this.socket.write(frame);
+      } catch {
+        this.socket.destroy();
+      }
     });
   }
 
   _handleData(data) {
-    if (!this.accumulator) {
-      this.accumulator = Buffer.alloc(0);
-    }
-    this.accumulator = Buffer.concat([this.accumulator, data]);
+    this._buffer = Buffer.concat([this._buffer, data]);
 
-    while (true) {
-      const frame = Frame.decode(this.accumulator);
+    while (this._buffer.length > 0) {
+      const frame = Frame.decode(this._buffer);
       if (!frame) break;
 
-      this.accumulator = this.accumulator.slice(frame.totalSize);
+      this._buffer = this._buffer.slice(frame.totalSize);
       this._handleFrame(frame);
     }
   }
@@ -184,42 +250,66 @@ class Client {
 
     switch (type) {
       case RESPONSE: {
-        const data = Serializer.decode(payload);
-        this.pending.resolve(messageId, data.body || data);
+        try {
+          const data = Serializer.decode(payload);
+          this.pending.resolve(messageId, data.body || data);
+        } catch (err) {
+          this.pending.reject(messageId, new Error(`Failed to decode response: ${err.message}`));
+        }
         break;
       }
       case HELLO_ACK: {
-        const data = Serializer.decode(payload);
-        this.pending.resolve(messageId, data);
+        try {
+          const data = Serializer.decode(payload);
+          this.pending.resolve(messageId, data);
+        } catch (err) {
+          this.pending.reject(messageId, new Error(`Failed to decode handshake: ${err.message}`));
+        }
         break;
       }
       case ERROR: {
-        const err = Serializer.decode(payload);
-        this.pending.reject(messageId, Object.assign(new Error(err.message), err));
+        try {
+          const err = Serializer.decode(payload);
+          this.pending.reject(messageId, Object.assign(new Error(err.message), err));
+        } catch {
+          this.pending.reject(messageId, new Error('Unknown server error'));
+        }
         break;
       }
       case PUBLISH: {
-        const { topic, data } = Serializer.decode(payload);
-        const handlers = this._handlers.get(topic);
-        if (handlers) {
-          for (const handler of handlers) {
-            handler(data);
+        try {
+          const { topic, data } = Serializer.decode(payload);
+          const handlers = this._handlers.get(topic);
+          if (handlers) {
+            for (const handler of handlers) {
+              try {
+                handler(data);
+              } catch (err) {
+                console.error(`[AfterLink] Handler error for topic '${topic}':`, err.message);
+              }
+            }
           }
+          this._emit('message', { topic, data });
+        } catch {
+          // Ignore malformed publish frames
         }
-        this._emit('message', { topic, data });
         break;
       }
       case PING: {
-        const pongFrame = Frame.encode(PONG, 0, 0, Buffer.alloc(0));
-        this.socket.write(pongFrame);
+        if (this.socket && !this.socket.destroyed) {
+          const pongFrame = Frame.encode(PONG, 0, 0, Buffer.alloc(0));
+          this.socket.write(pongFrame);
+        }
         break;
       }
       case PONG:
         break;
       case CLOSE: {
-        const ackFrame = Frame.encode(CLOSE_ACK, 0, messageId, Buffer.alloc(0));
-        this.socket.write(ackFrame);
-        this.socket.end();
+        if (this.socket && !this.socket.destroyed) {
+          const ackFrame = Frame.encode(CLOSE_ACK, 0, messageId, Buffer.alloc(0));
+          this.socket.write(ackFrame);
+          this.socket.end();
+        }
         break;
       }
     }
@@ -228,11 +318,16 @@ class Client {
   _startPingInterval() {
     this._stopPingInterval();
     this._pingTimer = setInterval(() => {
-      if (this._connected) {
-        const frame = Frame.encode(PING, 0, 0, Buffer.alloc(0));
-        this.socket.write(frame);
+      if (this._connected && this.socket && !this.socket.destroyed) {
+        try {
+          const frame = Frame.encode(PING, 0, 0, Buffer.alloc(0));
+          this.socket.write(frame);
+        } catch {
+          // Socket may have closed between checks
+        }
       }
     }, this.options.pingInterval);
+    if (this._pingTimer.unref) this._pingTimer.unref();
   }
 
   _stopPingInterval() {
@@ -244,30 +339,53 @@ class Client {
 
   _onDisconnect() {
     this._connected = false;
+    this._connecting = false;
     this._stopPingInterval();
     this.pending.clear();
     this._emit('disconnected');
 
     if (this.options.autoReconnect && this._reconnectAttempts < this.options.maxReconnectAttempts) {
-      this._reconnect();
+      this._scheduleReconnect();
     }
   }
 
-  _reconnect() {
+  _scheduleReconnect() {
+    this._clearReconnect();
+
     this._reconnectAttempts++;
-    const delay = this.options.reconnectDelay * Math.pow(2, this._reconnectAttempts - 1);
+    const delay = Math.min(
+      this.options.reconnectDelay * Math.pow(2, this._reconnectAttempts - 1),
+      this.options.reconnectMaxDelay
+    );
     const jitter = Math.random() * delay * 0.3;
 
     this._emit('reconnecting', { attempt: this._reconnectAttempts, delay: delay + jitter });
 
-    setTimeout(async () => {
+    this._reconnectTimer = setTimeout(async () => {
       try {
         await this.connect();
         this._emit('reconnected');
       } catch {
-        this._reconnect();
+        this._scheduleReconnect();
       }
     }, delay + jitter);
+  }
+
+  _clearReconnect() {
+    if (this._reconnectTimer) {
+      clearTimeout(this._reconnectTimer);
+      this._reconnectTimer = null;
+    }
+  }
+
+  _cleanup() {
+    this._connected = false;
+    this._connecting = false;
+    this._stopPingInterval();
+    this._clearReconnect();
+    this.pending.clear();
+    this.socket = null;
+    this._buffer = Buffer.alloc(0);
   }
 
   on(event, listener) {
@@ -288,13 +406,21 @@ class Client {
     const listeners = this._eventListeners.get(event);
     if (listeners) {
       for (const listener of listeners) {
-        listener(data);
+        try {
+          listener(data);
+        } catch (err) {
+          console.error(`[AfterLink] Event listener error for '${event}':`, err.message);
+        }
       }
     }
   }
 
   isConnected() {
     return this._connected;
+  }
+
+  getSessionId() {
+    return this.sessionId;
   }
 }
 

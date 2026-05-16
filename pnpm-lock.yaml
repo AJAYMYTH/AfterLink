@@ -8,6 +8,30 @@ importers:
 
   .: {}
 
+  examples/demo-chat:
+    dependencies:
+      '@afterlink/client':
+        specifier: workspace:*
+        version: link:../../packages/client
+      '@afterlink/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+      zod:
+        specifier: 3.23.0
+        version: 3.23.0
+
+  examples/demo-dashboard:
+    dependencies:
+      '@afterlink/client':
+        specifier: workspace:*
+        version: link:../../packages/client
+      '@afterlink/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+      zod:
+        specifier: 3.23.0
+        version: 3.23.0
+
   examples/demo-microservice:
     dependencies:
       '@afterlink/client':
@@ -30,6 +54,18 @@ importers:
         version: link:../../packages/server
       zod:
         specifier: ^3.23.0
+        version: 3.23.0
+
+  examples/hello-world:
+    dependencies:
+      '@afterlink/client':
+        specifier: workspace:*
+        version: link:../../packages/client
+      '@afterlink/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+      zod:
+        specifier: 3.23.0
         version: 3.23.0
 
   packages/client:

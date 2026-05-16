@@ -11,11 +11,19 @@ class Connection {
     this.router = router;
     this.session = null;
     this.options = options;
-    this.accumulator = new FrameAccumulator(this._handleFrame.bind(this));
     this._id = `conn_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    this._closed = false;
 
-    socket.on('data', (data) => this.accumulator.push(data));
-    socket.on('close', () => this.router.onDisconnect(this));
+    try {
+      this.accumulator = new FrameAccumulator(this._handleFrame.bind(this));
+    } catch (err) {
+      this._onError(err);
+      socket.destroy();
+      return;
+    }
+
+    socket.on('data', (data) => this._onData(data));
+    socket.on('close', () => this._onClose());
     socket.on('error', (err) => this._onError(err));
   }
 
@@ -23,11 +31,34 @@ class Connection {
     return this._id;
   }
 
+  getSession() {
+    return this.session;
+  }
+
+  getRemoteAddress() {
+    return this.socket.remoteAddress || 'unknown';
+  }
+
+  _onData(data) {
+    if (this._closed) return;
+    try {
+      this.accumulator.push(data);
+    } catch (err) {
+      this._onError(err);
+      this.sendError('PROTOCOL_ERROR', err.message);
+      this.socket.destroy();
+    }
+  }
+
   _handleFrame(frame) {
+    if (this._closed) return;
+
     if (frame.type === HELLO && !this.session) {
       this._handleHandshake(frame);
     } else if (this.session) {
-      this.router.dispatch(frame, this);
+      this.router.dispatch(frame, this).catch((err) => {
+        this._onError(err);
+      });
     } else {
       this.sendError('AUTH_REQUIRED', 'Send HELLO first');
       this.socket.destroy();
@@ -48,6 +79,7 @@ class Connection {
         version: data.version || 'AL/1',
         capabilities: data.capabilities || [],
         connectedAt: new Date().toISOString(),
+        remoteAddress: this.getRemoteAddress(),
       };
 
       const ackPayload = Serializer.encode({
@@ -70,21 +102,44 @@ class Connection {
   }
 
   send(type, flags, messageId, payload) {
-    const frame = Frame.encode(type, flags, messageId, payload);
-    this.socket.write(frame);
+    if (this._closed || this.socket.destroyed) return;
+    try {
+      const frame = Frame.encode(type, flags, messageId, payload);
+      this.socket.write(frame);
+    } catch (err) {
+      this._onError(err);
+    }
   }
 
   sendError(code, message, messageId = 0) {
-    const payload = Serializer.encode({ code, message });
-    this.send(ERROR, 0, messageId, payload);
+    if (this._closed || this.socket.destroyed) return;
+    try {
+      const payload = Serializer.encode({ code, message });
+      this.send(ERROR, 0, messageId, payload);
+    } catch (err) {
+      this._onError(err);
+    }
   }
 
   _onError(err) {
-    console.error(`Connection ${this._id} error:`, err.message);
+    if (err.code === 'ECONNRESET' || err.code === 'EPIPE') return;
+    console.error(`[AfterLink] Connection ${this._id} error:`, err.message);
+  }
+
+  _onClose() {
+    this._closed = true;
+    this.router.onDisconnect(this);
   }
 
   destroy() {
-    this.socket.destroy();
+    this._closed = true;
+    if (!this.socket.destroyed) {
+      this.socket.destroy();
+    }
+  }
+
+  isActive() {
+    return !this._closed && !this.socket.destroyed && this.session !== null;
   }
 }
 
