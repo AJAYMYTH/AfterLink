@@ -1,0 +1,15 @@
+{
+  "name": "@afterlink/server",
+  "version": "1.0.0",
+  "description": "AfterLink Protocol Server SDK",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@afterlink/core": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "afterlink",
+  "version": "1.0.0",
+  "description": "AfterLink Communication Protocol: For Reliable and Fast communication",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "pnpm -r test",
+    "test:core": "pnpm --filter @afterlink/core test",
+    "test:server": "pnpm --filter @afterlink/server test",
+    "test:client": "pnpm --filter @afterlink/client test"
+  }
+}
