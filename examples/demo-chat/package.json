@@ -1,0 +1,15 @@
+{
+  "name": "afterlink-demo-chat",
+  "version": "1.0.0",
+  "description": "AfterLink Demo: Real-time Chat Application",
+  "private": true,
+  "scripts": {
+    "server": "node server.js",
+    "client": "node client.js",
+    "client2": "node client.js --name User2"
+  },
+  "dependencies": {
+    "@afterlink/server": "workspace:*",
+    "@afterlink/client": "workspace:*"
+  }
+}

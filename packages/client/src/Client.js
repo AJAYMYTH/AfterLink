@@ -183,7 +183,11 @@ class Client {
     const { type, messageId, payload } = frame;
 
     switch (type) {
-      case RESPONSE:
+      case RESPONSE: {
+        const data = Serializer.decode(payload);
+        this.pending.resolve(messageId, data.body || data);
+        break;
+      }
       case HELLO_ACK: {
         const data = Serializer.decode(payload);
         this.pending.resolve(messageId, data);

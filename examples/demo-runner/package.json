@@ -1,0 +1,14 @@
+{
+  "name": "afterlink-demo-runner",
+  "version": "1.0.0",
+  "description": "AfterLink Demo Runner - Interactive showcase",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@afterlink/server": "workspace:*",
+    "@afterlink/client": "workspace:*",
+    "zod": "^3.23.0"
+  }
+}

@@ -55,7 +55,7 @@ class Connection {
         server_version: 'AL/1',
         capabilities: ['streaming', 'pubsub', 'compression'],
       });
-      this.send(HELLO_ACK, 0, 0, ackPayload);
+      this.send(HELLO_ACK, 0, frame.messageId, ackPayload);
     } catch (err) {
       this.sendError('AUTH_INVALID', err.message);
       this.socket.destroy();
