@@ -682,8 +682,9 @@ body {
 .terminal {
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #1e1e1e;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: var(--bg-code);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
 }
 
 .terminal-header {
@@ -691,8 +692,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: #2d2d2d;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .terminal-buttons {
@@ -723,7 +724,7 @@ body {
 .terminal-title {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -739,9 +740,9 @@ body {
   gap: 4px;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   font-size: 0.75rem;
   font-family: var(--font-mono);
   cursor: pointer;
@@ -749,13 +750,14 @@ body {
 }
 
 .copy-btn-terminal:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
 }
 
 .copy-btn-terminal.copied {
-  color: #28c840;
-  border-color: rgba(40, 200, 64, 0.3);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .terminal-body {
@@ -1339,13 +1341,8 @@ body {
   gap: 8px;
 }
 
-.footer-brand .footer-logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
 .footer-brand .logo-text {
+  font-family: 'Syne', sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
 }
