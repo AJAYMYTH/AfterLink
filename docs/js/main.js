@@ -153,4 +153,35 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true;
     });
   }
+
+  // ─── Hero install copy button ────────────────────────
+  const copyHeroBtn = document.getElementById('copyHeroBtn');
+  if (copyHeroBtn) {
+    copyHeroBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('npm install afterlink').then(() => {
+        copyHeroBtn.classList.add('copied');
+        copyHeroBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
+        setTimeout(() => {
+          copyHeroBtn.classList.remove('copied');
+          copyHeroBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+        }, 2000);
+      });
+    });
+  }
+
+  // ─── GitHub stars ────────────────────────────────────
+  const starCount = document.getElementById('starCount');
+  if (starCount) {
+    fetch('https://api.github.com/repos/AJAYMYTH/AfterLink')
+      .then(res => res.json())
+      .then(data => {
+        if (data.stargazers_count !== undefined) {
+          const count = data.stargazers_count;
+          starCount.textContent = count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count;
+        }
+      })
+      .catch(() => {
+        starCount.textContent = '0';
+      });
+  }
 });

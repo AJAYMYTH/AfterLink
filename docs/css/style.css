@@ -92,6 +92,7 @@ body {
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: 1.35rem;
   color: var(--text-primary);
@@ -263,6 +264,7 @@ body {
 }
 
 .hero-title {
+  font-family: 'Syne', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 800;
   line-height: 1.1;
@@ -283,6 +285,86 @@ body {
   max-width: 600px;
   margin: 0 auto 32px;
   animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.hero-install {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 48px;
+  animation: fadeInUp 0.6s ease-out 0.25s both;
+}
+
+.install-command {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-code);
+  border: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  max-width: 320px;
+  width: 100%;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.install-command:hover {
+  border-color: var(--border-hover);
+}
+
+.install-prompt {
+  color: var(--accent-primary);
+  font-weight: 600;
+  user-select: none;
+}
+
+.install-command code {
+  flex: 1;
+  text-align: center;
+  color: var(--accent-tertiary);
+}
+
+.copy-btn-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.copy-btn-hero:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.copy-btn-hero.copied {
+  color: var(--success);
+}
+
+.github-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.github-stars svg {
+  color: #f59e0b;
 }
 
 .hero-actions {
@@ -410,6 +492,7 @@ body {
 }
 
 .section-title {
+  font-family: 'Syne', sans-serif;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 800;
   margin-bottom: 16px;
@@ -464,6 +547,7 @@ body {
 }
 
 .feature-card h3 {
+  font-family: 'Syne', sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 8px;
@@ -685,6 +769,7 @@ body {
 }
 
 .quickstart-card h3 {
+  font-family: 'Syne', sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 16px;
@@ -709,6 +794,7 @@ body {
 }
 
 .api-card h3 {
+  font-family: 'Syne', sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 24px;
@@ -799,11 +885,11 @@ body {
   background: none;
   border: none;
   color: var(--text-primary);
+  font-family: 'Syne', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
-  font-family: var(--font-sans);
   transition: var(--transition-fast);
 }
 
@@ -971,6 +1057,7 @@ body {
 }
 
 .timeline-content h3 {
+  font-family: 'Syne', sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 16px;
@@ -1165,6 +1252,7 @@ body {
 }
 
 .footer-col h4 {
+  font-family: 'Syne', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 16px;
@@ -1364,9 +1452,24 @@ body {
     justify-content: center;
   }
 
+  .btn-github {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .github-stars {
+    margin-top: 4px;
+  }
+
   .hero-stats {
     flex-direction: column;
     gap: 12px;
+  }
+
+  .install-command {
+    max-width: 280px;
+    font-size: 0.875rem;
+    padding: 10px 16px;
   }
 
   .footer-bottom {
@@ -1553,5 +1656,31 @@ body {
 
   .footer-col a {
     font-size: 0.8125rem;
+  }
+
+  .install-command {
+    max-width: 260px;
+    font-size: 0.8125rem;
+    padding: 8px 14px;
+    gap: 8px;
+  }
+
+  .install-prompt {
+    font-size: 0.875rem;
+  }
+
+  .copy-btn-hero svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .github-stars {
+    font-size: 0.6875rem;
+    padding: 2px 6px;
+  }
+
+  .github-stars svg {
+    width: 12px;
+    height: 12px;
   }
 }
