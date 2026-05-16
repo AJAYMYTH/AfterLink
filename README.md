@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="AfterLink Logo" width="120" height="120">
+  <img src="logo for README file.png" alt="AfterLink Logo" width="120" height="120">
   <h1 align="center">AfterLink</h1>
   <p align="center">Communication Protocol for Reliable and Fast Communication</p>
   <p align="center">
