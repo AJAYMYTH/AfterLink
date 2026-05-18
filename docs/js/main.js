@@ -431,7 +431,8 @@ for await (const chunk of stream) {
     emailInput.addEventListener('blur', () => validateField(emailInput, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)));
     messageInput.addEventListener('blur', () => validateField(messageInput, messageInput.value.length >= 10));
 
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
       const nameValid = nameInput.value.length >= 2;
       const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
       const messageValid = messageInput.value.length >= 10;
@@ -440,8 +441,35 @@ for await (const chunk of stream) {
       validateField(emailInput, emailValid);
       validateField(messageInput, messageValid);
 
-      if (!nameValid || !emailValid || !messageValid) {
-        e.preventDefault();
+      if (!nameValid || !emailValid || !messageValid) return;
+
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Sending...';
+
+      try {
+        const response = await fetch(contactForm.action, {
+          method: 'POST',
+          body: new FormData(contactForm),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          window.location.href = 'success.html';
+        } else {
+          const data = await response.json();
+          if (data.errors) {
+            alert('Error: ' + data.errors.map(e => e.message).join(', '));
+          } else {
+            alert('Something went wrong. Please try again.');
+          }
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message';
+        }
+      } catch (err) {
+        alert('Network error. Please check your connection and try again.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message';
       }
     });
   }
