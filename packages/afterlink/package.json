@@ -1,35 +1,9 @@
 {
   "name": "afterlink",
-  "version": "1.0.1",
-  "description": "AfterLink Communication Protocol - Reliable and Fast communication for modern applications",
-  "main": "src/index.js",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AJAYMYTH/AfterLink.git"
-  },
-  "keywords": [
-    "afterlink",
-    "protocol",
-    "tcp",
-    "binary",
-    "messaging",
-    "pubsub",
-    "rpc",
-    "realtime",
-    "communication",
-    "networking"
-  ],
-  "files": [
-    "src/**/*.js"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {},
+  "version": "1.1.1",
   "dependencies": {
-    "@afterlink/core": "workspace:*",
-    "@afterlink/server": "workspace:*",
-    "@afterlink/client": "workspace:*"
+    "@afterlink/core": "^1.1.1",
+    "@afterlink/server": "^1.1.1",
+    "@afterlink/client": "^1.1.1"
   }
 }

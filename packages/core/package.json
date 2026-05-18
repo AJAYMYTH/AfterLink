@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "AfterLink Protocol Core - Frame codec and serialization",
   "main": "src/index.js",
   "license": "MIT",
