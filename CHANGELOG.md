@@ -13,6 +13,14 @@ _Changes staged for the next release_
 
 ---
 
+## [1.1.1] — 2026-05-19
+
+### Fixed
+- Normalize `workspace:*` dependencies to `^1.1.1` for npm registry compatibility
+- Ensure all packages install correctly via `npm install afterlink`
+
+---
+
 ## [1.1.0] — 2026-05-19
 
 ### Added
