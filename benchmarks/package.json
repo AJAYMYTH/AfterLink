@@ -1,0 +1,21 @@
+{
+  "name": "afterlink-benchmarks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "run": "node runner.js",
+    "afterlink": "node afterlink-bench.js",
+    "websocket": "node websocket-bench.js",
+    "socketio": "node socketio-bench.js",
+    "memory": "node memory-bench.js"
+  },
+  "dependencies": {
+    "@afterlink/core": "workspace:*",
+    "@afterlink/server": "workspace:*",
+    "@afterlink/client": "workspace:*",
+    "ws": "^8.18.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  }
+}

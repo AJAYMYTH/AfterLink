@@ -14,7 +14,7 @@ Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byt
 [![Downloads](https://img.shields.io/npm/dt/afterlink.svg)](https://www.npmjs.com/package/afterlink)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-[**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Changelog**](./CHANGELOG.md)
+[**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Changelog**](./CHANGELOG.md)
 
 </div>
 
@@ -413,11 +413,13 @@ AfterLink/
 │   ├── demo-dashboard/     # Stock price dashboard
 │   ├── demo-microservice/  # CRUD with validation
 │   └── hello-world/        # Simple ping/pong
+├── benchmarks/             # Performance benchmarks (vs WebSocket, Socket.IO)
 ├── docs/                   # Protocol and API documentation
 ├── install.sh              # Linux/macOS installer
 ├── install.ps1             # Windows installer
 ├── DEPLOYMENT.md           # Full deployment guide
 ├── SECURITY.md             # Security policy
+├── BENCHMARKS.md           # Benchmark results and methodology
 └── README.md
 ```
 
@@ -435,6 +437,34 @@ node test-demos.js
 # Demo showcase
 cd examples/demo-runner && node index.js
 ```
+
+---
+
+## Benchmarks
+
+**Environment**: Node.js v24.14.1 · Windows 11 (x64) · 10,000 iterations · localhost
+
+### Latency (Request/Response)
+
+| Library | Avg (ms) | P50 (ms) | P99 (ms) | Throughput |
+|---------|----------|----------|----------|------------|
+| **AfterLink** | **0.033** | **0.028** | **0.122** | **30,167 msg/s** |
+| WebSocket (ws) | 0.058 | 0.037 | 0.199 | 17,054 msg/s |
+| Socket.IO | 0.096 | 0.061 | 0.362 | 10,387 msg/s |
+
+**AfterLink is 76.9% faster than WebSocket and 190.4% faster than Socket.IO.**
+
+### Throughput by Payload Size
+
+| Bytes | AfterLink | WebSocket | Socket.IO |
+|-------|-----------|-----------|-----------|
+| 64 | 15,474 | 16,501 | 9,592 |
+| 256 | 10,766 | 13,441 | 8,815 |
+| 1,024 | 10,914 | 13,720 | 8,331 |
+| 4,096 | 7,450 | 12,959 | 8,736 |
+| 16,384 | 4,161 | 5,754 | 3,931 |
+
+See [BENCHMARKS.md](./BENCHMARKS.md) for full methodology and memory usage data.
 
 ---
 

@@ -4,7 +4,8 @@
   "description": "AfterLink Communication Protocol: For Reliable and Fast communication",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "benchmarks"
   ],
   "scripts": {
     "test": "pnpm -r test",
