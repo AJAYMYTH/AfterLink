@@ -1,9 +1,9 @@
 {
   "name": "afterlink",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "dependencies": {
-    "@afterlink/core": "^1.1.1",
-    "@afterlink/server": "^1.1.1",
-    "@afterlink/client": "^1.1.1"
+    "@afterlink/core": "^1.1.2",
+    "@afterlink/server": "^1.1.2",
+    "@afterlink/client": "^1.1.2"
   }
 }

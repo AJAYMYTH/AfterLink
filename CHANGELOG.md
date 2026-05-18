@@ -13,6 +13,14 @@ _Changes staged for the next release_
 
 ---
 
+## [1.1.2] — 2026-05-19
+
+### Added
+- Full README.md included in all npm packages (`@afterlink/core`, `@afterlink/server`, `@afterlink/client`, `afterlink`)
+- Package pages on npm now show complete documentation, features, and quick start guides
+
+---
+
 ## [1.1.1] — 2026-05-19
 
 ### Fixed
