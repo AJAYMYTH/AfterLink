@@ -1,0 +1,13 @@
+{
+  "name": "compression-example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "server": "node server.js",
+    "client": "node client.js"
+  },
+  "dependencies": {
+    "@afterlink/server": "workspace:*",
+    "@afterlink/client": "workspace:*"
+  }
+}

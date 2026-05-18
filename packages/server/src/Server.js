@@ -9,8 +9,18 @@ class Server {
       port: 4000,
       host: '0.0.0.0',
       maxConnections: 10000,
+      compression: {
+        enabled: false,
+        algorithm: 'zlib',
+        threshold: 1024,
+        level: 6,
+      },
       ...config,
     };
+    // Merge compression config deeply
+    if (config.compression) {
+      this.config.compression = { ...this.config.compression, ...config.compression };
+    }
     this.router = new Router();
     this.connections = new Set();
     this.transport = null;

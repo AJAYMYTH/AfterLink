@@ -16,6 +16,7 @@ const {
     PONG,
   },
   Serializer,
+  compression,
 } = require('@afterlink/core');
 const PendingRequests = require('./PendingRequests');
 
@@ -45,6 +46,12 @@ class Client {
     this.socket = null;
     this.sessionId = null;
     this._tlsEnabled = isTLSUrl(url);
+    this._compression = {
+      enabled: false,
+      algorithm: 'none',
+      level: 6,
+      threshold: 1024,
+    };
   }
 
   _nextId() {
@@ -121,11 +128,15 @@ class Client {
       if (this._tlsEnabled) capabilities.push('tls');
       if (this.options.compression?.enabled) capabilities.push('compression');
 
+      const clientAlgorithm = this.options.compression?.enabled
+        ? (this.options.compression.algorithm || 'zlib')
+        : 'none';
+
       const payload = Serializer.encode({
         version: 'AL/1.1',
         auth: this.options.auth || null,
         capabilities,
-        compression: this.options.compression?.algorithm || 'none',
+        compression: clientAlgorithm,
       });
       const frame = Frame.encode(HELLO, 0, id, payload);
 
@@ -137,6 +148,12 @@ class Client {
       this.pending.add(id, (data) => {
         clearTimeout(timeout);
         this.sessionId = data.session_id;
+        // Store negotiated compression algorithm
+        const negotiated = data.compression || 'none';
+        this._compression.enabled = negotiated !== 'none';
+        this._compression.algorithm = negotiated;
+        this._compression.level = this.options.compression?.level ?? 6;
+        this._compression.threshold = this.options.compression?.threshold ?? 1024;
         resolve(data);
       }, reject);
 
@@ -154,8 +171,22 @@ class Client {
     if (!this.socket || this.socket.destroyed) throw new Error('Socket destroyed');
 
     const id = this._nextId();
-    const payload = Serializer.encode({ route, body });
-    const frame = Frame.encode(REQUEST, 0, id, payload);
+    let payload = Serializer.encode({ route, body });
+    let flags = 0;
+
+    // Compress if enabled and above threshold
+    if (this._compression.enabled) {
+      const { data, compressed } = compression.compress(
+        payload,
+        this._compression.algorithm,
+        this._compression.level,
+        this._compression.threshold
+      );
+      payload = data;
+      flags = compression.setCompressedFlag(flags, compressed);
+    }
+
+    const frame = Frame.encode(REQUEST, flags, id, payload);
 
     return new Promise((resolve, reject) => {
       this.pending.add(id, resolve, reject);
@@ -168,8 +199,21 @@ class Client {
     if (typeof handler !== 'function') throw new TypeError('Handler must be a function');
 
     const id = this._nextId();
-    const payload = Serializer.encode({ topic });
-    const frame = Frame.encode(SUBSCRIBE, 0, id, payload);
+    let payload = Serializer.encode({ topic });
+    let flags = 0;
+
+    if (this._compression.enabled) {
+      const { data, compressed } = compression.compress(
+        payload,
+        this._compression.algorithm,
+        this._compression.level,
+        this._compression.threshold
+      );
+      payload = data;
+      flags = compression.setCompressedFlag(flags, compressed);
+    }
+
+    const frame = Frame.encode(SUBSCRIBE, flags, id, payload);
 
     if (!this._handlers.has(topic)) {
       this._handlers.set(topic, new Set());
@@ -188,16 +232,42 @@ class Client {
     this._handlers.delete(topic);
 
     const id = this._nextId();
-    const payload = Serializer.encode({ topic });
-    const frame = Frame.encode(UNSUBSCRIBE, 0, id, payload);
+    let payload = Serializer.encode({ topic });
+    let flags = 0;
+
+    if (this._compression.enabled) {
+      const { data, compressed } = compression.compress(
+        payload,
+        this._compression.algorithm,
+        this._compression.level,
+        this._compression.threshold
+      );
+      payload = data;
+      flags = compression.setCompressedFlag(flags, compressed);
+    }
+
+    const frame = Frame.encode(UNSUBSCRIBE, flags, id, payload);
     this.socket.write(frame);
   }
 
   publish(topic, data) {
     if (!this._connected) throw new Error('Not connected');
 
-    const payload = Serializer.encode({ topic, data });
-    const frame = Frame.encode(PUBLISH, 0, 0, payload);
+    let payload = Serializer.encode({ topic, data });
+    let flags = 0;
+
+    if (this._compression.enabled) {
+      const { data: compressedData, compressed } = compression.compress(
+        payload,
+        this._compression.algorithm,
+        this._compression.level,
+        this._compression.threshold
+      );
+      payload = compressedData;
+      flags = compression.setCompressedFlag(flags, compressed);
+    }
+
+    const frame = Frame.encode(PUBLISH, flags, 0, payload);
     this.socket.write(frame);
   }
 
@@ -258,12 +328,27 @@ class Client {
   }
 
   _handleFrame(frame) {
-    const { type, messageId, payload } = frame;
+    const { type, messageId, payload, flags } = frame;
+
+    // Decompress incoming frames if compressed flag is set
+    let decodedPayload = payload;
+    if (compression.isCompressed(flags)) {
+      try {
+        decodedPayload = compression.decompress(
+          payload,
+          true,
+          this._compression.algorithm
+        );
+      } catch (err) {
+        this.pending.reject(messageId, new Error(`Failed to decompress: ${err.message}`));
+        return;
+      }
+    }
 
     switch (type) {
       case RESPONSE: {
         try {
-          const data = Serializer.decode(payload);
+          const data = Serializer.decode(decodedPayload);
           this.pending.resolve(messageId, data.body || data);
         } catch (err) {
           this.pending.reject(messageId, new Error(`Failed to decode response: ${err.message}`));
@@ -272,7 +357,7 @@ class Client {
       }
       case HELLO_ACK: {
         try {
-          const data = Serializer.decode(payload);
+          const data = Serializer.decode(decodedPayload);
           this.pending.resolve(messageId, data);
         } catch (err) {
           this.pending.reject(messageId, new Error(`Failed to decode handshake: ${err.message}`));
@@ -281,7 +366,7 @@ class Client {
       }
       case ERROR: {
         try {
-          const err = Serializer.decode(payload);
+          const err = Serializer.decode(decodedPayload);
           this.pending.reject(messageId, Object.assign(new Error(err.message), err));
         } catch {
           this.pending.reject(messageId, new Error('Unknown server error'));
@@ -290,7 +375,7 @@ class Client {
       }
       case PUBLISH: {
         try {
-          const { topic, data } = Serializer.decode(payload);
+          const { topic, data } = Serializer.decode(decodedPayload);
           const handlers = this._handlers.get(topic);
           if (handlers) {
             for (const handler of handlers) {

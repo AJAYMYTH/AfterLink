@@ -2,6 +2,7 @@ const {
   Frame,
   FrameTypes: { HELLO, HELLO_ACK, ERROR },
   Serializer,
+  compression,
 } = require('@afterlink/core');
 const FrameAccumulator = require('./FrameAccumulator');
 
@@ -13,6 +14,14 @@ class Connection {
     this.options = options;
     this._id = `conn_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     this._closed = false;
+
+    // Compression state (negotiated during handshake)
+    this._compression = {
+      enabled: false,
+      algorithm: 'none',
+      level: 6,
+      threshold: 1024,
+    };
 
     try {
       this.accumulator = new FrameAccumulator(this._handleFrame.bind(this));
@@ -56,6 +65,19 @@ class Connection {
     if (frame.type === HELLO && !this.session) {
       this._handleHandshake(frame);
     } else if (this.session) {
+      // Decompress incoming frame if compressed
+      if (compression.isCompressed(frame.flags)) {
+        try {
+          frame.payload = compression.decompress(
+            frame.payload,
+            true,
+            this._compression.algorithm
+          );
+        } catch (err) {
+          this.sendError('DECOMPRESSION_ERROR', 'Failed to decompress payload');
+          return;
+        }
+      }
       this.router.dispatch(frame, this).catch((err) => {
         this._onError(err);
       });
@@ -74,18 +96,43 @@ class Connection {
         this._validateAuth(data.auth);
       }
 
+      // Negotiate compression
+      const serverCompression = this.options.compression || {};
+      const clientAlgorithm = data.compression || 'none';
+      const serverEnabled = serverCompression.enabled !== false;
+      const serverAlgorithm = serverCompression.algorithm || 'zlib';
+
+      // Use client's preferred algorithm if server supports it
+      let agreedAlgorithm = 'none';
+      if (serverEnabled && clientAlgorithm !== 'none') {
+        if (clientAlgorithm === serverAlgorithm || clientAlgorithm === 'brotli') {
+          agreedAlgorithm = clientAlgorithm;
+        } else if (serverAlgorithm !== 'none') {
+          agreedAlgorithm = serverAlgorithm;
+        }
+      }
+
+      this._compression = {
+        enabled: agreedAlgorithm !== 'none',
+        algorithm: agreedAlgorithm,
+        level: serverCompression.level ?? 6,
+        threshold: serverCompression.threshold ?? 1024,
+      };
+
       this.session = {
         id: sessionId,
         version: data.version || 'AL/1',
         capabilities: data.capabilities || [],
         connectedAt: new Date().toISOString(),
         remoteAddress: this.getRemoteAddress(),
+        compression: agreedAlgorithm,
       };
 
       const ackPayload = Serializer.encode({
         session_id: sessionId,
-        server_version: 'AL/1',
+        server_version: 'AL/1.1',
         capabilities: ['streaming', 'pubsub', 'compression'],
+        compression: agreedAlgorithm,
       });
       this.send(HELLO_ACK, 0, frame.messageId, ackPayload);
     } catch (err) {
@@ -104,7 +151,21 @@ class Connection {
   send(type, flags, messageId, payload) {
     if (this._closed || this.socket.destroyed) return;
     try {
-      const frame = Frame.encode(type, flags, messageId, payload);
+      // Compress payload if enabled and above threshold
+      let finalPayload = payload;
+      let finalFlags = flags;
+      if (this._compression.enabled && this.session) {
+        const { data, compressed } = compression.compress(
+          payload,
+          this._compression.algorithm,
+          this._compression.level,
+          this._compression.threshold
+        );
+        finalPayload = data;
+        finalFlags = compression.setCompressedFlag(flags, compressed);
+      }
+
+      const frame = Frame.encode(type, finalFlags, messageId, finalPayload);
       this.socket.write(frame);
     } catch (err) {
       this._onError(err);

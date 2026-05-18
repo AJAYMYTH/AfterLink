@@ -29,6 +29,15 @@ importers:
         specifier: ^8.18.0
         version: 8.20.1
 
+  examples/compression-example:
+    dependencies:
+      '@afterlink/client':
+        specifier: workspace:*
+        version: link:../../packages/client
+      '@afterlink/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+
   examples/demo-chat:
     dependencies:
       '@afterlink/client':
