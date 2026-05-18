@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo for README file.png" alt="AfterLink Logo" width="280"/>
+<img src="logo for README file.png" alt="AfterLink Logo" width="500"/>
 
 # AfterLink
 
