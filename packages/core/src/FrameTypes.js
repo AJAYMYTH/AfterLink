@@ -14,6 +14,7 @@ const CLOSE = 0x0D;
 const CLOSE_ACK = 0x0E;
 const HELLO = 0x0F;
 const HELLO_ACK = 0x10;
+const SERVER_CLOSING = 0x11;
 
 const FLAGS = {
   COMPRESSED: 0b10000000,
@@ -40,6 +41,7 @@ const FRAME_TYPE_NAMES = {
   [CLOSE_ACK]: 'CLOSE_ACK',
   [HELLO]: 'HELLO',
   [HELLO_ACK]: 'HELLO_ACK',
+  [SERVER_CLOSING]: 'SERVER_CLOSING',
 };
 
 module.exports = {
@@ -59,6 +61,7 @@ module.exports = {
   CLOSE_ACK,
   HELLO,
   HELLO_ACK,
+  SERVER_CLOSING,
   FLAGS,
   FRAME_TYPE_NAMES,
 };

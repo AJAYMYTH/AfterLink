@@ -98,6 +98,15 @@ importers:
         specifier: 3.23.0
         version: 3.23.0
 
+  examples/rate-limit-shutdown-example:
+    dependencies:
+      '@afterlink/client':
+        specifier: workspace:*
+        version: link:../../packages/client
+      '@afterlink/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+
   examples/tls-example:
     dependencies:
       '@afterlink/client':

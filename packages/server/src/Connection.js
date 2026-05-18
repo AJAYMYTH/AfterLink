@@ -23,6 +23,12 @@ class Connection {
       threshold: 1024,
     };
 
+    // Rate limiting bucket (attached by server if enabled)
+    this._rateBucket = null;
+
+    // Active request tracking for graceful shutdown
+    this._activeRequests = new Set();
+
     try {
       this.accumulator = new FrameAccumulator(this._handleFrame.bind(this));
     } catch (err) {
@@ -78,7 +84,15 @@ class Connection {
           return;
         }
       }
+
+      // Track active requests for graceful shutdown
+      const { REQUEST } = require('@afterlink/core').FrameTypes;
+      if (frame.type === REQUEST) {
+        this._activeRequests.add(frame.messageId);
+      }
+
       this.router.dispatch(frame, this).catch((err) => {
+        this._activeRequests.delete(frame.messageId);
         this._onError(err);
       });
     } else {
@@ -131,8 +145,14 @@ class Connection {
       const ackPayload = Serializer.encode({
         session_id: sessionId,
         server_version: 'AL/1.1',
-        capabilities: ['streaming', 'pubsub', 'compression'],
+        capabilities: ['streaming', 'pubsub', 'compression', 'rate-limit'],
         compression: agreedAlgorithm,
+        rateLimit: this.options.rateLimit?.enabled
+          ? {
+              requestsPerSecond: this.options.rateLimit.requestsPerSecond,
+              burstSize: this.options.rateLimit.burstSize,
+            }
+          : undefined,
       });
       this.send(HELLO_ACK, 0, frame.messageId, ackPayload);
     } catch (err) {
@@ -167,6 +187,12 @@ class Connection {
 
       const frame = Frame.encode(type, finalFlags, messageId, finalPayload);
       this.socket.write(frame);
+
+      // Track response sent - remove from active requests
+      const { RESPONSE, ERROR } = require('@afterlink/core').FrameTypes;
+      if (type === RESPONSE || type === ERROR) {
+        this._activeRequests.delete(messageId);
+      }
     } catch (err) {
       this._onError(err);
     }

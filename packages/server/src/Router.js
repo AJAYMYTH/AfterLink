@@ -80,7 +80,7 @@ class Router {
     }
 
     let responseSent = false;
-    const req = { body, session: connection.session, route };
+    const req = { body, session: connection.session, route, connection };
     const res = {
       send: (data) => {
         if (responseSent) return;
@@ -100,7 +100,22 @@ class Router {
       });
     } catch (err) {
       if (!responseSent) {
-        connection.sendError('INTERNAL_ERROR', err.message, messageId);
+        if (err.code === 'RATE_LIMITED') {
+          const errorPayload = Serializer.encode({
+            code: err.code,
+            message: err.message,
+            retryAfter: err.retryAfter,
+            limit: err.limit,
+            remaining: err.remaining,
+          });
+          connection.send(ERROR, 0, messageId, errorPayload);
+
+          if (err.closeConnection) {
+            connection.destroy();
+          }
+        } else {
+          connection.sendError('INTERNAL_ERROR', err.message, messageId);
+        }
       }
     }
   }

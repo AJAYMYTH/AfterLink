@@ -14,6 +14,7 @@ const {
     PUBLISH,
     PING,
     PONG,
+    SERVER_CLOSING,
   },
   Serializer,
   compression,
@@ -52,6 +53,7 @@ class Client {
       level: 6,
       threshold: 1024,
     };
+    this._serverClosing = false;
   }
 
   _nextId() {
@@ -95,6 +97,7 @@ class Client {
         this._connected = true;
         this._connecting = false;
         this._reconnectAttempts = 0;
+        this._serverClosing = false;
         this._startPingInterval();
         this._doHandshake().then(resolve).catch((err) => {
           this._connected = false;
@@ -406,6 +409,17 @@ class Client {
           const ackFrame = Frame.encode(CLOSE_ACK, 0, messageId, Buffer.alloc(0));
           this.socket.write(ackFrame);
           this.socket.end();
+        }
+        break;
+      }
+      case SERVER_CLOSING: {
+        try {
+          const data = Serializer.decode(decodedPayload);
+          this._emit('server-closing', data);
+          // Stop sending new requests
+          this._serverClosing = true;
+        } catch {
+          // Ignore malformed frames
         }
         break;
       }
