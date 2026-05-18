@@ -3,60 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AfterLink — Communication Protocol for Reliable and Fast Communication</title>
-  <meta name="description" content="AfterLink is a custom application-layer binary communication protocol designed for high-performance, developer-friendly communication between services, clients, and devices.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='25' r='12' fill='%236366f1' opacity='0.9'/><circle cx='25' cy='75' r='12' fill='%2306b6d4' opacity='0.9'/><circle cx='75' cy='75' r='12' fill='%238b5cf6' opacity='0.9'/><line x1='50' y1='37' x2='25' y2='63' stroke='%236366f1' stroke-width='3' opacity='0.6'/><line x1='50' y1='37' x2='75' y2='63' stroke='%236366f1' stroke-width='3' opacity='0.6'/><line x1='25' y1='75' x2='75' y2='75' stroke='%2306b6d4' stroke-width='3' opacity='0.6'/></svg>">
+  <title>AfterLink — Binary Communication Protocol</title>
+  <meta name="description" content="A custom 10-byte binary protocol for real-time messaging. Faster than HTTP, simpler than gRPC. Published on npm.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='25' r='12' fill='%2300d4ff' opacity='0.9'/><circle cx='25' cy='75' r='12' fill='%238b5cf6' opacity='0.9'/><circle cx='75' cy='75' r='12' fill='%2310b981' opacity='0.9'/><line x1='50' y1='37' x2='25' y2='63' stroke='%2300d4ff' stroke-width='3' opacity='0.6'/><line x1='50' y1='37' x2='75' y2='63' stroke='%2300d4ff' stroke-width='3' opacity='0.6'/><line x1='25' y1='75' x2='75' y2='75' stroke='%2310b981' stroke-width='3' opacity='0.6'/></svg>">
+  <meta property="og:title" content="AfterLink — Binary Communication Protocol" />
+  <meta property="og:description" content="A custom 10-byte binary protocol for real-time messaging. Faster than HTTP, simpler than gRPC." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AfterLink — Binary Communication Protocol" />
+  <meta name="twitter:description" content="10-byte binary frame. < 1ms latency. 100K+ req/sec." />
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div id="progressBar"></div>
+
   <nav id="navbar">
     <div class="nav-container">
-      <a href="#" class="nav-logo">
+      <a href="#home" class="nav-logo">
         <span class="logo-text">AfterLink</span>
       </a>
       <div class="nav-links" id="navLinks">
-        <a href="#home" class="nav-link active">Home</a>
         <a href="#features" class="nav-link">Features</a>
-        <a href="#installation" class="nav-link">Installation</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#benchmark" class="nav-link">Benchmarks</a>
+        <a href="#protocol" class="nav-link">Protocol</a>
+        <a href="#installation" class="nav-link">Install</a>
         <a href="#quickstart" class="nav-link">Quick Start</a>
         <a href="#api" class="nav-link">API</a>
-        <a href="#troubleshooting" class="nav-link">Troubleshooting</a>
+        <a href="#troubleshooting" class="nav-link">FAQ</a>
         <a href="#releases" class="nav-link">Releases</a>
         <a href="#contact" class="nav-link">Contact</a>
       </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener" class="nav-github">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        GitHub
-      </a>
+      <div class="nav-right">
+        <span class="version-badge">v1.0.0</span>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </nav>
 
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <a href="#home" class="mobile-nav-link">Home</a>
+    <a href="#features" class="mobile-nav-link">Features</a>
+    <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+    <a href="#benchmark" class="mobile-nav-link">Benchmarks</a>
+    <a href="#protocol" class="mobile-nav-link">Protocol</a>
+    <a href="#installation" class="mobile-nav-link">Install</a>
+    <a href="#quickstart" class="mobile-nav-link">Quick Start</a>
+    <a href="#api" class="mobile-nav-link">API</a>
+    <a href="#troubleshooting" class="mobile-nav-link">FAQ</a>
+    <a href="#releases" class="mobile-nav-link">Releases</a>
+    <a href="#contact" class="mobile-nav-link">Contact</a>
+  </div>
+
   <main>
     <section id="home" class="hero">
-      <div class="hero-bg">
-        <div class="hero-grid"></div>
-        <div class="hero-glow"></div>
-      </div>
+      <div class="hero-bg"><div class="hero-grid"></div></div>
       <div class="hero-content">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>v1.0.0 — Available on npm</span>
-        </div>
+        <div class="hero-badge"><span class="badge-dot"></span><span>v1.0.0 — Available on npm</span></div>
         <h1 class="hero-title">
-          Communication Protocol for<br>
-          <span class="gradient-text">Reliable and Fast</span> Communication
+          <span id="typewriter">Fast Communication</span><span class="typewriter-cursor"></span>
         </h1>
-        <p class="hero-description">
-          A custom application-layer binary protocol designed to be faster, simpler, and more developer-friendly than HTTP. Persistent connections, real-time pub/sub, and automatic validation — all in a <strong>10-byte binary frame</strong>.
-        </p>
+        <p class="hero-description">A custom application-layer binary protocol designed to be faster, simpler, and more developer-friendly than HTTP. Persistent connections, real-time pub/sub, and automatic validation — all in a <strong>10-byte binary frame</strong>.</p>
         <div class="hero-install">
           <div class="install-command" id="heroInstall">
             <span class="install-prompt">$</span>
@@ -66,49 +84,29 @@
             </button>
           </div>
           <div class="hero-actions">
-            <a href="#installation" class="btn btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Get Started
-            </a>
-            <a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener" class="btn btn-secondary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0v24h24V0H0zm1.5 1.5h21v21h-21v-21zm3.75 4.5v15h4.5v-6h3v6h4.5v-15h-12z"/></svg>
-              npm
-            </a>
+            <a href="#installation" class="btn btn-primary">Get Started</a>
+            <a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener" class="btn btn-secondary">npm</a>
             <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener" class="btn btn-secondary btn-github">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
               GitHub
-              <span class="github-stars" id="githubStars">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span id="starCount">--</span>
-              </span>
+              <span class="github-stars"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="starCount">--</span></span>
             </a>
           </div>
         </div>
         <div class="hero-stats">
-          <div class="stat">
-            <span class="stat-value">10</span>
-            <span class="stat-label">Byte Header</span>
-          </div>
+          <div class="stat"><span class="stat-value" data-target="10">0</span><span class="stat-label">Byte Header</span></div>
           <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-value">&lt;1ms</span>
-            <span class="stat-label">LAN Latency</span>
-          </div>
+          <div class="stat"><span class="stat-value" data-target="1">&lt;1ms</span><span class="stat-label">LAN Latency</span></div>
           <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-value">100K+</span>
-            <span class="stat-label">Req/sec</span>
-          </div>
+          <div class="stat"><span class="stat-value" data-target="100000">0</span><span class="stat-label">Req/sec</span></div>
           <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-value">16</span>
-            <span class="stat-label">Frame Types</span>
-          </div>
+          <div class="stat"><span class="stat-value" data-target="16">0</span><span class="stat-label">Frame Types</span></div>
           <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-value">4</span>
-            <span class="stat-label">npm Packages</span>
-          </div>
+          <div class="stat"><span class="stat-value" data-target="4">0</span><span class="stat-label">npm Packages</span></div>
+        </div>
+        <div class="scroll-down">
+          <span>Scroll to explore</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
     </section>
@@ -117,91 +115,148 @@
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Features</span>
-          <h2 class="section-title">Everything you need for<br><span class="gradient-text">modern communication</span></h2>
+          <h2 class="section-title">Everything you need for <span class="gradient-text">modern communication</span></h2>
           <p class="section-description">AfterLink replaces HTTP, WebSockets, and gRPC with a single, unified protocol that's faster and easier to use.</p>
         </div>
         <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <h3>Binary Protocol</h3>
-            <p>10-byte frame header with MessagePack serialization. 90% smaller than HTTP headers.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <h3>Request/Response</h3>
-            <p>RPC-style calls with automatic correlation via message IDs. Multiplex hundreds of requests over one connection.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <h3>Pub/Sub Built-in</h3>
-            <p>Real-time topic-based publish/subscribe. No separate WebSocket server needed.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <h3>Schema Validation</h3>
-            <p>Automatic payload validation with Zod. Invalid payloads rejected before your code runs.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <h3>Auto-Reconnect</h3>
-            <p>Exponential backoff with jitter for connection resilience. Clients recover from network drops automatically.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            </div>
-            <h3>Backend Agnostic</h3>
-            <p>Works with Supabase, InsForge, Firebase, AWS, MongoDB, PostgreSQL, or any custom backend.</p>
-          </div>
+          <div class="feature-card fade-in"><div class="feature-icon">⚡</div><h3>Binary Protocol</h3><p>10-byte frame header with MessagePack serialization. 90% smaller than HTTP headers.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">💬</div><h3>Request/Response</h3><p>RPC-style calls with automatic correlation via message IDs. Multiplex hundreds of requests over one connection.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">📡</div><h3>Built-in Pub/Sub</h3><p>Subscribe to topics and broadcast messages over the same TCP connection. No WebSockets needed.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">✅</div><h3>Schema Validation</h3><p>Automatic Zod validation on every request. Invalid payloads rejected before your handler runs.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">🔄</div><h3>Auto-Reconnect</h3><p>Clients recover from network drops automatically with configurable retry strategies.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">🔌</div><h3>Backend-Agnostic</h3><p>Works with Supabase, InsForge, Firebase, AWS, MongoDB, or any backend you choose.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">📦</div><h3>Streaming</h3><p>First-class streaming API with <code>STREAM_START</code>, <code>DATA</code>, and <code>END</code> frames for chunked data.</p></div>
+          <div class="feature-card fade-in"><div class="feature-icon">🛠️</div><h3>CLI Tooling</h3><p>Built-in <code>afterlink</code> CLI for testing routes, inspecting frames, and debugging connections.</p></div>
         </div>
       </div>
     </section>
 
-    <section id="comparison" class="section section-alt">
+    <section id="how-it-works" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Architecture</span>
+          <h2 class="section-title">How AfterLink <span class="gradient-text">Works</span></h2>
+          <p class="section-description">From connection to response in four simple steps.</p>
+        </div>
+        <div class="how-it-works-steps">
+          <div class="step-card fade-in"><div class="step-number">1</div><h3>Connect</h3><p>Client opens TCP socket and performs HELLO handshake with server.</p><div class="step-connector"></div></div>
+          <div class="step-card fade-in"><div class="step-number">2</div><h3>Route</h3><p>Client sends a REQUEST frame with the route name and payload.</p><div class="step-connector"></div></div>
+          <div class="step-card fade-in"><div class="step-number">3</div><h3>Validate</h3><p>Server automatically runs Zod schema check on the payload.</p><div class="step-connector"></div></div>
+          <div class="step-card fade-in"><div class="step-number">4</div><h3>Respond</h3><p>Server sends RESPONSE frame or publishes to a Pub/Sub topic.</p></div>
+        </div>
+        <div class="terminal-box">
+          <span class="comment">// Connection Lifecycle</span><br>
+          <span class="prompt">Client</span> ─── TCP Connect ───▶ <span class="prompt">Server</span><br>
+          <span class="prompt">Client</span> ─── HELLO Frame ───▶ <span class="prompt">Server</span><br>
+          <span class="prompt">Server</span> ◀── HELLO_ACK ─── <span class="prompt">Client</span><br>
+          <span class="prompt">Both</span> ◀──▶ REQUEST / RESPONSE frames<br>
+          <span class="prompt">Both</span> ◀──▶ PUBLISH / SUBSCRIBE frames<br>
+          <span class="prompt">Both</span> ◀──▶ PING / PONG keep-alive<br>
+          <span class="prompt">Client</span> ─── CLOSE Frame ───▶ <span class="prompt">Server</span><br>
+          <span class="prompt">Server</span> ◀── CLOSE_ACK ─── <span class="prompt">Client</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="benchmark" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Performance</span>
+          <h2 class="section-title">Built for <span class="gradient-text">Speed</span></h2>
+          <p class="section-description">AfterLink is designed for high-throughput, low-latency communication.</p>
+        </div>
+        <div class="benchmark-grid">
+          <div class="benchmark-card fade-in"><div class="benchmark-value" data-target="100000">0</div><div class="benchmark-label">Requests/sec (single core)</div></div>
+          <div class="benchmark-card fade-in"><div class="benchmark-value">&lt;1ms</div><div class="benchmark-label">Round-trip latency (LAN, p50)</div></div>
+          <div class="benchmark-card fade-in"><div class="benchmark-value">10 bytes</div><div class="benchmark-label">Frame header size</div></div>
+          <div class="benchmark-card fade-in"><div class="benchmark-value">&lt;50KB</div><div class="benchmark-label">Memory per idle connection</div></div>
+        </div>
+        <div class="bar-chart">
+          <h3 style="text-align:center;font-family:var(--font-display);margin-bottom:24px;">Header Size Comparison</h3>
+          <div class="bar-item"><span class="bar-label">AfterLink</span><div class="bar-track"><div class="bar-fill afterlink" data-width="2%"></div></div><span class="bar-value">10 bytes</span></div>
+          <div class="bar-item"><span class="bar-label">MQTT</span><div class="bar-track"><div class="bar-fill mqtt" data-width="5%"></div></div><span class="bar-value">2–5 bytes</span></div>
+          <div class="bar-item"><span class="bar-label">WebSocket</span><div class="bar-track"><div class="bar-fill ws" data-width="14%"></div></div><span class="bar-value">2–14 bytes</span></div>
+          <div class="bar-item"><span class="bar-label">gRPC</span><div class="bar-track"><div class="bar-fill grpc" data-width="20%"></div></div><span class="bar-value">5–50 bytes</span></div>
+          <div class="bar-item"><span class="bar-label">HTTP/REST</span><div class="bar-track"><div class="bar-fill http" data-width="100%"></div></div><span class="bar-value">200–800 bytes</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="protocol" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Protocol Spec</span>
+          <h2 class="section-title">The <span class="gradient-text">10-Byte Frame</span></h2>
+          <p class="section-description">Every AfterLink message is encoded in a compact binary frame.</p>
+        </div>
+        <div class="frame-display">
+          <select class="frame-select" id="frameSelect">
+            <option value="REQUEST">REQUEST (0x01)</option>
+            <option value="RESPONSE">RESPONSE (0x02)</option>
+            <option value="STREAM_START">STREAM_START (0x03)</option>
+            <option value="PUBLISH">PUBLISH (0x0C)</option>
+            <option value="SUBSCRIBE">SUBSCRIBE (0x0A)</option>
+            <option value="PING">PING (0x07)</option>
+            <option value="ERROR">ERROR (0x06)</option>
+          </select>
+          <div class="frame-row">
+            <div class="frame-byte type"><span id="frameTypeByte">0x01</span><div class="frame-label">Frame Type</div></div>
+            <div class="frame-byte flags"><span>0x00</span><div class="frame-label">Flags</div></div>
+            <div class="frame-byte msgid"><span>00 00 00 01</span><div class="frame-label">Message ID</div></div>
+            <div class="frame-byte length"><span>00 00 00 1A</span><div class="frame-label">Payload Length</div></div>
+            <div class="frame-byte payload"><span>...payload...</span><div class="frame-label">MessagePack Data</div></div>
+          </div>
+        </div>
+        <table class="frame-table">
+          <thead><tr><th>Code</th><th>Type</th><th>Direction</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>0x01</td><td>REQUEST</td><td>C → S</td><td>Client request to a named route</td></tr>
+            <tr><td>0x02</td><td>RESPONSE</td><td>S → C</td><td>Server response to a request</td></tr>
+            <tr><td>0x03</td><td>STREAM_START</td><td>S → C</td><td>Begin a streaming sequence</td></tr>
+            <tr><td>0x04</td><td>STREAM_DATA</td><td>S → C</td><td>A chunk of streamed data</td></tr>
+            <tr><td>0x05</td><td>STREAM_END</td><td>S → C</td><td>End of stream</td></tr>
+            <tr><td>0x06</td><td>ERROR</td><td>Both</td><td>Error response</td></tr>
+            <tr><td>0x07</td><td>PING</td><td>Both</td><td>Keep-alive ping</td></tr>
+            <tr><td>0x08</td><td>PONG</td><td>Both</td><td>Keep-alive pong</td></tr>
+            <tr><td>0x09</td><td>BROADCAST</td><td>S → C</td><td>Push to all clients</td></tr>
+            <tr><td>0x0A</td><td>SUBSCRIBE</td><td>C → S</td><td>Subscribe to a topic</td></tr>
+            <tr><td>0x0B</td><td>UNSUBSCRIBE</td><td>C → S</td><td>Unsubscribe from a topic</td></tr>
+            <tr><td>0x0C</td><td>PUBLISH</td><td>Both</td><td>Publish message to a topic</td></tr>
+            <tr><td>0x0D</td><td>CLOSE</td><td>Both</td><td>Graceful connection close</td></tr>
+            <tr><td>0x0E</td><td>CLOSE_ACK</td><td>Both</td><td>Acknowledge close</td></tr>
+            <tr><td>0x0F</td><td>HELLO</td><td>C → S</td><td>Initial handshake</td></tr>
+            <tr><td>0x10</td><td>HELLO_ACK</td><td>S → C</td><td>Handshake acknowledgment</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="comparison" class="section">
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Comparison</span>
-          <h2 class="section-title">Why choose <span class="gradient-text">AfterLink</span>?</h2>
-          <p class="section-description">See how AfterLink compares to existing protocols.</p>
+          <h2 class="section-title">AfterLink vs <span class="gradient-text">Others</span></h2>
+          <p class="section-description">See how AfterLink stacks up against existing protocols.</p>
         </div>
-        <div class="comparison-table-wrapper">
+        <div class="comparison-wrapper">
           <table class="comparison-table">
-            <thead>
-              <tr>
-                <th>Feature</th>
-                <th class="highlight">AfterLink</th>
-                <th>HTTP/REST</th>
-                <th>WebSocket</th>
-                <th>gRPC</th>
-                <th>MQTT</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Feature</th><th class="highlight">AfterLink</th><th>HTTP/REST</th><th>WebSocket</th><th>gRPC</th><th>MQTT</th></tr></thead>
             <tbody>
               <tr><td>Setup</td><td class="highlight">Very Easy</td><td>Easy</td><td>Medium</td><td>Hard</td><td>Medium</td></tr>
-              <tr><td>Binary Protocol</td><td class="highlight">✅ Yes</td><td>❌ No</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td></tr>
-              <tr><td>Schema Validation</td><td class="highlight">✅ Built-in</td><td>❌ No</td><td>❌ No</td><td>Proto only</td><td>❌ No</td></tr>
-              <tr><td>Multiplexing</td><td class="highlight">✅ Yes</td><td>❌ HTTP/1.1</td><td>❌ No</td><td>✅ Yes</td><td>❌ No</td></tr>
-              <tr><td>Pub/Sub</td><td class="highlight">✅ Built-in</td><td>❌ No</td><td>❌ No</td><td>❌ No</td><td>✅ Yes</td></tr>
-              <tr><td>Streaming</td><td class="highlight">✅ First-class</td><td>SSE only</td><td>Manual</td><td>✅ Yes</td><td>❌ No</td></tr>
-              <tr><td>Auto-Reconnect</td><td class="highlight">✅ Built-in</td><td>❌ No</td><td>❌ No</td><td>❌ No</td><td>✅ Yes</td></tr>
-              <tr><td>Header Size</td><td class="highlight">10 bytes</td><td>200-800 bytes</td><td>2-14 bytes</td><td>5-50 bytes</td><td>2-5 bytes</td></tr>
+              <tr><td>Binary Protocol</td><td class="highlight"><span class="check">✅</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+              <tr><td>Schema Validation</td><td class="highlight"><span class="check">✅</span> Built-in</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td>Proto only</td><td><span class="cross">❌</span></td></tr>
+              <tr><td>Multiplexing</td><td class="highlight"><span class="check">✅</span></td><td><span class="cross">❌</span> HTTP/1.1</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+              <tr><td>Pub/Sub</td><td class="highlight"><span class="check">✅</span> Built-in</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+              <tr><td>Streaming</td><td class="highlight"><span class="check">✅</span> First-class</td><td>SSE only</td><td>Manual</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+              <tr><td>Auto-Reconnect</td><td class="highlight"><span class="check">✅</span> Built-in</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+              <tr><td>Header Size</td><td class="highlight">10 bytes</td><td>200–800 bytes</td><td>2–14 bytes</td><td>5–50 bytes</td><td>2–5 bytes</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <section id="installation" class="section">
+    <section id="installation" class="section section-alt">
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Installation</span>
@@ -216,90 +271,28 @@
         </div>
         <div class="install-content">
           <div class="install-panel active" id="panel-npm">
-            <div class="terminal">
-              <div class="terminal-header">
-                <div class="terminal-buttons">
-                  <span class="terminal-btn close"></span>
-                  <span class="terminal-btn minimize"></span>
-                  <span class="terminal-btn maximize"></span>
-                </div>
-                <span class="terminal-title">Terminal — npm</span>
-                <button class="copy-btn-terminal" data-target="code-npm">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <div class="terminal-body">
-                <pre><code id="code-npm"><span class="terminal-comment"># Install all packages (recommended)</span>
+            <div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">Terminal — npm</span><button class="copy-btn-terminal" data-target="code-npm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-npm"><span class="terminal-comment"># Install all packages (recommended)</span>
 <span class="terminal-prompt">$</span> npm install afterlink
 
 <span class="terminal-comment"># Or install individual packages</span>
-<span class="terminal-prompt">$</span> npm install @afterlink/core @afterlink/server @afterlink/client</code></pre>
-              </div>
-            </div>
+<span class="terminal-prompt">$</span> npm install @afterlink/core @afterlink/server @afterlink/client</code></pre></div></div>
           </div>
           <div class="install-panel" id="panel-pnpm">
-            <div class="terminal">
-              <div class="terminal-header">
-                <div class="terminal-buttons">
-                  <span class="terminal-btn close"></span>
-                  <span class="terminal-btn minimize"></span>
-                  <span class="terminal-btn maximize"></span>
-                </div>
-                <span class="terminal-title">Terminal — pnpm</span>
-                <button class="copy-btn-terminal" data-target="code-pnpm">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <div class="terminal-body">
-                <pre><code id="code-pnpm"><span class="terminal-comment"># Install all packages (recommended)</span>
+            <div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">Terminal — pnpm</span><button class="copy-btn-terminal" data-target="code-pnpm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-pnpm"><span class="terminal-comment"># Install all packages (recommended)</span>
 <span class="terminal-prompt">$</span> pnpm add afterlink
 
 <span class="terminal-comment"># Or install individual packages</span>
-<span class="terminal-prompt">$</span> pnpm add @afterlink/core @afterlink/server @afterlink/client</code></pre>
-              </div>
-            </div>
+<span class="terminal-prompt">$</span> pnpm add @afterlink/core @afterlink/server @afterlink/client</code></pre></div></div>
           </div>
           <div class="install-panel" id="panel-yarn">
-            <div class="terminal">
-              <div class="terminal-header">
-                <div class="terminal-buttons">
-                  <span class="terminal-btn close"></span>
-                  <span class="terminal-btn minimize"></span>
-                  <span class="terminal-btn maximize"></span>
-                </div>
-                <span class="terminal-title">Terminal — yarn</span>
-                <button class="copy-btn-terminal" data-target="code-yarn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <div class="terminal-body">
-                <pre><code id="code-yarn"><span class="terminal-comment"># Install all packages (recommended)</span>
+            <div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">Terminal — yarn</span><button class="copy-btn-terminal" data-target="code-yarn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-yarn"><span class="terminal-comment"># Install all packages (recommended)</span>
 <span class="terminal-prompt">$</span> yarn add afterlink
 
 <span class="terminal-comment"># Or install individual packages</span>
-<span class="terminal-prompt">$</span> yarn add @afterlink/core @afterlink/server @afterlink/client</code></pre>
-              </div>
-            </div>
+<span class="terminal-prompt">$</span> yarn add @afterlink/core @afterlink/server @afterlink/client</code></pre></div></div>
           </div>
           <div class="install-panel" id="panel-github">
-            <div class="terminal">
-              <div class="terminal-header">
-                <div class="terminal-buttons">
-                  <span class="terminal-btn close"></span>
-                  <span class="terminal-btn minimize"></span>
-                  <span class="terminal-btn maximize"></span>
-                </div>
-                <span class="terminal-title">Terminal — GitHub</span>
-                <button class="copy-btn-terminal" data-target="code-github">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <div class="terminal-body">
-                <pre><code id="code-github"><span class="terminal-comment"># Clone the repository</span>
+            <div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">Terminal — GitHub</span><button class="copy-btn-terminal" data-target="code-github"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-github"><span class="terminal-comment"># Clone the repository</span>
 <span class="terminal-prompt">$</span> git clone https://github.com/AJAYMYTH/AfterLink.git
 <span class="terminal-prompt">$</span> cd AfterLink
 
@@ -311,9 +304,7 @@
 
 <span class="terminal-comment"># Run the demo showcase</span>
 <span class="terminal-prompt">$</span> cd examples/demo-runner
-<span class="terminal-prompt">$</span> node index.js</code></pre>
-              </div>
-            </div>
+<span class="terminal-prompt">$</span> node index.js</code></pre></div></div>
           </div>
         </div>
         <div class="install-note">
@@ -323,7 +314,7 @@
       </div>
     </section>
 
-    <section id="quickstart" class="section section-alt">
+    <section id="quickstart" class="section">
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Quick Start</span>
@@ -331,18 +322,7 @@
           <p class="section-description">Build your first AfterLink server and client.</p>
         </div>
         <div class="quickstart-grid">
-          <div class="quickstart-card">
-            <div class="quickstart-step">1</div>
-            <h3>Create the Server</h3>
-            <div class="code-block">
-              <div class="code-header">
-                <span>server.js</span>
-                <button class="copy-btn" data-target="code-server">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <pre><code id="code-server">const { Server } = require('@afterlink/server');
+          <div class="quickstart-card fade-in"><div class="quickstart-step">1</div><h3>Create the Server</h3><div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">server.js</span><button class="copy-btn-terminal" data-target="code-server"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-server">const { Server } = require('@afterlink/server');
 
 const server = new Server({ port: 4000 });
 
@@ -351,21 +331,8 @@ server.on('ping', async (req, res) => {
 });
 
 server.listen();
-console.log('Server running on port 4000');</code></pre>
-            </div>
-          </div>
-          <div class="quickstart-card">
-            <div class="quickstart-step">2</div>
-            <h3>Create the Client</h3>
-            <div class="code-block">
-              <div class="code-header">
-                <span>client.js</span>
-                <button class="copy-btn" data-target="code-client">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <pre><code id="code-client">const { Client } = require('@afterlink/client');
+console.log('Server running on port 4000');</code></pre></div></div></div>
+          <div class="quickstart-card fade-in"><div class="quickstart-step">2</div><h3>Create the Client</h3><div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">client.js</span><button class="copy-btn-terminal" data-target="code-client"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-client">const { Client } = require('@afterlink/client');
 
 async function main() {
   const client = new Client('afterlink://localhost:4000');
@@ -378,31 +345,37 @@ async function main() {
   await client.disconnect();
 }
 
-main();</code></pre>
-            </div>
-          </div>
-          <div class="quickstart-card">
-            <div class="quickstart-step">3</div>
-            <h3>Run It</h3>
-            <div class="code-block">
-              <div class="code-header">
-                <span>Terminal</span>
-                <button class="copy-btn" data-target="code-run">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy
-                </button>
-              </div>
-              <pre><code id="code-run"># Terminal 1 - Start server
-node server.js
+main();</code></pre></div></div></div>
+          <div class="quickstart-card fade-in"><div class="quickstart-step">3</div><h3>Run It</h3><div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">Terminal</span><button class="copy-btn-terminal" data-target="code-run"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-run"><span class="terminal-comment"># Terminal 1 - Start server</span>
+<span class="terminal-prompt">$</span> node server.js
 
-# Terminal 2 - Run client
-node client.js
+<span class="terminal-comment"># Terminal 2 - Run client</span>
+<span class="terminal-prompt">$</span> node client.js
 
-# Output:
-# { message: 'pong', timestamp: 1748000000000 }</code></pre>
-            </div>
-          </div>
+<span class="terminal-comment"># Output:</span>
+<span class="terminal-comment"># { message: 'pong', timestamp: 1748000000000 }</span></code></pre></div></div></div>
         </div>
+      </div>
+    </section>
+
+    <section id="playground" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Playground</span>
+          <h2 class="section-title">Try It <span class="gradient-text">Live</span></h2>
+          <p class="section-description">Select a preset to see server and client code side by side.</p>
+        </div>
+        <div class="playground-presets">
+          <button class="preset-btn active" data-preset="ping">Ping / Pong</button>
+          <button class="preset-btn" data-preset="validation">Schema Validation</button>
+          <button class="preset-btn" data-preset="pubsub">Pub/Sub Chat</button>
+          <button class="preset-btn" data-preset="streaming">Streaming</button>
+        </div>
+        <div class="playground-grid">
+          <div class="playground-panel"><div class="playground-panel-header">Server</div><textarea id="serverCode" readonly></textarea></div>
+          <div class="playground-panel"><div class="playground-panel-header">Client</div><textarea id="clientCode" readonly></textarea></div>
+        </div>
+        <div class="playground-output"><div class="playground-output-header"><span>Simulated Output</span><button class="run-btn" id="runDemo">Run Demo</button></div><div class="playground-output-body" id="outputBody">Click "Run Demo" to see the output...</div></div>
       </div>
     </section>
 
@@ -410,83 +383,31 @@ node client.js
       <div class="container">
         <div class="section-header">
           <span class="section-badge">API Reference</span>
-          <h2 class="section-title">Server and <span class="gradient-text">Client API</span></h2>
-          <p class="section-description">Complete reference for building AfterLink applications.</p>
+          <h2 class="section-title">Server & Client <span class="gradient-text">API</span></h2>
+          <p class="section-description">Complete method reference for building AfterLink applications.</p>
         </div>
-        <div class="api-grid">
-          <div class="api-card">
-            <h3><span class="api-badge">Server</span> Methods</h3>
-            <div class="api-list">
-              <div class="api-item">
-                <code>new Server(config)</code>
-                <p>Create a new server instance with port, host, auth, and connection limits.</p>
-              </div>
-              <div class="api-item">
-                <code>server.on(route, handler, schema?)</code>
-                <p>Register a route handler with optional Zod schema validation.</p>
-              </div>
-              <div class="api-item">
-                <code>server.use(middleware)</code>
-                <p>Add Express-style middleware for auth, logging, or rate limiting.</p>
-              </div>
-              <div class="api-item">
-                <code>server.publish(topic, data)</code>
-                <p>Broadcast data to all subscribers of a topic.</p>
-              </div>
-              <div class="api-item">
-                <code>server.listen(port?)</code>
-                <p>Start listening for connections. Returns a Promise.</p>
-              </div>
-              <div class="api-item">
-                <code>server.close()</code>
-                <p>Gracefully stop the server and disconnect all clients.</p>
-              </div>
-              <div class="api-item">
-                <code>server.getConnectionCount()</code>
-                <p>Get the number of active connections.</p>
-              </div>
-              <div class="api-item">
-                <code>server.getRouteCount()</code>
-                <p>Get the number of registered routes.</p>
-              </div>
-            </div>
+        <div class="api-tabs">
+          <button class="api-tab active" data-tab="server">Server</button>
+          <button class="api-tab" data-tab="client">Client</button>
+        </div>
+        <div class="api-panel active" id="panel-server">
+          <div class="api-list">
+            <div class="api-item"><button class="api-item-header"><code>new Server(options)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Creates a new AfterLink server instance.</p><p><strong>Options:</strong> <code>port</code>, <code>host</code>, <code>maxConnections</code>, <code>auth</code></p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.on(route, handler, schema?)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Registers a route handler with optional Zod schema validation.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.use(middleware)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Adds middleware to the request pipeline (auth, logging, rate limiting).</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to all subscribers of a topic.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.listen()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Starts the TCP server and begins accepting connections.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.close()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully shuts down the server and closes all connections.</p></div></div></div>
           </div>
-          <div class="api-card">
-            <h3><span class="api-badge api-badge-client">Client</span> Methods</h3>
-            <div class="api-list">
-              <div class="api-item">
-                <code>new Client(url, options?)</code>
-                <p>Create a new client with timeout, reconnect, and ping settings.</p>
-              </div>
-              <div class="api-item">
-                <code>client.connect()</code>
-                <p>Connect to the server and complete the HELLO handshake.</p>
-              </div>
-              <div class="api-item">
-                <code>client.request(route, body)</code>
-                <p>Send a request and receive the response. Returns a Promise.</p>
-              </div>
-              <div class="api-item">
-                <code>client.subscribe(topic, handler)</code>
-                <p>Subscribe to a topic for real-time updates.</p>
-              </div>
-              <div class="api-item">
-                <code>client.unsubscribe(topic)</code>
-                <p>Unsubscribe from a topic.</p>
-              </div>
-              <div class="api-item">
-                <code>client.publish(topic, data)</code>
-                <p>Publish data to a topic.</p>
-              </div>
-              <div class="api-item">
-                <code>client.disconnect()</code>
-                <p>Gracefully disconnect from the server.</p>
-              </div>
-              <div class="api-item">
-                <code>client.isConnected()</code>
-                <p>Check if the client is currently connected.</p>
-              </div>
-            </div>
+        </div>
+        <div class="api-panel" id="panel-client">
+          <div class="api-list">
+            <div class="api-item"><button class="api-item-header"><code>new Client(url, options?)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Creates a new AfterLink client instance.</p><p><strong>Options:</strong> <code>timeout</code>, <code>autoReconnect</code>, <code>maxReconnectAttempts</code>, <code>pingInterval</code></p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.connect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Establishes a TCP connection and performs HELLO handshake.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.request(route, body)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Sends a request to the server and returns the response.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.subscribe(topic, handler)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Subscribes to a topic and registers a callback for incoming messages.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to a topic from the client side.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.disconnect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully closes the connection.</p></div></div></div>
           </div>
         </div>
       </div>
@@ -496,137 +417,24 @@ node client.js
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Troubleshooting</span>
-          <h2 class="section-title">Common errors and <span class="gradient-text">solutions</span></h2>
-          <p class="section-description">Quick fixes for the most common issues developers encounter.</p>
+          <h2 class="section-title">Common <span class="gradient-text">Issues</span></h2>
+          <p class="section-description">Solutions to frequently encountered problems.</p>
+        </div>
+        <div class="faq-filters">
+          <button class="faq-filter active" data-filter="all">All</button>
+          <button class="faq-filter" data-filter="connection">Connection</button>
+          <button class="faq-filter" data-filter="auth">Auth</button>
+          <button class="faq-filter" data-filter="validation">Validation</button>
+          <button class="faq-filter" data-filter="performance">Performance</button>
         </div>
         <div class="faq-list">
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>Connection refused or timeout</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> The server is not running or the port is blocked.</p>
-              <p><strong>Fix:</strong></p>
-              <pre><code># Check if server is running
-pm2 status
-
-# Check if port is open
-netstat -tlnp | grep 4000
-
-# Check firewall rules
-ufw status
-
-# Start the server
-node server.js</code></pre>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>Handshake timed out</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> Client connected but server did not respond to HELLO frame.</p>
-              <p><strong>Fix:</strong></p>
-              <ul>
-                <li>Ensure you are using the correct port.</li>
-                <li>Check that the server is using AfterLink v1.0.0+.</li>
-                <li>Verify no firewall is blocking TCP traffic on port 4000.</li>
-                <li>Increase <code>connectTimeout</code> in client options if network is slow.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>VALIDATION_ERROR on request</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> The request body does not match the Zod schema defined on the route.</p>
-              <p><strong>Fix:</strong></p>
-              <pre><code>// Check your route schema
-server.on('createUser',
-  async (req, res) => { ... },
-  z.object({
-    name: z.string().min(2),
-    email: z.string().email(),
-  })
-);
-
-// Ensure client sends matching data
-await client.request('createUser', {
-  name: 'Ajju',        // min 2 chars
-  email: 'ajju@example.com' // valid email
-});</code></pre>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>ROUTE_NOT_FOUND error</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> The route name sent by the client does not match any registered route on the server.</p>
-              <p><strong>Fix:</strong></p>
-              <ul>
-                <li>Check for typos in the route name (case-sensitive).</li>
-                <li>Verify the route is registered before <code>server.listen()</code> is called.</li>
-                <li>Use <code>server.getRouteCount()</code> to confirm routes are registered.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>High memory usage</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> Each idle connection uses ~50KB. 10,000 connections = ~500MB.</p>
-              <p><strong>Fix:</strong></p>
-              <ul>
-                <li>Set <code>maxConnections</code> in server config to limit concurrent connections.</li>
-                <li>Use <code>server.getConnectionCount()</code> to monitor active connections.</li>
-                <li>Implement idle timeout to disconnect inactive clients.</li>
-                <li>Scale horizontally with multiple server instances.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>Port already in use (EADDRINUSE)</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> Another process is already listening on the port.</p>
-              <p><strong>Fix:</strong></p>
-              <pre><code># Find the process using the port
-lsof -i :4000
-# or
-netstat -tlnp | grep 4000
-
-# Kill the process
-kill -9 &lt;PID&gt;
-
-# Or use a different port
-const server = new Server({ port: 4001 });</code></pre>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question">
-              <span>Client not receiving pub/sub messages</span>
-              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cause:</strong> Subscription was not completed before publish, or topic name mismatch.</p>
-              <p><strong>Fix:</strong></p>
-              <ul>
-                <li>Ensure <code>await client.subscribe()</code> completes before publishing.</li>
-                <li>Verify topic names match exactly (case-sensitive).</li>
-                <li>Check that the server is using <code>server.publish()</code> not <code>router.publish()</code>.</li>
-              </ul>
-            </div>
-          </div>
+          <div class="faq-item" data-category="connection"><button class="faq-question">Connection refused on port 4000<span class="severity-badge error">Error</span></button><div class="faq-answer"><p>Ensure the server is running and no other process is using port 4000. Check with <code>netstat -ano | findstr 4000</code> on Windows or <code>lsof -i :4000</code> on macOS/Linux.</p></div></div>
+          <div class="faq-item" data-category="auth"><button class="faq-question">JWT authentication fails<span class="severity-badge error">Error</span></button><div class="faq-answer"><p>Verify your JWT secret matches between client and server. Ensure the token hasn't expired. Check server logs for detailed error messages.</p></div></div>
+          <div class="faq-item" data-category="validation"><button class="faq-question">Schema validation errors<span class="severity-badge warning">Warning</span></button><div class="faq-answer"><p>The server rejects payloads that don't match the Zod schema. Check the error response for the specific field that failed validation. Use <code>z.any()</code> for optional fields.</p></div></div>
+          <div class="faq-item" data-category="connection"><button class="faq-question">ECONNRESET on Windows<span class="severity-badge error">Error</span></button><div class="faq-answer"><p>Windows firewall may be blocking the connection. Add an inbound rule for Node.js or run as administrator. Also check antivirus settings.</p></div></div>
+          <div class="faq-item" data-category="performance"><button class="faq-question">High memory usage<span class="severity-badge warning">Warning</span></button><div class="faq-answer"><p>Each idle connection uses ~50KB. Set <code>maxConnections</code> in server options. Enable keep-alive timeout to close inactive connections.</p></div></div>
+          <div class="faq-item" data-category="connection"><button class="faq-question">TLS Handshake Failure<span class="severity-badge error">Error</span></button><div class="faq-answer"><p>Ensure both client and server are configured for TLS. Verify certificate paths and that the CA is trusted. Use <code>rejectUnauthorized: false</code> only for testing.</p></div></div>
+          <div class="faq-item" data-category="performance"><button class="faq-question">Pub/Sub messages out of order<span class="severity-badge info">Info</span></button><div class="faq-answer"><p>AfterLink doesn't guarantee ordering across topics. Messages within the same topic are ordered. Use sequence numbers if strict ordering is required.</p></div></div>
         </div>
       </div>
     </section>
@@ -639,129 +447,53 @@ const server = new Server({ port: 4001 });</code></pre>
           <p class="section-description">Stay up to date with the latest changes and improvements.</p>
         </div>
         <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-badge">
-              <span class="version-tag">v1.0.0</span>
-              <span class="date-tag">May 17, 2026</span>
-            </div>
-            <div class="timeline-content">
-              <h3>Initial Release 🚀</h3>
-              <ul class="release-list">
-                <li class="release-feature">Binary frame codec with 16 frame types (REQUEST, RESPONSE, STREAM, PUBSUB, etc.)</li>
-                <li class="release-feature">Node.js server SDK with routing, middleware, and pub/sub broker</li>
-                <li class="release-feature">Node.js client SDK with auto-reconnect, subscriptions, and keep-alive</li>
-                <li class="release-feature">MessagePack serialization with TCP transport</li>
-                <li class="release-feature">Zod schema validation for automatic payload verification</li>
-                <li class="release-feature">Interactive demo showcase with 7 real-world examples</li>
-                <li class="release-feature">Production hardening: buffer limits, connection tracking, error isolation</li>
-                <li class="release-feature">Published to npm — <code>npm install afterlink</code></li>
-                <li class="release-feature">MIT License — free for personal and commercial use</li>
-              </ul>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-badge">
-              <span class="version-tag upcoming">Coming Soon</span>
-              <span class="date-tag">Q3 2026</span>
-            </div>
-            <div class="timeline-content">
-              <h3>v1.1.0 — Streaming & WebSocket</h3>
-              <ul class="release-list">
-                <li class="release-feature">First-class streaming API with backpressure handling</li>
-                <li class="release-feature">WebSocket transport for browser clients</li>
-                <li class="release-feature">Python SDK (asyncio)</li>
-                <li class="release-feature">CLI tool (<code>sl</code>) for scaffolding and testing</li>
-              </ul>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-badge">
-              <span class="version-tag upcoming">Planned</span>
-              <span class="date-tag">Q4 2026</span>
-            </div>
-            <div class="timeline-content">
-              <h3>v1.2.0 — Advanced Features</h3>
-              <ul class="release-list">
-                <li class="release-feature">JWT authentication with session management</li>
-                <li class="release-feature">Rate limiting with token bucket algorithm</li>
-                <li class="release-feature">HTTP-to-AfterLink gateway</li>
-                <li class="release-feature">DevTools browser dashboard</li>
-                <li class="release-feature">Go and Rust SDKs</li>
-              </ul>
-            </div>
-          </div>
+          <div class="timeline-item fade-in"><div class="timeline-badge"><span class="version-tag">v1.0.0</span><span class="date-tag">May 17, 2026</span></div><div class="timeline-content"><h3>Initial Release</h3><ul class="release-list"><li class="release-feature">Binary frame codec with 16 frame types</li><li class="release-feature">Node.js server SDK with routing, middleware, and pub/sub</li><li class="release-feature">Node.js client SDK with auto-reconnect and subscriptions</li><li class="release-feature">MessagePack serialization with TCP transport</li><li class="release-feature">Zod schema validation for automatic payload verification</li><li class="release-feature">Published to npm — <code>npm install afterlink</code></li><li class="release-feature">MIT License — free for personal and commercial use</li></ul></div></div>
+          <div class="timeline-item fade-in"><div class="timeline-badge"><span class="version-tag upcoming">Coming Soon</span><span class="date-tag">Q3 2026</span></div><div class="timeline-content"><h3>v1.1.0 — TLS & Compression</h3><ul class="release-list"><li class="release-feature">TLS encryption support</li><li class="release-feature">Payload compression (gzip, brotli)</li><li class="release-feature">Rate limiting with token bucket</li></ul></div></div>
+          <div class="timeline-item fade-in"><div class="timeline-badge"><span class="version-tag upcoming">Planned</span><span class="date-tag">Q4 2026</span></div><div class="timeline-content"><h3>v1.2.0 — CLI & Browser SDK</h3><ul class="release-list"><li class="release-feature"><code>afterlink</code> CLI tool</li><li class="release-feature">Browser SDK (WebSocket transport)</li><li class="release-feature">TypeScript type definitions</li></ul></div></div>
+          <div class="timeline-item fade-in"><div class="timeline-badge"><span class="version-tag upcoming">Future</span><span class="date-tag">2027</span></div><div class="timeline-content"><h3>v2.0.0 — Cluster & Multi-Language</h3><ul class="release-list"><li class="release-feature">Cluster mode for horizontal scaling</li><li class="release-feature">Python and Dart SDKs</li><li class="release-feature">Built-in metrics and monitoring</li></ul></div></div>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="section section-alt">
+    <section id="roadmap" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Roadmap</span>
+          <h2 class="section-title">What's <span class="gradient-text">Coming</span></h2>
+          <p class="section-description">The upgrade schedule for AfterLink.</p>
+        </div>
+        <div class="roadmap-grid">
+          <div class="roadmap-card fade-in"><h3>Phase 1 — v1.1</h3><ul class="roadmap-checklist"><li class="done">TLS encryption</li><li class="done">Payload compression</li><li>Rate limiting</li><li>Connection pooling</li></ul></div>
+          <div class="roadmap-card fade-in"><h3>Phase 2 — v1.2</h3><ul class="roadmap-checklist"><li>CLI tool</li><li>Browser SDK</li><li>TypeScript types</li><li>HTTP gateway</li></ul></div>
+          <div class="roadmap-card fade-in"><h3>Phase 3 — v2.0</h3><ul class="roadmap-checklist"><li>Cluster mode</li><li>Python SDK</li><li>Dart SDK</li><li>Metrics dashboard</li></ul></div>
+        </div>
+        <div class="roadmap-progress"><div class="progress-bar"><div class="progress-fill" data-width="25"></div></div><div class="progress-label">25% Complete</div></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Contact</span>
           <h2 class="section-title">Get in <span class="gradient-text">Touch</span></h2>
-          <p class="section-description">Have a question, bug report, or feature request? We'd love to hear from you.</p>
+          <p class="section-description">Have a question, bug report, or feature request? Reach out.</p>
         </div>
         <div class="contact-grid">
-          <div class="contact-info">
-            <div class="contact-item">
-              <div class="contact-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              </div>
-              <div>
-                <h4>Email</h4>
-                <a href="mailto:contact.javaliajayakumar@gmail.com">contact.javaliajayakumar@gmail.com</a>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </div>
-              <div>
-                <h4>GitHub</h4>
-                <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">github.com/AJAYMYTH/AfterLink</a>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </div>
-              <div>
-                <h4>Security</h4>
-                <a href="mailto:contact.javaliajayakumar@gmail.com">Report vulnerabilities via email</a>
-              </div>
-            </div>
+          <div class="contact-methods">
+            <div class="contact-method"><div class="contact-method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><h4>Email</h4><a href="mailto:contact.javaliajayakumar@gmail.com">contact.javaliajayakumar@gmail.com</a></div></div>
+            <div class="contact-method"><div class="contact-method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></div><div><h4>GitHub</h4><a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">AJAYMYTH/AfterLink</a></div></div>
+            <div class="contact-method"><div class="contact-method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h4>Security</h4><a href="mailto:contact.javaliajayakumar@gmail.com">Report vulnerabilities</a></div></div>
           </div>
-          <form class="contact-form" action="https://formspree.io/f/mgoqwaqp" method="POST">
+          <form class="contact-form" id="contactForm" action="https://formspree.io/f/mgoqwaqp" method="POST">
             <input type="hidden" name="_subject" value="AfterLink Contact Form Submission">
             <input type="text" name="_gotcha" style="display:none">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" required placeholder="Your name" autocomplete="name">
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email">
-            </div>
-            <div class="form-group">
-              <label for="subject">Subject</label>
-              <select id="subject" name="subject" required>
-                <option value="">Select a topic</option>
-                <option value="Bug Report">Bug Report</option>
-                <option value="Feature Request">Feature Request</option>
-                <option value="Question">Question</option>
-                <option value="Security">Security Issue</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" required placeholder="Describe your issue, feature request, or question..." rows="5" autocomplete="off"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Send Message
-            </button>
+            <div class="form-group"><label for="name">Name</label><input type="text" id="name" name="name" required placeholder="Your name" autocomplete="name"><div class="form-error">Name must be at least 2 characters</div></div>
+            <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email"><div class="form-error">Please enter a valid email</div></div>
+            <div class="form-group"><label for="subject">Subject</label><select id="subject" name="subject" required><option value="">Select a topic</option><option value="Bug Report">Bug Report</option><option value="Feature Request">Feature Request</option><option value="Question">Question</option><option value="Security">Security Issue</option><option value="Other">Other</option></select></div>
+            <div class="form-group"><label for="message">Message</label><textarea id="message" name="message" required placeholder="Describe your issue, feature request, or question..." rows="5" autocomplete="off"></textarea><div class="form-error">Message must be at least 10 characters</div></div>
+            <button type="submit" class="btn btn-primary btn-full"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message</button>
           </form>
+          <div class="form-success" id="formSuccess"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><h3>Message Sent!</h3><p>Thank you for reaching out. We'll get back to you soon.</p></div>
         </div>
       </div>
     </section>
@@ -770,38 +502,17 @@ const server = new Server({ port: 4001 });</code></pre>
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
-        <div class="footer-brand">
-          <span class="logo-text">AfterLink</span>
-          <p>Communication Protocol for Reliable and Fast Communication</p>
-        </div>
+        <div class="footer-brand"><span class="logo-text">AfterLink</span><p>Communication Protocol for Reliable and Fast Communication</p></div>
         <div class="footer-links">
-          <div class="footer-col">
-            <h4>Documentation</h4>
-            <a href="#installation">Installation</a>
-            <a href="#quickstart">Quick Start</a>
-            <a href="#api">API Reference</a>
-            <a href="#troubleshooting">Troubleshooting</a>
-          </div>
-          <div class="footer-col">
-            <h4>Resources</h4>
-            <a href="#releases">Release Notes</a>
-            <a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener">npm</a>
-            <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">GitHub</a>
-            <a href="#contact">Contact</a>
-            <a href="https://github.com/AJAYMYTH/AfterLink/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
-          </div>
+          <div class="footer-col"><h4>Documentation</h4><a href="#installation">Installation</a><a href="#quickstart">Quick Start</a><a href="#api">API Reference</a><a href="#troubleshooting">Troubleshooting</a></div>
+          <div class="footer-col"><h4>Resources</h4><a href="#releases">Release Notes</a><a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener">npm</a><a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">GitHub</a><a href="#contact">Contact</a><a href="https://github.com/AJAYMYTH/AfterLink/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></div>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Ajju (Javali Ajayakumar). All rights reserved.</p>
-        <p>Built with precision. Designed for speed.</p>
-      </div>
+      <div class="footer-bottom"><p>&copy; 2026 Ajju (Javali Ajayakumar). All rights reserved.</p><p>Built with precision. Designed for speed.</p></div>
     </div>
   </footer>
 
-  <button id="backToTop" class="back-to-top" aria-label="Back to top">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
-  </button>
+  <button id="backToTop" class="back-to-top" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
 
   <script src="js/main.js"></script>
 </body>

@@ -1,212 +1,450 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ─── Navbar scroll effect ────────────────────────────
-  const navbar = document.getElementById('navbar');
-  const backToTop = document.getElementById('backToTop');
+  // ─── Theme Toggle ────────────────────────────────────
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') body.classList.add('light');
 
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY > 50;
-    navbar.classList.toggle('scrolled', scrolled);
-    backToTop.classList.toggle('visible', window.scrollY > 500);
+  themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light');
+    localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+    themeToggle.innerHTML = body.classList.contains('light')
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
   });
 
-  // ─── Back to top ─────────────────────────────────────
+  // ─── Progress Bar ────────────────────────────────────
+  const progressBar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    progressBar.style.width = progress + '%';
+  });
+
+  // ─── Back to Top ─────────────────────────────────────
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backToTop.classList.toggle('visible', window.scrollY > 500);
+  });
   backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // ─── Mobile nav toggle ───────────────────────────────
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-
-  navToggle.addEventListener('click', () => {
-    navLinks.classList.toggle('open');
-    const spans = navToggle.querySelectorAll('span');
-    navToggle.classList.toggle('active');
+  // ─── Navbar Scroll ───────────────────────────────────
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
   });
 
-  // ─── Active nav link on scroll ───────────────────────
+  // ─── Mobile Nav ──────────────────────────────────────
+  const navToggle = document.getElementById('navToggle');
+  const mobileNav = document.getElementById('mobileNav');
+  const mobileNavClose = document.getElementById('mobileNavClose');
+
+  navToggle.addEventListener('click', () => mobileNav.classList.add('open'));
+  mobileNavClose.addEventListener('click', () => mobileNav.classList.remove('open'));
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => mobileNav.classList.remove('open'));
+  });
+
+  // ─── Active Nav Link ─────────────────────────────────
   const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.nav-link');
 
   function updateActiveNav() {
     const scrollY = window.scrollY + 100;
-
     sections.forEach(section => {
       const top = section.offsetTop;
       const height = section.offsetHeight;
       const id = section.getAttribute('id');
-
       if (scrollY >= top && scrollY < top + height) {
         navItems.forEach(link => {
           link.classList.remove('active');
-          if (link.getAttribute('href') === `#${id}`) {
-            link.classList.add('active');
-          }
+          if (link.getAttribute('href') === `#${id}`) link.classList.add('active');
         });
       }
     });
   }
-
   window.addEventListener('scroll', updateActiveNav);
 
-  // Close mobile nav on link click
-  navItems.forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      navToggle.classList.remove('active');
+  // ─── Typewriter ──────────────────────────────────────
+  const typewriterEl = document.getElementById('typewriter');
+  const phrases = ['Fast Communication', 'Binary Protocol', 'Zero Boilerplate', '< 1ms Latency'];
+  let phraseIndex = 0, charIndex = 0, isDeleting = false;
+
+  function typeWriter() {
+    const current = phrases[phraseIndex];
+    if (isDeleting) {
+      typewriterEl.textContent = current.substring(0, charIndex--);
+    } else {
+      typewriterEl.textContent = current.substring(0, charIndex++);
+    }
+
+    let speed = isDeleting ? 50 : 100;
+
+    if (!isDeleting && charIndex === current.length + 1) {
+      speed = 2000;
+      isDeleting = true;
+    } else if (isDeleting && charIndex < 0) {
+      isDeleting = false;
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      speed = 500;
+    }
+    setTimeout(typeWriter, speed);
+  }
+  typeWriter();
+
+  // ─── Animated Counters ───────────────────────────────
+  function animateCounters() {
+    document.querySelectorAll('.stat-value[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      if (!target) return;
+      const duration = 2000;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(eased * target);
+        el.textContent = target >= 1000 ? (current / 1000).toFixed(0) + 'K+' : current;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
     });
-  });
+  }
 
-  // ─── Installation tabs ───────────────────────────────
-  const installTabs = document.querySelectorAll('.install-tab');
-  const installPanels = document.querySelectorAll('.install-panel');
+  const heroObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { animateCounters(); heroObserver.disconnect(); }
+  }, { threshold: 0.5 });
+  const heroStats = document.querySelector('.hero-stats');
+  if (heroStats) heroObserver.observe(heroStats);
 
-  installTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const target = tab.dataset.tab;
-
-      installTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      installPanels.forEach(panel => {
-        panel.classList.remove('active');
-        if (panel.id === `panel-${target}`) {
-          panel.classList.add('active');
+  // ─── Benchmark Counters ──────────────────────────────
+  const benchObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      document.querySelectorAll('.benchmark-value[data-target]').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const duration = 2000;
+        const start = performance.now();
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(eased * target).toLocaleString() + '+';
+          if (progress < 1) requestAnimationFrame(update);
         }
+        requestAnimationFrame(update);
       });
+      benchObserver.disconnect();
+    }
+  }, { threshold: 0.3 });
+  const benchmarkGrid = document.querySelector('.benchmark-grid');
+  if (benchmarkGrid) benchObserver.observe(benchmarkGrid);
+
+  // ─── Bar Chart Animation ─────────────────────────────
+  const barObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      document.querySelectorAll('.bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width;
+      });
+      barObserver.disconnect();
+    }
+  }, { threshold: 0.3 });
+  const barChart = document.querySelector('.bar-chart');
+  if (barChart) barObserver.observe(barChart);
+
+  // ─── Roadmap Progress ────────────────────────────────
+  const roadmapObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      document.querySelectorAll('.progress-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+      roadmapObserver.disconnect();
+    }
+  }, { threshold: 0.3 });
+  const roadmapProgress = document.querySelector('.roadmap-progress');
+  if (roadmapProgress) roadmapObserver.observe(roadmapProgress);
+
+  // ─── Scroll Animations ───────────────────────────────
+  const fadeObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+  // ─── Hero Install Copy ───────────────────────────────
+  const copyHeroBtn = document.getElementById('copyHeroBtn');
+  if (copyHeroBtn) {
+    copyHeroBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('npm install afterlink');
+      copyHeroBtn.classList.add('copied');
+      copyHeroBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(() => {
+        copyHeroBtn.classList.remove('copied');
+        copyHeroBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      }, 2000);
+    });
+  }
+
+  // ─── GitHub Stars ────────────────────────────────────
+  const starCount = document.getElementById('starCount');
+  if (starCount) {
+    const cached = sessionStorage.getItem('githubStars');
+    if (cached) { starCount.textContent = cached; }
+    else {
+      fetch('https://api.github.com/repos/AJAYMYTH/AfterLink')
+        .then(res => res.json())
+        .then(data => {
+          if (data.stargazers_count !== undefined) {
+            const count = data.stargazers_count;
+            const display = count >= 1000 ? (count / 1000).toFixed(1) + 'k' : count;
+            starCount.textContent = display;
+            sessionStorage.setItem('githubStars', display);
+          }
+        })
+        .catch(() => { starCount.textContent = '0'; });
+    }
+  }
+
+  // ─── Installation Tabs ───────────────────────────────
+  document.querySelectorAll('.install-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.install-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
     });
   });
 
-  // ─── Copy to clipboard ───────────────────────────────
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.dataset.target;
-      const codeEl = document.getElementById(targetId);
-      if (!codeEl) return;
-
-      const text = codeEl.textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        btn.classList.add('copied');
-        btn.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Copied!
-        `;
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy
-          `;
-        }, 2000);
-      });
-    });
-  });
-
-  // ─── Terminal copy buttons ───────────────────────────
+  // ─── Terminal Copy Buttons ───────────────────────────
   document.querySelectorAll('.copy-btn-terminal').forEach(btn => {
     btn.addEventListener('click', () => {
-      const targetId = btn.dataset.target;
-      const codeEl = document.getElementById(targetId);
+      const codeEl = document.getElementById(btn.dataset.target);
       if (!codeEl) return;
-
       const text = codeEl.textContent.replace(/\$/g, '').trim();
-      navigator.clipboard.writeText(text).then(() => {
-        btn.classList.add('copied');
-        btn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Copied!
-        `;
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy
-          `;
-        }, 2000);
-      });
+      navigator.clipboard.writeText(text);
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+      }, 2000);
     });
   });
 
-  // ─── FAQ accordion ───────────────────────────────────
+  // ─── API Tabs ────────────────────────────────────────
+  document.querySelectorAll('.api-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.api-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.api-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ─── API Accordion ───────────────────────────────────
+  document.querySelectorAll('.api-item-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      item.classList.toggle('open');
+    });
+  });
+
+  // ─── FAQ Accordion ───────────────────────────────────
   document.querySelectorAll('.faq-question').forEach(question => {
     question.addEventListener('click', () => {
       const item = question.parentElement;
       const isOpen = item.classList.contains('open');
-
-      // Close all
       document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-
-      // Toggle current
-      if (!isOpen) {
-        item.classList.add('open');
-      }
+      if (!isOpen) item.classList.add('open');
     });
   });
 
-  // ─── Scroll animations ───────────────────────────────
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+  // ─── FAQ Filters ─────────────────────────────────────
+  document.querySelectorAll('.faq-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.faq-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.faq-item').forEach(item => {
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // ─── Frame Visualizer ────────────────────────────────
+  const frameSelect = document.getElementById('frameSelect');
+  const frameTypeByte = document.getElementById('frameTypeByte');
+  const frameTypes = {
+    REQUEST: '0x01', RESPONSE: '0x02', STREAM_START: '0x03',
+    PUBLISH: '0x0C', SUBSCRIBE: '0x0A', PING: '0x07', ERROR: '0x06'
+  };
+  if (frameSelect) {
+    frameSelect.addEventListener('change', () => {
+      frameTypeByte.textContent = frameTypes[frameSelect.value] || '0x00';
+    });
+  }
+
+  // ─── Playground ──────────────────────────────────────
+  const presets = {
+    ping: {
+      server: `const { Server } = require('@afterlink/server');
+const server = new Server({ port: 4000 });
+
+server.on('ping', async (req, res) => {
+  res.send({ message: 'pong', timestamp: Date.now() });
+});
+
+server.listen();`,
+      client: `const { Client } = require('@afterlink/client');
+const client = new Client('afterlink://localhost:4000');
+
+await client.connect();
+const result = await client.request('ping', {});
+console.log(result);
+// { message: 'pong', timestamp: 1748000000000 }`,
+      output: `> Connecting to afterlink://localhost:4000...\n> Connected. Session: abc123\n> Sending REQUEST to 'ping'...\n> Received RESPONSE: { message: 'pong', timestamp: 1748000000000 }\n> Done.`
+    },
+    validation: {
+      server: `const { z } = require('zod');
+
+server.on('createUser',
+  async (req, res) => {
+    const user = await db.create(req.body);
+    res.send({ user });
+  },
+  z.object({
+    name: z.string().min(2),
+    email: z.string().email()
+  })
+);`,
+      client: `const result = await client.request('createUser', {
+  name: 'Ajay',
+  email: 'ajay@example.com'
+});
+console.log(result);
+// { user: { id: 1, name: 'Ajay', email: 'ajay@example.com' } }`,
+      output: `> Sending REQUEST to 'createUser'...\n> Server validating schema...\n> Validation passed.\n> Received RESPONSE: { user: { id: 1, name: 'Ajay', email: 'ajay@example.com' } }`
+    },
+    pubsub: {
+      server: `server.on('sendMessage', async (req, res) => {
+  const msg = await db.save(req.body);
+  server.publish('chat.newMessage', msg);
+  res.send({ ok: true });
+});`,
+      client: `await client.subscribe('chat.newMessage', (msg) => {
+  console.log(\`[\${msg.from}]: \${msg.text}\`);
+});
+
+await client.request('sendMessage', {
+  from: 'Ajay',
+  text: 'Hello AfterLink!'
+});`,
+      output: `> Subscribed to 'chat.newMessage'\n> Sending REQUEST to 'sendMessage'...\n> Published to 'chat.newMessage'\n> [Ajay]: Hello AfterLink!\n> Received RESPONSE: { ok: true }`
+    },
+    streaming: {
+      server: `server.on('streamData', async (req, res) => {
+  const stream = res.stream();
+  for (let i = 0; i < 5; i++) {
+    stream.send({ chunk: i, data: 'part ' + i });
+    await sleep(100);
+  }
+  stream.end();
+});`,
+      client: `const stream = await client.request('streamData', {});
+for await (const chunk of stream) {
+  console.log(chunk);
+}`,
+      output: `> Sending REQUEST to 'streamData'...\n> STREAM_START received\n> { chunk: 0, data: 'part 0' }\n> { chunk: 1, data: 'part 1' }\n> { chunk: 2, data: 'part 2' }\n> { chunk: 3, data: 'part 3' }\n> { chunk: 4, data: 'part 4' }\n> STREAM_END received`
+    }
   };
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        observer.unobserve(entry.target);
+  const serverCode = document.getElementById('serverCode');
+  const clientCode = document.getElementById('clientCode');
+  const outputBody = document.getElementById('outputBody');
+  const runBtn = document.getElementById('runDemo');
+
+  function loadPreset(name) {
+    const p = presets[name];
+    serverCode.value = p.server;
+    clientCode.value = p.client;
+    outputBody.textContent = 'Click "Run Demo" to see the output...';
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.preset-btn[data-preset="${name}"]`).classList.add('active');
+  }
+
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => loadPreset(btn.dataset.preset));
+  });
+  loadPreset('ping');
+
+  if (runBtn) {
+    runBtn.addEventListener('click', () => {
+      const output = presets[document.querySelector('.preset-btn.active').dataset.preset].output;
+      outputBody.textContent = '';
+      let i = 0;
+      function typeOutput() {
+        if (i < output.length) {
+          outputBody.textContent += output[i];
+          i++;
+          setTimeout(typeOutput, 20);
+        }
+      }
+      typeOutput();
+    });
+  }
+
+  // ─── Form Validation ─────────────────────────────────
+  const contactForm = document.getElementById('contactForm');
+  const formSuccess = document.getElementById('formSuccess');
+
+  if (contactForm) {
+    const nameInput = contactForm.querySelector('#name');
+    const emailInput = contactForm.querySelector('#email');
+    const messageInput = contactForm.querySelector('#message');
+
+    function validateField(input, condition) {
+      const group = input.closest('.form-group');
+      if (!condition) {
+        group.classList.add('error');
+        input.classList.add('error');
+        input.classList.remove('success');
+      } else {
+        group.classList.remove('error');
+        input.classList.remove('error');
+        input.classList.add('success');
+      }
+    }
+
+    nameInput.addEventListener('blur', () => validateField(nameInput, nameInput.value.length >= 2));
+    emailInput.addEventListener('blur', () => validateField(emailInput, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)));
+    messageInput.addEventListener('blur', () => validateField(messageInput, messageInput.value.length >= 10));
+
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameValid = nameInput.value.length >= 2;
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+      const messageValid = messageInput.value.length >= 10;
+
+      validateField(nameInput, nameValid);
+      validateField(emailInput, emailValid);
+      validateField(messageInput, messageValid);
+
+      if (nameValid && emailValid && messageValid) {
+        contactForm.style.display = 'none';
+        formSuccess.classList.add('show');
       }
     });
-  }, observerOptions);
-
-  document.querySelectorAll('.feature-card, .quickstart-card, .api-card, .timeline-item, .faq-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    observer.observe(el);
-  });
-
-  // ─── Form validation feedback ────────────────────────
-  const form = document.querySelector('.contact-form');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      const btn = form.querySelector('button[type="submit"]');
-      btn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Sending...
-      `;
-      btn.disabled = true;
-    });
-  }
-
-  // ─── Hero install copy button ────────────────────────
-  const copyHeroBtn = document.getElementById('copyHeroBtn');
-  if (copyHeroBtn) {
-    copyHeroBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText('npm install afterlink').then(() => {
-        copyHeroBtn.classList.add('copied');
-        copyHeroBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
-        setTimeout(() => {
-          copyHeroBtn.classList.remove('copied');
-          copyHeroBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-        }, 2000);
-      });
-    });
-  }
-
-  // ─── GitHub stars ────────────────────────────────────
-  const starCount = document.getElementById('starCount');
-  if (starCount) {
-    fetch('https://api.github.com/repos/AJAYMYTH/AfterLink')
-      .then(res => res.json())
-      .then(data => {
-        if (data.stargazers_count !== undefined) {
-          const count = data.stargazers_count;
-          starCount.textContent = count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count;
-        }
-      })
-      .catch(() => {
-        starCount.textContent = '0';
-      });
   }
 });
