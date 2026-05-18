@@ -1,0 +1,54 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to make AfterLink better? Share it here!
+
+        Before submitting, please check if a similar idea has already been proposed in [existing discussions](https://github.com/AJAYMYTH/AfterLink/discussions/categories/ideas).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the pain point or limitation you're experiencing.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe your idea and how it would work.
+      placeholder: I'd like to see AfterLink support...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches have you thought about?
+      placeholder: I've considered...
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Which package does this affect?
+      multiple: true
+      options:
+        - "@afterlink/core"
+        - "@afterlink/server"
+        - "@afterlink/client"
+        - "afterlink (meta-package)"
+        - "CLI tooling"
+        - "Documentation"
+        - "All packages"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context, code examples, or references here.

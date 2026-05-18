@@ -9,12 +9,13 @@
 Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byte frame
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Contributor%20Covenant-purple.svg)](./CODE_OF_CONDUCT.md)
 [![Node.js 20+](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
 [![Version](https://img.shields.io/npm/v/afterlink.svg)](https://www.npmjs.com/package/afterlink)
 [![Downloads](https://img.shields.io/npm/dt/afterlink.svg)](https://www.npmjs.com/package/afterlink)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-[**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Changelog**](./CHANGELOG.md)
+[**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Discussions**](https://github.com/AJAYMYTH/AfterLink/discussions) · [**Changelog**](./CHANGELOG.md)
 
 </div>
 
@@ -608,11 +609,15 @@ Week 16      [▓▓▓▓] Prometheus metrics + playground UI launch
 
 Contributions, issues, and feature requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
+Please note that this project is released with a [Contributor Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/my-feature`)
 3. Commit your changes (`git commit -m 'feat: add my feature'`)
 4. Push to the branch (`git push origin feature/my-feature`)
 5. Open a Pull Request
+
+**Have a question?** Start a [GitHub Discussion](https://github.com/AJAYMYTH/AfterLink/discussions) — we welcome ideas, Q&A, and project showcases.
 
 ---
 

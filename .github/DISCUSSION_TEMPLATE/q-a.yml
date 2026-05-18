@@ -1,0 +1,60 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask the community for help with AfterLink.
+
+        Before asking, check the [documentation](https://afterlinkdocs.vercel.app) and [existing discussions](https://github.com/AJAYMYTH/AfterLink/discussions/categories/q-a) to see if your question has already been answered.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: Describe your question in detail.
+      placeholder: How do I...?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package?
+      options:
+        - "@afterlink/core"
+        - "@afterlink/server"
+        - "@afterlink/client"
+        - "afterlink (meta-package)"
+        - "General / All packages"
+
+  - type: input
+    id: version
+    attributes:
+      label: AfterLink version
+      description: Run `npm ls afterlink` to find your version.
+      placeholder: e.g., 1.0.0
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      description: Run `node -v` to find your version.
+      placeholder: e.g., 20.10.0
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g., Windows 11, macOS 14, Ubuntu 22.04
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code example
+      description: Share any relevant code snippets that demonstrate the issue.
+      render: js
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other information that might help us answer your question.

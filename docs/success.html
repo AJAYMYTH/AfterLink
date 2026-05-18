@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message Sent — AfterLink</title>
+  <meta name="description" content="Your message has been sent successfully.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='25' r='12' fill='%2300d4ff' opacity='0.9'/><circle cx='25' cy='75' r='12' fill='%238b5cf6' opacity='0.9'/><circle cx='75' cy='75' r='12' fill='%2310b981' opacity='0.9'/><line x1='50' y1='37' x2='25' y2='63' stroke='%2300d4ff' stroke-width='3' opacity='0.6'/><line x1='50' y1='37' x2='75' y2='63' stroke='%2300d4ff' stroke-width='3' opacity='0.6'/><line x1='25' y1='75' x2='75' y2='75' stroke='%2310b981' stroke-width='3' opacity='0.6'/></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .success-page {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .success-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    }
+
+    .success-page .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    }
+
+    .success-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 520px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .success-icon svg {
+      width: 48px;
+      height: 48px;
+      color: #10b981;
+    }
+
+    .success-icon svg path {
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: drawCheck 0.6s ease-out 0.5s forwards;
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .success-content h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .success-content h1 span {
+      background: linear-gradient(135deg, #10b981, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .success-content p {
+      font-size: 1.0625rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .success-details {
+      margin-top: 32px;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      border: 1px solid var(--bg-border);
+      text-align: left;
+    }
+
+    .success-details h3 {
+      font-family: var(--font-display);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .success-details ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .success-details li {
+      padding: 8px 0;
+      padding-left: 28px;
+      position: relative;
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+    }
+
+    .success-details li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+    }
+
+    .success-actions {
+      margin-top: 32px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .success-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      color: var(--bg-base);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dim);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--bg-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-elevated);
+      border-color: var(--accent-primary);
+    }
+
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      animation: confettiFall 3s ease-in-out infinite;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .success-actions { flex-direction: column; }
+      .success-actions .btn { width: 100%; justify-content: center; }
+      .success-icon { width: 80px; height: 80px; }
+      .success-icon svg { width: 40px; height: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="success-page">
+    <div class="grid-bg"></div>
+
+    <div class="success-content">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+
+      <h1>Message <span>Sent!</span></h1>
+      <p>Thank you for reaching out. We've received your message and will get back to you within 24 hours.</p>
+
+      <div class="success-details">
+        <h3>What happens next?</h3>
+        <ul>
+          <li>Your message has been delivered to our inbox</li>
+          <li>Our team will review and respond within 24 hours</li>
+          <li>You'll receive a reply at the email address you provided</li>
+          <li>For urgent issues, check our <a href="https://github.com/AJAYMYTH/AfterLink/issues" style="color:var(--accent-primary);">GitHub Issues</a></li>
+        </ul>
+      </div>
+
+      <div class="success-actions">
+        <a href="index.html" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Back to Home
+        </a>
+        <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate confetti
+    const colors = ['#00d4ff', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
+    for (let i = 0; i < 30; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 3 + 's';
+      confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+      document.querySelector('.success-page').appendChild(confetti);
+    }
+  </script>
+</body>
+</html>

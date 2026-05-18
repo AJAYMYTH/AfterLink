@@ -119,14 +119,62 @@
           <p class="section-description">AfterLink replaces HTTP, WebSockets, and gRPC with a single, unified protocol that's faster and easier to use.</p>
         </div>
         <div class="features-grid">
-          <div class="feature-card fade-in"><div class="feature-icon">⚡</div><h3>Binary Protocol</h3><p>10-byte frame header with MessagePack serialization. 90% smaller than HTTP headers.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">💬</div><h3>Request/Response</h3><p>RPC-style calls with automatic correlation via message IDs. Multiplex hundreds of requests over one connection.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">📡</div><h3>Built-in Pub/Sub</h3><p>Subscribe to topics and broadcast messages over the same TCP connection. No WebSockets needed.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">✅</div><h3>Schema Validation</h3><p>Automatic Zod validation on every request. Invalid payloads rejected before your handler runs.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">🔄</div><h3>Auto-Reconnect</h3><p>Clients recover from network drops automatically with configurable retry strategies.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">🔌</div><h3>Backend-Agnostic</h3><p>Works with Supabase, InsForge, Firebase, AWS, MongoDB, or any backend you choose.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">📦</div><h3>Streaming</h3><p>First-class streaming API with <code>STREAM_START</code>, <code>DATA</code>, and <code>END</code> frames for chunked data.</p></div>
-          <div class="feature-card fade-in"><div class="feature-icon">🛠️</div><h3>CLI Tooling</h3><p>Built-in <code>afterlink</code> CLI for testing routes, inspecting frames, and debugging connections.</p></div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h3>Binary Protocol</h3>
+            <p>10-byte frame header with MessagePack serialization. 90% smaller than HTTP headers.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            </div>
+            <h3>Request/Response</h3>
+            <p>RPC-style calls with automatic correlation via message IDs. Multiplex hundreds of requests over one connection.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/><line x1="2" y1="20" x2="2.01" y2="20"/></svg>
+            </div>
+            <h3>Built-in Pub/Sub</h3>
+            <p>Subscribe to topics and broadcast messages over the same TCP connection. No WebSockets needed.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <h3>Schema Validation</h3>
+            <p>Automatic Zod validation on every request. Invalid payloads rejected before your handler runs.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </div>
+            <h3>Auto-Reconnect</h3>
+            <p>Clients recover from network drops automatically with configurable retry strategies.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3>Backend-Agnostic</h3>
+            <p>Works with Supabase, InsForge, Firebase, AWS, MongoDB, or any backend you choose.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>
+            </div>
+            <h3>Streaming</h3>
+            <p>First-class streaming API with <code>STREAM_START</code>, <code>DATA</code>, and <code>END</code> frames for chunked data.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            </div>
+            <h3>CLI Tooling</h3>
+            <p>Built-in <code>afterlink</code> CLI for testing routes, inspecting frames, and debugging connections.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -491,6 +539,7 @@ main();</code></pre></div></div></div>
           </div>
           <form class="contact-form" id="contactForm" action="https://formspree.io/f/mgoqwaqp" method="POST">
             <input type="hidden" name="_subject" value="AfterLink Contact Form Submission">
+            <input type="hidden" name="_next" value="https://afterlinkdocs.vercel.app/success.html">
             <input type="text" name="_gotcha" style="display:none">
             <div class="form-group"><label for="name">Name</label><input type="text" id="name" name="name" required placeholder="Your name" autocomplete="name"><div class="form-error">Name must be at least 2 characters</div></div>
             <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email"><div class="form-error">Please enter a valid email</div></div>
@@ -510,7 +559,7 @@ main();</code></pre></div></div></div>
         <div class="footer-brand"><span class="logo-text">AfterLink</span><p>Communication Protocol for Reliable and Fast Communication</p></div>
         <div class="footer-links">
           <div class="footer-col"><h4>Documentation</h4><a href="#installation">Installation</a><a href="#quickstart">Quick Start</a><a href="#api">API Reference</a><a href="#troubleshooting">Troubleshooting</a></div>
-          <div class="footer-col"><h4>Resources</h4><a href="#releases">Release Notes</a><a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener">npm</a><a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">GitHub</a><a href="#contact">Contact</a><a href="https://github.com/AJAYMYTH/AfterLink/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></div>
+          <div class="footer-col"><h4>Resources</h4><a href="#releases">Release Notes</a><a href="https://www.npmjs.com/package/afterlink" target="_blank" rel="noopener">npm</a><a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/AJAYMYTH/AfterLink/discussions" target="_blank" rel="noopener">Discussions</a><a href="#contact">Contact</a><a href="https://github.com/AJAYMYTH/AfterLink/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a><a href="https://github.com/AJAYMYTH/AfterLink/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">Code of Conduct</a></div>
         </div>
       </div>
       <div class="footer-bottom"><p>&copy; 2026 Ajju (Javali Ajayakumar). All rights reserved.</p><p>Built with precision. Designed for speed.</p></div>

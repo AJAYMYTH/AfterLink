@@ -432,7 +432,6 @@ for await (const chunk of stream) {
     messageInput.addEventListener('blur', () => validateField(messageInput, messageInput.value.length >= 10));
 
     contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
       const nameValid = nameInput.value.length >= 2;
       const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
       const messageValid = messageInput.value.length >= 10;
@@ -441,9 +440,8 @@ for await (const chunk of stream) {
       validateField(emailInput, emailValid);
       validateField(messageInput, messageValid);
 
-      if (nameValid && emailValid && messageValid) {
-        contactForm.style.display = 'none';
-        formSuccess.classList.add('show');
+      if (!nameValid || !emailValid || !messageValid) {
+        e.preventDefault();
       }
     });
   }

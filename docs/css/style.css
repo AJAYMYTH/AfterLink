@@ -527,7 +527,12 @@ body.light #navbar.scrolled {
   justify-content: center;
   color: var(--accent-primary);
   margin-bottom: 20px;
-  font-size: 1.5rem;
+}
+
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .feature-card h3 {
@@ -1788,6 +1793,55 @@ body.light #navbar.scrolled {
   .nav-logo { font-size: 1.2rem; }
   .section-title { font-size: 1.75rem; }
   .section-description { font-size: 0.9375rem; }
+
+  /* Mobile: Frame visualizer */
+  .frame-display { padding: 20px 16px; }
+  .frame-row { flex-direction: column; gap: 8px; }
+  .frame-byte { min-width: 100%; flex: none; }
+  .frame-table { font-size: 0.8125rem; }
+  .frame-table th, .frame-table td { padding: 10px 12px; }
+
+  /* Mobile: Comparison table */
+  .comparison-table { font-size: 0.8125rem; }
+  .comparison-table th, .comparison-table td { padding: 10px 14px; }
+
+  /* Mobile: Benchmark bars */
+  .bar-item { flex-wrap: wrap; gap: 8px; }
+  .bar-label { width: 100%; text-align: left; font-size: 0.8125rem; }
+  .bar-track { flex: 1; min-width: 0; }
+  .bar-value { width: auto; font-size: 0.6875rem; }
+
+  /* Mobile: Contact grid */
+  .contact-grid { gap: 24px; }
+  .contact-methods { gap: 12px; }
+  .contact-method { padding: 16px; }
+  .contact-method-icon { width: 40px; height: 40px; }
+  .contact-method-icon svg { width: 20px; height: 20px; }
+
+  /* Mobile: Playground */
+  .playground-panel textarea { min-height: 150px; font-size: 0.75rem; }
+
+  /* Mobile: API section */
+  .api-item-header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+  .api-item-header code { font-size: 0.75rem; }
+  .api-item-content { padding: 0 16px 16px; font-size: 0.8125rem; }
+
+  /* Mobile: Roadmap */
+  .roadmap-card { padding: 20px; }
+
+  /* Mobile: Install tabs */
+  .install-tabs { flex-wrap: wrap; }
+  .install-tab { padding: 8px 16px; font-size: 0.8125rem; }
+
+  /* Mobile: Quickstart grid */
+  .quickstart-step { width: 28px; height: 28px; font-size: 0.75rem; }
+
+  /* Mobile: Feature icons */
+  .feature-icon { width: 40px; height: 40px; margin-bottom: 16px; }
+  .feature-icon svg { width: 20px; height: 20px; }
+
+  /* Mobile: Scroll padding */
+  html { scroll-padding-top: 80px; }
 }
 
 @media (max-width: 480px) {
@@ -1832,4 +1886,26 @@ body.light #navbar.scrolled {
   .copy-btn-terminal { padding: 3px 6px; font-size: 0.625rem; }
   .install-tabs { gap: 6px; }
   .install-tab { padding: 8px 16px; font-size: 0.8125rem; }
+
+  /* Extra small: tighter spacing */
+  .section { padding: 48px 0; }
+  .section-header { margin-bottom: 32px; }
+  .feature-icon { width: 36px; height: 36px; }
+  .feature-icon svg { width: 18px; height: 18px; }
+  .benchmark-grid { gap: 16px; }
+  .benchmark-card { padding: 24px 16px; }
+  .benchmark-value { font-size: 1.5rem; }
+  .roadmap-grid { gap: 16px; }
+  .playground-presets { gap: 6px; }
+  .preset-btn { padding: 6px 12px; font-size: 0.75rem; }
+  .api-tabs { gap: 6px; }
+  .api-tab { padding: 8px 16px; font-size: 0.8125rem; }
+  .faq-filters { gap: 6px; }
+  .faq-filter { padding: 4px 12px; font-size: 0.75rem; }
+  .bar-label { font-size: 0.75rem; }
+  .bar-track { height: 20px; }
+
+  /* Mobile nav overlay */
+  .mobile-nav a { font-size: 1.25rem; }
+  .mobile-nav-close { top: 16px; right: 16px; width: 40px; height: 40px; }
 }

@@ -1,0 +1,67 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Show the community what you've built with AfterLink!
+
+        Share your project, demo, or use case to inspire others.
+
+  - type: input
+    id: title
+    attributes:
+      label: Project name
+      description: What did you build?
+      placeholder: e.g., Real-time chat app with AfterLink
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Tell us about your project and how AfterLink helped.
+      placeholder: I built...
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: Repository URL
+      description: Link to your project's source code (optional).
+      placeholder: https://github.com/...
+
+  - type: input
+    id: demo
+    attributes:
+      label: Live demo URL
+      description: Link to a live demo if available (optional).
+      placeholder: https://...
+
+  - type: textarea
+    id: tech
+    attributes:
+      label: Tech stack
+      description: What technologies did you use alongside AfterLink?
+      placeholder: e.g., React, Supabase, Vercel...
+
+  - type: textarea
+    id: learnings
+    attributes:
+      label: What did you learn?
+      description: Any tips, tricks, or lessons learned that could help others?
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - "Web app"
+        - "Mobile app"
+        - "CLI tool"
+        - "Microservice"
+        - "Game"
+        - "IoT project"
+        - "Other"
+    validations:
+      required: true
