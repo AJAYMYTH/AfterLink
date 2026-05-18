@@ -1,32 +1,29 @@
-<p align="center">
-  <img src="logo for README file.png" alt="AfterLink Logo" width="500" height="500">
-  <h1 align="center">AfterLink</h1>
-  <p align="center">Communication Protocol for Reliable and Fast Communication</p>
-  <p align="center">
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-20+-green.svg" alt="Node.js 20+"></a>
-    <a href="https://www.npmjs.com/package/afterlink"><img src="https://img.shields.io/badge/version-1.0.0-orange.svg" alt="Version 1.0.0"></a>
-    <a href="https://www.npmjs.com/package/afterlink"><img src="https://img.shields.io/npm/dt/afterlink.svg" alt="npm downloads"></a>
-    <a href="https://www.npmjs.com/package/afterlink"><img src="https://img.shields.io/npm/v/afterlink.svg" alt="npm version"></a>
-  </p>
-</p>
+<div align="center">
+
+<img src="logo for README file.png" alt="AfterLink Logo" width="280"/>
+
+# AfterLink
+
+**A custom binary communication protocol for fast, reliable, real-time messaging.**  
+Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byte frame
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
+[![Version](https://img.shields.io/npm/v/afterlink.svg)](https://www.npmjs.com/package/afterlink)
+[![Downloads](https://img.shields.io/npm/dt/afterlink.svg)](https://www.npmjs.com/package/afterlink)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
+[**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Changelog**](./CHANGELOG.md)
+
+</div>
 
 ---
 
 ## What is AfterLink?
 
-AfterLink is a **custom application-layer binary communication protocol** designed to be a faster, simpler, and more developer-friendly alternative to HTTP for modern applications. It provides structured request/response, real-time pub/sub, automatic schema validation, and persistent connections — all over a compact **10-byte binary frame**.
+AfterLink is a **custom application-layer binary communication protocol** built for developers who are tired of HTTP boilerplate. It combines structured request/response, real-time pub/sub, automatic schema validation, and persistent connections — all over a compact **10-byte binary frame**.
 
-Built for developers who spend too much time on HTTP boilerplate and want a protocol that just works.
-
-### npm Packages
-
-| Package | Description | Link |
-|---|---|---|
-| **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
-| **`@afterlink/core`** | Frame codec and serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
-| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub) | [npm](https://www.npmjs.com/package/@afterlink/server) |
-| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@afterlink/client) |
+It is faster, simpler, and more developer-friendly than HTTP for modern real-time applications. You write 5 lines of code. AfterLink handles the rest.
 
 ---
 
@@ -40,58 +37,69 @@ Built for developers who spend too much time on HTTP boilerplate and want a prot
 | No schema validation — manual checks everywhere | **Automatic Zod validation** — invalid payloads rejected before your code runs |
 | One connection per request (HTTP/1.1) | **Multiplexing** — hundreds of concurrent requests over one connection |
 | No binary support — need base64 workarounds | **Native binary** via MessagePack serialization |
-| Complex setup for REST APIs | **5 lines** to define a server with routes |
+| Complex setup for REST APIs | **5 lines** to spin up a full server with routes |
 
 ---
 
 ## Feature Comparison
 
 | Feature | AfterLink | HTTP/REST | WebSocket | gRPC | MQTT |
-|---|:---:|:---:|:---:|:---:|:---:|
+|---|---|---|---|---|---|
 | **Setup complexity** | Very Easy | Easy | Medium | Hard | Medium |
-| **Binary protocol** | Yes | No | Yes | Yes | Yes |
-| **Schema validation** | Built-in | No | No | Proto only | No |
-| **Multiplexing** | Yes | No (HTTP/1.1) | No | Yes | No |
-| **Pub/Sub** | Built-in | No | No | No | Yes |
-| **Streaming** | First-class | SSE only | Manual | Yes | No |
-| **Browser support** | Yes (TCP/WS) | Yes | Yes | No | No |
-| **Auto-reconnect** | Built-in | No | No | No | Yes |
-| **Built-in auth** | Yes (JWT) | No | No | Optional | Optional |
-| **CLI tooling** | Yes | curl | No | Limited | Limited |
-| **Header overhead** | **10 bytes** | 200-800 bytes | 2-14 bytes | 5-50 bytes | 2-5 bytes |
-| **Latency (LAN)** | **< 1ms** | 5-50ms | 1-10ms | 1-5ms | 5-20ms |
+| **Binary protocol** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Schema validation** | ✅ Built-in | ❌ No | ❌ No | Proto only | ❌ No |
+| **Multiplexing** | ✅ Yes | ❌ No (HTTP/1.1) | ❌ No | ✅ Yes | ❌ No |
+| **Pub/Sub** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Streaming** | ✅ First-class | SSE only | Manual | ✅ Yes | ❌ No |
+| **Browser support** | ✅ Yes (TCP/WS) | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+| **Auto-reconnect** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Built-in auth** | ✅ Yes (JWT) | ❌ No | ❌ No | Optional | Optional |
+| **CLI tooling** | ✅ Yes | curl | ❌ No | Limited | Limited |
+| **Header overhead** | **10 bytes** | 200–800 bytes | 2–14 bytes | 5–50 bytes | 2–5 bytes |
+| **Latency (LAN)** | **< 1ms** | 5–50ms | 1–10ms | 1–5ms | 5–20ms |
+
+---
+
+## npm Packages
+
+| Package | Description | Link |
+|---|---|---|
+| **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
+| **`@afterlink/core`** | Frame codec and MessagePack serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
+| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, middleware) | [npm](https://www.npmjs.com/package/@afterlink/server) |
+| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@afterlink/client) |
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        AfterLink Ecosystem                       │
-│                                                                  │
-│  ┌──────────┐    ┌──────────┐    ┌──────────────────────────┐   │
-│  │ Browser  │    │  Mobile  │    │   IoT / Microservices    │   │
-│  │ (JS SDK) │    │ (Dart)   │    │   (Node.js / Python)     │   │
-│  └────┬─────┘    └────┬─────┘    └────────────┬─────────────┘   │
-│       │ WebSocket     │ TCP                    │ TCP             │
-│       └───────────────┼────────────────────────┘                 │
-│                       │                                          │
-│              ┌────────▼──────────┐                               │
-│              │  AfterLink Server  │                               │
-│              │                    │                               │
-│              │  ┌──────────────┐  │    ┌─────────────────────┐   │
-│              │  │ Frame Router │──┼───▶│  Your Backend       │   │
-│              │  └──────┬───────┘  │    │  (Supabase,         │   │
-│              │         │          │    │   InsForge,          │   │
-│              │  ┌──────▼───────┐  │    │   Firebase, AWS,     │   │
-│              │  │  Middleware  │  │    │   MongoDB, etc.)     │   │
-│              │  └──────┬───────┘  │    └─────────────────────┘   │
-│              │         │          │                               │
-│              │  ┌──────▼───────┐  │    ┌─────────────────────┐   │
-│              │  │ Route Handler│  │    │  Pub/Sub Broker     │   │
-│              │  └──────────────┘  │    │  (In-process)       │   │
-│              └────────────────────┘    └─────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                        AfterLink Ecosystem                            │
+│                                                                       │
+│  ┌──────────┐    ┌──────────┐    ┌────────────────────────────────┐  │
+│  │ Browser  │    │  Mobile  │    │   IoT / Microservices           │  │
+│  │ (JS SDK) │    │ (Dart)   │    │   (Node.js / Python)           │  │
+│  └────┬─────┘    └────┬─────┘    └────────────┬───────────────────┘  │
+│       │ WebSocket     │ TCP                    │ TCP                  │
+│       └───────────────┼────────────────────────┘                      │
+│                       │                                               │
+│              ┌────────▼──────────┐                                    │
+│              │  AfterLink Server  │                                    │
+│              │                    │    ┌──────────────────────────┐   │
+│              │  ┌──────────────┐  │    │  Your Backend             │  │
+│              │  │ Frame Router │──┼───▶│  (Supabase / Firebase /   │  │
+│              │  └──────┬───────┘  │    │   MongoDB / AWS / pg)     │  │
+│              │         │          │    └──────────────────────────┘   │
+│              │  ┌──────▼───────┐  │                                   │
+│              │  │  Middleware  │  │    ┌──────────────────────────┐   │
+│              │  └──────┬───────┘  │    │  Pub/Sub Broker           │  │
+│              │         │          │    │  (In-process)             │  │
+│              │  ┌──────▼───────┐  │    └──────────────────────────┘   │
+│              │  │ Route Handler│  │                                    │
+│              │  └──────────────┘  │                                    │
+│              └────────────────────┘                                    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -109,6 +117,7 @@ npm install @afterlink/core @afterlink/server @afterlink/client
 ```
 
 **From source:**
+
 ```bash
 git clone https://github.com/AJAYMYTH/AfterLink.git
 cd AfterLink
@@ -119,7 +128,8 @@ pnpm install
 ### Hello World (5 minutes)
 
 **Server** — `server.js`
-```javascript
+
+```js
 const { Server } = require('@afterlink/server');
 
 const server = new Server({ port: 4000 });
@@ -132,7 +142,8 @@ server.listen();
 ```
 
 **Client** — `client.js`
-```javascript
+
+```js
 const { Client } = require('@afterlink/client');
 
 async function main() {
@@ -149,6 +160,7 @@ main();
 ```
 
 **Run it:**
+
 ```bash
 node server.js   # Terminal 1
 node client.js   # Terminal 2
@@ -162,12 +174,11 @@ node client.js   # Terminal 2
 
 Invalid payloads are rejected **before** your handler runs:
 
-```javascript
+```js
 const { z } = require('zod');
 
 server.on('createUser',
   async (req, res) => {
-    // This only runs if validation passes
     const user = await db.create(req.body);
     res.send({ user });
   },
@@ -179,25 +190,22 @@ server.on('createUser',
 );
 ```
 
-Client receives automatic error:
+Client receives automatic error on invalid input:
+
 ```json
 { "code": "VALIDATION_ERROR", "message": "String must contain at least 2 character(s)" }
 ```
 
 ### 2. Middleware Chain
 
-Express-style middleware for auth, logging, rate limiting:
+Express-style middleware for auth, logging, and rate limiting:
 
-```javascript
-// Auth middleware
+```js
 server.use(async (req, next) => {
-  if (!req.session?.userId) {
-    throw new Error('Not authenticated');
-  }
+  if (!req.session?.userId) throw new Error('Not authenticated');
   await next();
 });
 
-// Logging middleware
 server.use(async (req, next) => {
   const start = Date.now();
   await next();
@@ -209,11 +217,11 @@ server.use(async (req, next) => {
 
 Broadcast to all subscribers over the same connection:
 
-```javascript
-// Server: publish to topic
+```js
+// Server: publish on event
 server.on('sendMessage', async (req, res) => {
   const msg = await db.save(req.body);
-  server.publish('chat.newMessage', msg); // Broadcast
+  server.publish('chat.newMessage', msg);
   res.send({ ok: true });
 });
 
@@ -225,9 +233,7 @@ await client.subscribe('chat.newMessage', (msg) => {
 
 ### 4. Auto-Reconnect
 
-Clients recover from network drops automatically:
-
-```javascript
+```js
 const client = new Client('afterlink://api.example.com', {
   autoReconnect: true,
   maxReconnectAttempts: 10,
@@ -238,9 +244,7 @@ client.on('reconnecting', ({ attempt, delay }) => {
   console.log(`Reconnecting (attempt ${attempt}) in ${delay}ms`);
 });
 
-client.on('reconnected', () => {
-  console.log('Connection restored');
-});
+client.on('reconnected', () => console.log('Connection restored'));
 ```
 
 ---
@@ -274,7 +278,7 @@ client.on('reconnected', () => {
 ### Frame Types
 
 | Code | Type | Direction | Description |
-|:----:|:----:|:---------:|:------------|
+|---|---|---|---|
 | `0x01` | REQUEST | C → S | Client request to a named route |
 | `0x02` | RESPONSE | S → C | Server response to a request |
 | `0x03` | STREAM_START | S → C | Begin a streaming sequence |
@@ -298,15 +302,14 @@ client.on('reconnected', () => {
 Client                              Server
   │                                    │
   │──── TCP Connect ──────────────────▶│
-  │                                    │
   │──── HELLO Frame ──────────────────▶│
-  │    { version: "AL/1",             │
-  │      auth: <JWT token>,           │
-  │      capabilities: [...] }        │
+  │    { version: "AL/1",              │
+  │      auth: <JWT token>,            │
+  │      capabilities: [...] }         │
   │                                    │
   │◀─── HELLO_ACK Frame ──────────────│
-  │    { session_id: "...",           │
-  │      server_version: "AL/1" }     │
+  │    { session_id: "...",            │
+  │      server_version: "AL/1" }      │
   │                                    │
   │◀──▶  REQUEST / RESPONSE frames     │
   │◀──▶  PUBLISH / SUBSCRIBE frames    │
@@ -320,68 +323,35 @@ Client                              Server
 
 ## Backend-Agnostic
 
-AfterLink is a **communication layer**, not a database. It works with **any** backend provider:
-
-```javascript
-const { Server } = require('@afterlink/server');
-
-// Choose YOUR backend — AfterLink doesn't care:
-// const supabase = require('@supabase/supabase-js').createClient(url, key);
-// const insforge = require('@insforge/sdk').createClient(config);
-// const firebase = require('firebase-admin');
-// const { DynamoDB } = require('@aws-sdk/client-dynamodb');
-
-const server = new Server({ port: 4000 });
-
-server.on('getUser', async (req, res) => {
-  // Call your backend of choice:
-  // const { data } = await supabase.from('users').eq('id', req.body.id);
-  // const user = await insforge.db.get('users', req.body.id);
-  res.send({ user: data });
-});
-
-// Broadcast backend changes to all connected clients
-server.on('createOrder', async (req, res) => {
-  // const { data } = await supabase.from('orders').insert(req.body);
-  server.publish('orders.created', data);
-  res.send({ order: data });
-});
-
-await server.listen();
-```
+AfterLink is a **communication layer**, not a database. It works with **any** backend:
 
 | Your Backend | SDK | AfterLink Role |
 |---|---|---|
 | **Supabase** | `@supabase/supabase-js` | Real-time layer + auth gateway |
-| **InsForge** | `@insforge/sdk` | Fast binary transport + pub/sub |
 | **Firebase** | `firebase-admin` | Multi-client sync layer |
 | **AWS** | `@aws-sdk/*` | Persistent connection manager |
 | **MongoDB** | `mongodb` | Real-time change broadcasting |
 | **PostgreSQL** | `pg` | Connection pooling + routing |
 | **Custom REST** | `node-fetch` | Protocol upgrade layer |
 
-**Switch backends without changing any client code.**
+Switch backends without changing any client code.
 
 ---
 
 ## Demos
-
-Run the interactive showcase to see all features in action:
 
 ```bash
 cd examples/demo-runner
 node index.js
 ```
 
-| Demo | What it Shows | Command |
-|---|---|---|
-| **Request/Response** | Basic RPC calls | `examples/demo-runner` |
-| **Schema Validation** | Zod validation | `examples/demo-microservice` |
-| **Middleware** | Logging, auth chains | `examples/demo-runner` |
-| **Pub/Sub** | Real-time broadcast | `examples/demo-chat` |
-| **Multiple Topics** | Selective subscriptions | `examples/demo-dashboard` |
-| **Error Handling** | Structured errors | `examples/demo-runner` |
-| **Connections** | Track active sessions | `examples/demo-runner` |
+| Demo | What it Shows |
+|---|---|
+| `demo-runner` | Interactive showcase — 7 demos in one |
+| `demo-chat` | Real-time pub/sub chat app |
+| `demo-dashboard` | Live stock price feed |
+| `demo-microservice` | CRUD with Zod schema validation |
+| `hello-world` | Simple ping/pong starter |
 
 ---
 
@@ -389,7 +359,7 @@ node index.js
 
 ### Server
 
-```javascript
+```js
 const server = new Server({
   port: 4000,
   host: '0.0.0.0',
@@ -408,7 +378,7 @@ server.getRouteCount();
 
 ### Client
 
-```javascript
+```js
 const client = new Client('afterlink://localhost:4000', {
   timeout: 30000,
   autoReconnect: true,
@@ -442,9 +412,11 @@ AfterLink/
 │   ├── demo-dashboard/     # Stock price dashboard
 │   ├── demo-microservice/  # CRUD with validation
 │   └── hello-world/        # Simple ping/pong
+├── docs/                   # Protocol and API documentation
 ├── install.sh              # Linux/macOS installer
 ├── install.ps1             # Windows installer
-├── LICENSE                 # MIT License
+├── DEPLOYMENT.md           # Full deployment guide
+├── SECURITY.md             # Security policy
 └── README.md
 ```
 
@@ -465,24 +437,37 @@ cd examples/demo-runner && node index.js
 
 ---
 
+## Performance Targets
+
+| Metric | Target |
+|---|---|
+| Requests/second (single core) | > 100,000 |
+| Round-trip latency (LAN) | < 1ms p50 |
+| Memory per idle connection | < 50 KB |
+| Frame decode time | < 10 µs |
+| Header overhead | 10 bytes |
+
+---
+
 ## Security
 
-AfterLink is designed to be secure by default. See [SECURITY.md](SECURITY.md) for details.
+AfterLink is secure by default. See [SECURITY.md](./SECURITY.md) for full details.
 
-* **Supply Chain Safe:** Minimal dependencies, locked versions, no postinstall scripts.
-* **Protocol Hardened:** Strict frame validation, buffer limits, and MessagePack deserialization.
-* **Network Secure:** TLS support, JWT auth, and rate limiting built-in.
+- **Supply Chain Safe:** Minimal dependencies, locked versions, no postinstall scripts
+- **Protocol Hardened:** Strict frame validation, buffer limits, and MessagePack deserialization
+- **Network Secure:** TLS support, JWT auth, and rate limiting built-in
 
-To verify your installation:
 ```bash
 pnpm audit --prod
 ```
 
+---
+
 ## Production Deployment
 
-See the complete [Deployment Guide](DEPLOYMENT.md) for:
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for full guides.
 
-| Platform | Time | Difficulty |
+| Platform | Setup Time | Difficulty |
 |---|---|---|
 | **PM2** (single server) | 2 min | Easy |
 | **Docker** | 5 min | Easy |
@@ -503,12 +488,6 @@ pm2 save && pm2 startup
 
 ### Quick Start with Docker
 
-```bash
-docker build -t afterlink-server .
-docker run -d -p 4000:4000 afterlink-server
-```
-
-### Docker
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -519,6 +498,7 @@ CMD ["node", "server.js"]
 ```
 
 ### Environment Variables
+
 ```env
 AFTERLINK_PORT=4000
 AFTERLINK_HOST=0.0.0.0
@@ -529,28 +509,98 @@ NODE_ENV=production
 
 ---
 
-## Performance Targets
+## Roadmap
 
-| Metric | Target |
+> The following upgrades are planned across three phases. See the [Upgrade Schedule](#upgrade-schedule) below for timeline details.
+
+### Phase 1 — v1.1 · Protocol & Stability (Weeks 1–4)
+
+| Feature | Description |
 |---|---|
-| Requests/second (single core) | > 100,000 |
-| Round-trip latency (LAN) | < 1ms p50 |
-| Memory per idle connection | < 50KB |
-| Frame decode time | < 10µs |
-| Header overhead | 10 bytes |
+| **TLS/SSL encryption** | End-to-end encrypted connections via `tls.createServer()` |
+| **Payload compression** | zlib/Brotli compression on the Flags byte |
+| **Rate limiting middleware** | Per-connection and per-route token-bucket rate limiter |
+| **Graceful shutdown** | Drain active requests before closing, emit `server.closing` event |
+| **CHANGELOG.md** | Formal versioned changelog for npm release history |
+
+### Phase 2 — v1.2 · Developer Experience (Weeks 5–8)
+
+| Feature | Description |
+|---|---|
+| **`afterlink` CLI tool** | `afterlink ping`, `afterlink call <route>`, `afterlink monitor` in terminal |
+| **`@afterlink/browser`** | Native WebSocket transport wrapper so browsers can connect directly |
+| **TypeScript types** | Full `.d.ts` type definitions for server, client, and core packages |
+| **Health check endpoint** | Built-in `/__health` route returning server stats and uptime |
+| **Better error codes** | Structured error taxonomy: `AUTH_FAILED`, `ROUTE_NOT_FOUND`, `TIMEOUT`, etc. |
+
+### Phase 3 — v2.0 · Scale & Ecosystem (Weeks 9–16)
+
+| Feature | Description |
+|---|---|
+| **`@afterlink/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter |
+| **`@afterlink/python`** | Python client/server SDK (`pip install afterlink`) |
+| **`@afterlink/dart`** | Dart/Flutter client for mobile apps |
+| **Protocol v2 frame** | Extended header with routing key + priority field |
+| **Metrics & observability** | Prometheus-compatible `/metrics` endpoint + OpenTelemetry tracing |
+| **Playground UI** | Browser-based interactive demo at `afterlinkdocs.vercel.app/playground` |
+
+---
+
+## Upgrade Schedule
+
+```
+May 2026 ──────────────────────────────────────────────── Aug 2026
+
+Week 1–2    [▓▓▓▓] TLS encryption + compression flag
+Week 2–3    [▓▓▓▓] Rate limiting middleware
+Week 3–4    [▓▓▓▓] Graceful shutdown + CHANGELOG
+Week 5–6    [▓▓▓▓] CLI tool (afterlink ping/call/monitor)
+Week 6–7    [▓▓▓▓] @afterlink/browser WebSocket transport
+Week 7–8    [▓▓▓▓] TypeScript definitions + health check
+Week 9–10   [▓▓▓▓] Redis-backed cluster pub/sub
+Week 11–12  [▓▓▓▓] Python SDK
+Week 13–14  [▓▓▓▓] Dart/Flutter SDK
+Week 15      [▓▓▓▓] Protocol v2 frame design + migration guide
+Week 16      [▓▓▓▓] Prometheus metrics + playground UI launch
+```
+
+| Milestone | Target Date | Version |
+|---|---|---|
+| TLS + compression + rate limiting | June 2026 | v1.1.0 |
+| CLI tool + browser SDK + TypeScript | July 2026 | v1.2.0 |
+| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 |
+| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 |
+
+---
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes (`git commit -m 'feat: add my feature'`)
+4. Push to the branch (`git push origin feature/my-feature`)
+5. Open a Pull Request
 
 ---
 
 ## Author
 
-**Ajju** (Javali Ajayakumar)
-
-## License
-
-[MIT](LICENSE) — Free for personal and commercial use.
+**Ajju** (Javali Ajayakumar)  
+Diploma in AI & ML · GTTC Magadi, Karnataka  
+[GitHub](https://github.com/AJAYMYTH) · [npm](https://www.npmjs.com/~ajaymyth)
 
 ---
 
-<p align="center">
-  <sub>Built with precision. Designed for speed.</sub>
-</p>
+## License
+
+[MIT](./LICENSE) — Free for personal and commercial use.
+
+---
+
+<div align="center">
+
+**Built with precision. Designed for speed.**
+
+</div>
