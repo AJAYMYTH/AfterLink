@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AfterLink Protocol Server SDK - TCP server with routing, middleware, and pub/sub",
   "main": "src/index.js",
   "license": "MIT",
@@ -29,7 +29,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@afterlink/core": "1.0.0"
+    "@afterlink/core": "workspace:*",
+    "selfsigned": "^5.5.0"
   },
   "devDependencies": {
     "vitest": "^1.6.0"

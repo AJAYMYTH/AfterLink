@@ -1,4 +1,4 @@
-const net = require('net');
+const { createClientTransport, isTLSUrl } = require('./transport/tls');
 const {
   Frame,
   FrameTypes: {
@@ -44,6 +44,7 @@ class Client {
     this._buffer = Buffer.alloc(0);
     this.socket = null;
     this.sessionId = null;
+    this._tlsEnabled = isTLSUrl(url);
   }
 
   _nextId() {
@@ -62,7 +63,7 @@ class Client {
     this._buffer = Buffer.alloc(0);
 
     return new Promise((resolve, reject) => {
-      const port = parseInt(this.url.port, 10) || 4000;
+      const port = parseInt(this.url.port, 10) || (this._tlsEnabled ? 443 : 4000);
       const connectTimeout = setTimeout(() => {
         this._connecting = false;
         if (this.socket) {
@@ -73,11 +74,7 @@ class Client {
       }, this.options.connectTimeout);
 
       try {
-        this.socket = net.connect({
-          host: this.url.hostname,
-          port,
-          timeout: this.options.connectTimeout,
-        });
+        this.socket = createClientTransport(this.url, this.options);
       } catch (err) {
         this._connecting = false;
         clearTimeout(connectTimeout);
@@ -101,7 +98,17 @@ class Client {
         clearTimeout(connectTimeout);
         this._connecting = false;
         this._connected = false;
-        reject(err);
+        if (err.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE' || err.code === 'DEPTH_ZERO_SELF_SIGNED_CERT') {
+          const tlsErr = new Error(`TLS certificate verification failed: ${err.message}`);
+          tlsErr.code = 'TLS_CERT_UNTRUSTED';
+          reject(tlsErr);
+        } else if (err.code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+          const tlsErr = new Error(`TLS certificate hostname mismatch`);
+          tlsErr.code = 'TLS_CERT_ERROR';
+          reject(tlsErr);
+        } else {
+          reject(err);
+        }
       });
       this.socket.on('close', () => this._onDisconnect());
     });
@@ -110,10 +117,15 @@ class Client {
   async _doHandshake() {
     return new Promise((resolve, reject) => {
       const id = this._nextId();
+      const capabilities = ['streaming', 'pubsub'];
+      if (this._tlsEnabled) capabilities.push('tls');
+      if (this.options.compression?.enabled) capabilities.push('compression');
+
       const payload = Serializer.encode({
-        version: 'AL/1',
+        version: 'AL/1.1',
         auth: this.options.auth || null,
-        capabilities: ['streaming', 'pubsub', 'compression'],
+        capabilities,
+        compression: this.options.compression?.algorithm || 'none',
       });
       const frame = Frame.encode(HELLO, 0, id, payload);
 
@@ -421,6 +433,10 @@ class Client {
 
   getSessionId() {
     return this.sessionId;
+  }
+
+  isTLS() {
+    return this._tlsEnabled;
   }
 }
 

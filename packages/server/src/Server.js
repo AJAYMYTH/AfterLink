@@ -1,4 +1,5 @@
-const net = require('net');
+const { createServerTransport, isTLSSocket, getTLSInfo } = require('./transport/tls');
+
 const Connection = require('./Connection');
 const Router = require('./Router');
 
@@ -12,8 +13,9 @@ class Server {
     };
     this.router = new Router();
     this.connections = new Set();
-    this.tcp = null;
+    this.transport = null;
     this._listening = false;
+    this._tlsEnabled = !!config.tls?.enabled;
   }
 
   on(route, handler, schema = null) {
@@ -37,41 +39,68 @@ class Server {
         return reject(new Error('Server is already listening'));
       }
 
-      this.tcp = net.createServer((socket) => {
-        if (this.connections.size >= this.config.maxConnections) {
-          socket.destroy();
-          return;
-        }
+      try {
+        this.transport = createServerTransport(this.config);
+      } catch (err) {
+        return reject(err);
+      }
 
-        socket.setKeepAlive(true, 60000);
-        socket.setNoDelay(true);
-
-        const conn = new Connection(socket, this.router, {
-          auth: this.config.auth,
-        });
-        this.connections.add(conn);
-        socket.on('close', () => this.connections.delete(conn));
+      this.transport.on('secureConnection', (socket) => {
+        this._handleConnection(socket);
       });
 
-      this.tcp.on('error', (err) => {
+      this.transport.on('connection', (socket) => {
+        // For TLS servers, skip the raw connection event (handled by secureConnection)
+        if (this._tlsEnabled) return;
+        this._handleConnection(socket);
+      });
+
+      this.transport.on('error', (err) => {
         if (err.code === 'EADDRINUSE') {
           reject(new Error(`Port ${port} is already in use`));
+        } else if (err.code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+          const tlsErr = new Error('TLS certificate does not match hostname');
+          tlsErr.code = 'TLS_CERT_ERROR';
+          reject(tlsErr);
         } else {
           console.error('[AfterLink] Server error:', err.message);
         }
       });
 
-      this.tcp.listen(port, this.config.host, () => {
+      this.transport.listen(port, this.config.host, () => {
         this._listening = true;
-        console.log(`[AfterLink] Server listening on ${this.config.host}:${port}`);
+        const proto = this._tlsEnabled ? 'TLS' : 'TCP';
+        console.log(`[AfterLink] ${proto} Server listening on ${this.config.host}:${port}`);
         resolve(this);
       });
     });
   }
 
+  _handleConnection(socket) {
+    if (this.connections.size >= this.config.maxConnections) {
+      socket.destroy();
+      return;
+    }
+
+    socket.setKeepAlive(true, 60000);
+    socket.setNoDelay(true);
+
+    const conn = new Connection(socket, this.router, {
+      auth: this.config.auth,
+    });
+
+    // Attach TLS info if available
+    if (isTLSSocket(socket)) {
+      conn.tlsInfo = getTLSInfo(socket);
+    }
+
+    this.connections.add(conn);
+    socket.on('close', () => this.connections.delete(conn));
+  }
+
   close() {
     return new Promise((resolve) => {
-      if (!this.tcp || !this._listening) {
+      if (!this.transport || !this._listening) {
         return resolve();
       }
 
@@ -81,7 +110,7 @@ class Server {
         conn.destroy();
       }
 
-      this.tcp.close(() => resolve());
+      this.transport.close(() => resolve());
     });
   }
 
@@ -95,6 +124,10 @@ class Server {
 
   isListening() {
     return this._listening;
+  }
+
+  isTLS() {
+    return this._tlsEnabled;
   }
 }
 

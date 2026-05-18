@@ -1,0 +1,10 @@
+{
+  "name": "afterlink-tls-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TLS/SSL example for AfterLink v1.0.1",
+  "dependencies": {
+    "@afterlink/server": "workspace:*",
+    "@afterlink/client": "workspace:*"
+  }
+}
