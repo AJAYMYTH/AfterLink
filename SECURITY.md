@@ -12,7 +12,7 @@ We take the security of AfterLink seriously. If you believe you have found a sec
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please email us at **[security@afterlink.dev]** (replace with your email).
+Instead, please email us at contact.javaliajayakumar@gmail.com
 
 You should receive a response within 48 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
 
