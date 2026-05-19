@@ -119,20 +119,20 @@ importers:
   packages/afterlink:
     dependencies:
       '@afterlink/client':
-        specifier: workspace:*
-        version: link:../client
+        specifier: ^1.1.2
+        version: 1.1.2
       '@afterlink/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^1.1.2
+        version: 1.1.2
       '@afterlink/server':
-        specifier: workspace:*
-        version: link:../server
+        specifier: ^1.1.2
+        version: 1.1.2
 
   packages/client:
     dependencies:
       '@afterlink/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^1.1.0
+        version: 1.1.2
     devDependencies:
       vitest:
         specifier: ^2.1.0
@@ -151,8 +151,8 @@ importers:
   packages/server:
     dependencies:
       '@afterlink/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^1.1.0
+        version: 1.1.2
       selfsigned:
         specifier: ^5.5.0
         version: 5.5.0
@@ -162,6 +162,15 @@ importers:
         version: 1.6.1(@types/node@25.8.0)
 
 packages:
+
+  '@afterlink/client@1.1.2':
+    resolution: {integrity: sha512-96Hs+Nh/xbNzxZ48IqfAXGacJWNd2fqvtOkGzuo/wncex+W91e4ewvlTYsHrHGL54O5t3qCfixcFFhwMdSyEiw==}
+
+  '@afterlink/core@1.1.2':
+    resolution: {integrity: sha512-yEbSr4mQvQ4SHX1inGDF6F92lZll6o1t65mAltjr1i6ql9AbIQ6ZARqL8m6S557X3d4Z1ElG3f96A3x3DShfqg==}
+
+  '@afterlink/server@1.1.2':
+    resolution: {integrity: sha512-Ibw7tGs5nk6/RzunH1ak30GQ4Lk8zDvLqZEVaerxvFHOXotYNSVKpZ2BNCobfG8J/OeV7e/rPFiMBn19WYiIqw==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -1098,6 +1107,19 @@ packages:
     resolution: {integrity: sha512-OFLT+LTocvabn6q76BTwVB0hExEBS0IduTr3cqZyMqEDbOnYmcU+y0tUAYbND4uwclpBGi4I4UUBGzylWpjLGA==}
 
 snapshots:
+
+  '@afterlink/client@1.1.2':
+    dependencies:
+      '@afterlink/core': 1.1.2
+
+  '@afterlink/core@1.1.2':
+    dependencies:
+      msgpackr: 1.11.12
+
+  '@afterlink/server@1.1.2':
+    dependencies:
+      '@afterlink/core': 1.1.2
+      selfsigned: 5.5.0
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
