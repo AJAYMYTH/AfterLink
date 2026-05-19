@@ -1,0 +1,23 @@
+#!/bin/sh
+# .husky/commit-msg - Enforces Conventional Commits format
+# Format: type(scope)?: description
+# Types: feat, fix, docs, chore, ci, refactor, perf, test
+
+commit_regex='^(feat|fix|docs|style|chore|ci|refactor|perf|test)(\([a-z0-9-]+\))?: .{1,100}'
+
+if ! grep -qE "$commit_regex" "$1"; then
+  echo ""
+  echo "  ERROR: Invalid commit message format"
+  echo ""
+  echo "  Expected: type(scope)?: description"
+  echo ""
+  echo "  Valid types: feat, fix, docs, style, chore, ci, refactor, perf, test"
+  echo ""
+  echo "  Examples:"
+  echo "    feat: add TLS encryption support"
+  echo "    fix(client): resolve auto-reconnect race condition"
+  echo "    docs: update API reference"
+  echo "    chore(deps): bump vitest to v2.1.0"
+  echo ""
+  exit 1
+fi
