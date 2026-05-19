@@ -1,3 +1,4 @@
 const Client = require('./Client');
+const { errors } = require('@afterlink/core');
 
-module.exports = { Client };
+module.exports = { Client, errors };

@@ -1,0 +1,48 @@
+{
+  "name": "@afterlink/cli",
+  "version": "1.2.0",
+  "description": "AfterLink CLI — test, debug, and monitor AfterLink servers from the terminal",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "bin": {
+    "afterlink": "./bin/afterlink.js"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AJAYMYTH/AfterLink.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "afterlink",
+    "cli",
+    "ping",
+    "monitor",
+    "debug",
+    "tcp"
+  ],
+  "files": [
+    "bin/**/*.js",
+    "src/**/*.js",
+    "types/**/*.d.ts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@afterlink/server": "workspace:*",
+    "vitest": "^2.1.0"
+  },
+  "dependencies": {
+    "@afterlink/client": "workspace:*",
+    "@afterlink/core": "workspace:*",
+    "commander": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

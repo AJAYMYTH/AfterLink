@@ -1,3 +1,5 @@
+const { errors: { RateLimitError } } = require('@afterlink/core');
+
 class TokenBucket {
   constructor(capacity, refillRate) {
     this.capacity = capacity;
@@ -53,11 +55,7 @@ function createRateLimitMiddleware(options = {}) {
     const result = bucket.consume();
 
     if (!result.allowed) {
-      const err = new Error(errorMessage);
-      err.code = 'RATE_LIMITED';
-      err.retryAfter = result.retryAfter;
-      err.limit = requestsPerSecond;
-      err.remaining = 0;
+      const closeConnection = closeAfterViolations && bucket.violations >= closeAfterViolations;
 
       if (onLimited) {
         try {
@@ -67,11 +65,13 @@ function createRateLimitMiddleware(options = {}) {
         }
       }
 
-      if (closeAfterViolations && bucket.violations >= closeAfterViolations) {
-        err.closeConnection = true;
-      }
-
-      throw err;
+      throw RateLimitError.create({
+        retryAfter: result.retryAfter,
+        limit: requestsPerSecond,
+        remaining: 0,
+        closeConnection,
+        message: errorMessage,
+      });
     }
 
     return next();

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AfterLink Browser Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    h1 { color: #00d4ff; margin-bottom: 8px; font-size: 28px; }
+    .subtitle { color: #888; margin-bottom: 24px; font-size: 14px; }
+    .card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .card h2 { color: #00d4ff; font-size: 16px; margin-bottom: 12px; }
+    .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status.connected { background: #00c853; color: #000; }
+    .status.disconnected { background: #ff1744; color: #fff; }
+    .status.connecting { background: #ffab00; color: #000; }
+    button { background: #00d4ff; color: #000; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; margin-right: 8px; }
+    button:hover { background: #00b8d9; }
+    button:disabled { background: #555; color: #888; cursor: not-allowed; }
+    button.danger { background: #ff1744; color: #fff; }
+    input, textarea { background: #222; border: 1px solid #444; color: #e0e0e0; padding: 8px 12px; border-radius: 8px; font-size: 14px; width: 100%; }
+    input:focus, textarea:focus { outline: none; border-color: #00d4ff; }
+    .row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .row input { flex: 1; }
+    #log { background: #111; border: 1px solid #333; border-radius: 8px; padding: 12px; height: 300px; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 12px; line-height: 1.6; }
+    .log-entry { margin-bottom: 4px; }
+    .log-entry .time { color: #666; }
+    .log-entry .send { color: #00d4ff; }
+    .log-entry .recv { color: #00c853; }
+    .log-entry .error { color: #ff1744; }
+    .log-entry .info { color: #ffab00; }
+    .health-bar { display: flex; gap: 16px; flex-wrap: wrap; }
+    .health-item { background: #222; padding: 8px 16px; border-radius: 8px; min-width: 120px; }
+    .health-item .label { color: #888; font-size: 11px; text-transform: uppercase; }
+    .health-item .value { color: #00d4ff; font-size: 20px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AfterLink Browser Demo</h1>
+    <p class="subtitle">WebSocket transport connecting to AfterLink server</p>
+
+    <div class="card">
+      <h2>Connection</h2>
+      <div class="row">
+        <input type="text" id="wsUrl" value="ws://localhost:4001/ws" placeholder="WebSocket URL">
+        <button id="connectBtn" onclick="doConnect()">Connect</button>
+        <button id="disconnectBtn" class="danger" onclick="doDisconnect()" disabled>Disconnect</button>
+        <span class="status disconnected" id="statusBadge">Disconnected</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Server Health</h2>
+      <div class="health-bar" id="healthBar">
+        <div class="health-item"><div class="label">Status</div><div class="value" id="hStatus">—</div></div>
+        <div class="health-item"><div class="label">Uptime</div><div class="value" id="hUptime">—</div></div>
+        <div class="health-item"><div class="label">Connections</div><div class="value" id="hConn">—</div></div>
+        <div class="health-item"><div class="label">Req/sec</div><div class="value" id="hRps">—</div></div>
+        <div class="health-item"><div class="label">Avg Latency</div><div class="value" id="hLatency">—</div></div>
+      </div>
+      <div style="margin-top: 12px;">
+        <button onclick="fetchHealth()">Fetch Health</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Request</h2>
+      <div class="row">
+        <input type="text" id="route" value="ping" placeholder="Route name" style="max-width: 150px;">
+        <input type="text" id="payload" value='{}' placeholder='{"key": "value"}'>
+        <button onclick="doRequest()" id="requestBtn" disabled>Send</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pub/Sub — Chat Demo</h2>
+      <div class="row">
+        <input type="text" id="chatUser" value="user1" placeholder="Username" style="max-width: 120px;">
+        <input type="text" id="chatMsg" placeholder="Type a message...">
+        <button onclick="doChat()" id="chatBtn" disabled>Send</button>
+        <button onclick="doSubscribe()" id="subBtn" disabled>Subscribe</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Event Log</h2>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <script>
+    // Minimal AfterLink Browser Client (inline, zero dependencies)
+    class AfterLinkClient {
+      constructor(url) {
+        this.url = url;
+        this.ws = null;
+        this.connected = false;
+        this.msgId = 0;
+        this.pending = new Map();
+        this.handlers = new Map();
+        this.listeners = {};
+        this.sessionId = null;
+      }
+
+      _nextId() { return ++this.msgId; }
+
+      _encode(data) {
+        const json = JSON.stringify(data);
+        const bytes = new TextEncoder().encode(json);
+        return this._msgpackEncode(bytes);
+      }
+
+      _msgpackEncode(bytes) {
+        const len = bytes.length;
+        let header;
+        if (len < 256) {
+          header = new Uint8Array([0xd9, len]);
+        } else if (len < 65536) {
+          header = new Uint8Array([0xda, (len >> 8) & 0xff, len & 0xff]);
+        } else {
+          header = new Uint8Array([0xdb, (len >> 24) & 0xff, (len >> 16) & 0xff, (len >> 8) & 0xff, len & 0xff]);
+        }
+        const result = new Uint8Array(header.length + bytes.length);
+        result.set(header);
+        result.set(bytes, header.length);
+        return result;
+      }
+
+      _decode(buffer) {
+        const json = new TextDecoder().decode(buffer);
+        return JSON.parse(json);
+      }
+
+      _encodeFrame(type, msgId, payload) {
+        const header = new Uint8Array(10);
+        header[0] = type;
+        header[1] = 0;
+        header[2] = (msgId >> 24) & 0xff;
+        header[3] = (msgId >> 16) & 0xff;
+        header[4] = (msgId >> 8) & 0xff;
+        header[5] = msgId & 0xff;
+        const plen = payload.length;
+        header[6] = (plen >> 24) & 0xff;
+        header[7] = (plen >> 16) & 0xff;
+        header[8] = (plen >> 8) & 0xff;
+        header[9] = plen & 0xff;
+        const frame = new Uint8Array(header.length + payload.length);
+        frame.set(header);
+        frame.set(payload, header.length);
+        return frame.buffer;
+      }
+
+      _decodeFrame(buffer) {
+        if (buffer.byteLength < 10) return null;
+        const view = new DataView(buffer);
+        const type = view.getUint8(0);
+        const flags = view.getUint8(1);
+        const msgId = view.getUint32(2);
+        const plen = view.getUint32(6);
+        if (buffer.byteLength < 10 + plen) return null;
+        const payload = buffer.slice(10, 10 + plen);
+        return { type, flags, messageId: msgId, payload, totalSize: 10 + plen };
+      }
+
+      connect() {
+        return new Promise((resolve, reject) => {
+          this.ws = new WebSocket(this.url, ['afterlink']);
+          this.ws.binaryType = 'arraybuffer';
+
+          this.ws.onopen = () => {
+            this.connected = true;
+            this._handshake().then(resolve).catch(reject);
+          };
+
+          this.ws.onmessage = (e) => this._onMessage(e.data);
+          this.ws.onclose = (e) => {
+            this.connected = false;
+            this._emit('disconnected', { graceful: e.wasClean });
+          };
+          this.ws.onerror = () => { if (!this.connected) reject(new Error('Connection failed')); };
+        });
+      }
+
+      _handshake() {
+        return new Promise((resolve, reject) => {
+          const id = this._nextId();
+          const payload = this._encode({ version: 'AL/1.1', capabilities: ['streaming', 'pubsub'] });
+          const frame = this._encodeFrame(0x0F, id, payload);
+
+          const timer = setTimeout(() => reject(new Error('Handshake timeout')), 5000);
+          this.pending.set(id, {
+            resolve: (d) => { clearTimeout(timer); this.sessionId = d.session_id; resolve(d); },
+            reject: (e) => { clearTimeout(timer); reject(e); }
+          });
+          this.ws.send(frame);
+        });
+      }
+
+      _onMessage(data) {
+        const frame = this._decodeFrame(data);
+        if (!frame) return;
+
+        if (frame.type === 0x02) {
+          const d = this._decode(frame.payload);
+          this._resolve(frame.messageId, d.body || d);
+        } else if (frame.type === 0x10) {
+          const d = this._decode(frame.payload);
+          this._resolve(frame.messageId, d);
+        } else if (frame.type === 0x06) {
+          const d = this._decode(frame.payload);
+          const err = Object.assign(new Error(d.message), d);
+          this._reject(frame.messageId, err);
+        } else if (frame.type === 0x0C) {
+          const d = this._decode(frame.payload);
+          const hs = this.handlers.get(d.topic);
+          if (hs) hs.forEach(h => h(d.data));
+          this._emit('message', { topic: d.topic, data: d.data });
+        } else if (frame.type === 0x08) {
+          // PONG
+        } else if (frame.type === 0x11) {
+          const d = this._decode(frame.payload);
+          this._emit('server-closing', d);
+        }
+      }
+
+      request(route, body = {}) {
+        if (!this.connected) throw new Error('Not connected');
+        const id = this._nextId();
+        const payload = this._encode({ route, body });
+        const frame = this._encodeFrame(0x01, id, payload);
+        return new Promise((resolve, reject) => {
+          this.pending.set(id, { resolve, reject });
+          this.ws.send(frame);
+        });
+      }
+
+      subscribe(topic, handler) {
+        if (!this.connected) throw new Error('Not connected');
+        if (!this.handlers.has(topic)) this.handlers.set(topic, new Set());
+        this.handlers.get(topic).add(handler);
+        const id = this._nextId();
+        const payload = this._encode({ topic });
+        const frame = this._encodeFrame(0x0A, id, payload);
+        return new Promise((resolve, reject) => {
+          this.pending.set(id, { resolve, reject });
+          this.ws.send(frame);
+        });
+      }
+
+      publish(topic, data) {
+        if (!this.connected) throw new Error('Not connected');
+        const payload = this._encode({ topic, data });
+        const frame = this._encodeFrame(0x0C, 0, payload);
+        this.ws.send(frame);
+      }
+
+      disconnect() {
+        if (this.ws) this.ws.close();
+        this.connected = false;
+        this.pending.clear();
+      }
+
+      on(event, fn) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(fn);
+      }
+
+      _emit(event, data) {
+        (this.listeners[event] || []).forEach(fn => { try { fn(data); } catch(e) {} });
+      }
+
+      _resolve(id, data) { const p = this.pending.get(id); if (p) { this.pending.delete(id); p.resolve(data); } }
+      _reject(id, err) { const p = this.pending.get(id); if (p) { this.pending.delete(id); p.reject(err); } }
+    }
+
+    // ─── UI Logic ───────────────────────────────────────────────
+    let client = null;
+
+    function log(type, msg) {
+      const el = document.getElementById('log');
+      const time = new Date().toLocaleTimeString();
+      el.innerHTML += `<div class="log-entry"><span class="time">[${time}]</span> <span class="${type}">${msg}</span></div>\n`;
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function setStatus(status) {
+      const badge = document.getElementById('statusBadge');
+      badge.className = `status ${status}`;
+      badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+      document.getElementById('connectBtn').disabled = status === 'connected' || status === 'connecting';
+      document.getElementById('disconnectBtn').disabled = status !== 'connected';
+      document.getElementById('requestBtn').disabled = status !== 'connected';
+      document.getElementById('chatBtn').disabled = status !== 'connected';
+      document.getElementById('subBtn').disabled = status !== 'connected';
+    }
+
+    async function doConnect() {
+      const url = document.getElementById('wsUrl').value;
+      setStatus('connecting');
+      log('info', `Connecting to ${url}...`);
+
+      client = new AfterLinkClient(url);
+      client.on('disconnected', () => { setStatus('disconnected'); log('error', 'Disconnected'); });
+      client.on('server-closing', (d) => log('info', `Server closing: ${d.reason}`));
+      client.on('message', (m) => log('recv', `[${m.topic}] ${JSON.stringify(m.data)}`));
+
+      try {
+        await client.connect();
+        setStatus('connected');
+        log('recv', `Connected! Session: ${client.sessionId}`);
+      } catch (err) {
+        setStatus('disconnected');
+        log('error', `Connection failed: ${err.message}`);
+      }
+    }
+
+    function doDisconnect() {
+      if (client) { client.disconnect(); client = null; }
+      setStatus('disconnected');
+      log('info', 'Disconnected');
+    }
+
+    async function doRequest() {
+      const route = document.getElementById('route').value;
+      let body;
+      try { body = JSON.parse(document.getElementById('payload').value); } catch { log('error', 'Invalid JSON payload'); return; }
+
+      log('send', `→ ${route} ${JSON.stringify(body)}`);
+      try {
+        const result = await client.request(route, body);
+        log('recv', `← ${JSON.stringify(result)}`);
+      } catch (err) {
+        log('error', `← Error: ${err.message}`);
+      }
+    }
+
+    async function doSubscribe() {
+      try {
+        await client.subscribe('chat.broadcast', (data) => {
+          log('recv', `[chat] ${data.user}: ${data.text}`);
+        });
+        log('info', 'Subscribed to chat.broadcast');
+      } catch (err) { log('error', `Subscribe failed: ${err.message}`); }
+    }
+
+    async function doChat() {
+      const user = document.getElementById('chatUser').value;
+      const text = document.getElementById('chatMsg').value;
+      if (!text) return;
+
+      log('send', `[chat] ${user}: ${text}`);
+      try {
+        await client.request('chat.message', { user, text });
+        document.getElementById('chatMsg').value = '';
+      } catch (err) { log('error', `Send failed: ${err.message}`); }
+    }
+
+    async function fetchHealth() {
+      try {
+        const res = await fetch('http://localhost:4000/__health');
+        const data = await res.json();
+        document.getElementById('hStatus').textContent = data.status;
+        document.getElementById('hUptime').textContent = `${Math.floor(data.uptime)}s`;
+        document.getElementById('hConn').textContent = data.connections.active;
+        document.getElementById('hRps').textContent = data.requests.perSecond;
+        document.getElementById('hLatency').textContent = `${data.requests.avgLatencyMs}ms`;
+        log('info', `Health: ${data.status} — ${data.connections.active} connections`);
+      } catch (err) {
+        log('error', `Health check failed: ${err.message}`);
+      }
+    }
+
+    setStatus('disconnected');
+  </script>
+</body>
+</html>

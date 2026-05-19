@@ -1,5 +1,6 @@
 const tls = require('tls');
 const net = require('net');
+const { errors: { TLSCertInvalidError } } = require('@afterlink/core');
 
 /**
  * Creates a server transport (TCP or TLS) based on configuration.
@@ -35,19 +36,15 @@ function createServerTransport(options) {
 /**
  * Validates TLS configuration and throws descriptive errors.
  * @param {object} tlsConfig
- * @throws {Error} TLS_CONFIG_ERROR if configuration is invalid
+ * @throws {TLSCertInvalidError} if configuration is invalid
  */
 function validateTlsConfig(tlsConfig) {
   if (!tlsConfig.key) {
-    const err = new Error('TLS enabled but no private key provided');
-    err.code = 'TLS_CONFIG_ERROR';
-    throw err;
+    throw new TLSCertInvalidError('TLS enabled but no private key provided');
   }
 
   if (!tlsConfig.cert) {
-    const err = new Error('TLS enabled but no certificate provided');
-    err.code = 'TLS_CONFIG_ERROR';
-    throw err;
+    throw new TLSCertInvalidError('TLS enabled but no certificate provided');
   }
 }
 

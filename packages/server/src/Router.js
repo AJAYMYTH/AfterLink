@@ -8,6 +8,15 @@ const {
     PUBLISH,
   },
   Serializer,
+  errors: {
+    RouteNotFoundError,
+    ValidationError,
+    InternalServerErrorError,
+    UnknownFrameTypeError,
+    MalformedPayloadError,
+    fromError,
+    AfterLinkError,
+  },
 } = require('@afterlink/core');
 
 class Router {
@@ -48,7 +57,7 @@ class Router {
         this._handlePublish(payload, connection);
         break;
       default:
-        connection.sendError('PROTOCOL_ERROR', `Unexpected frame type: 0x${type.toString(16)}`, messageId);
+        connection.sendError('UNKNOWN_FRAME_TYPE', `Unexpected frame type: 0x${type.toString(16)}`, messageId);
     }
   }
 
@@ -59,7 +68,7 @@ class Router {
       route = decoded.route;
       body = decoded.body || {};
     } catch (err) {
-      connection.sendError('PROTOCOL_ERROR', 'Invalid request payload', messageId);
+      connection.sendError('MALFORMED_PAYLOAD', 'Invalid request payload', messageId);
       return;
     }
 
@@ -73,8 +82,9 @@ class Router {
       try {
         routeConfig.schema.parse(body);
       } catch (err) {
-        const message = err.errors?.[0]?.message || err.message;
-        connection.sendError('VALIDATION_ERROR', message, messageId);
+        const validationErr = ValidationError.fromZodError(err, { requestId: messageId });
+        const errorPayload = Serializer.encode(validationErr.toJSON());
+        connection.send(ERROR, 0, messageId, errorPayload);
         return;
       }
     }
@@ -89,11 +99,18 @@ class Router {
           const responsePayload = Serializer.encode({ status: 'ok', body: data });
           connection.send(RESPONSE, 0, messageId, responsePayload);
         } catch (err) {
-          connection.sendError('INTERNAL_ERROR', 'Failed to encode response', messageId);
+          connection.sendError('INTERNAL_SERVER_ERROR', 'Failed to encode response', messageId);
         }
+      },
+      error: (code, message, details) => {
+        if (responseSent) return;
+        responseSent = true;
+        const errorPayload = Serializer.encode({ code, message, details });
+        connection.send(ERROR, 0, messageId, errorPayload);
       },
     };
 
+    const startTime = Date.now();
     try {
       await this._runMiddlewares(req, async () => {
         await routeConfig.handler(req, res);
@@ -113,9 +130,17 @@ class Router {
           if (err.closeConnection) {
             connection.destroy();
           }
+        } else if (err instanceof AfterLinkError) {
+          const errorPayload = Serializer.encode(err.toJSON());
+          connection.send(ERROR, 0, messageId, errorPayload);
         } else {
-          connection.sendError('INTERNAL_ERROR', err.message, messageId);
+          connection.sendError('INTERNAL_SERVER_ERROR', err.message, messageId);
         }
+      }
+    } finally {
+      const latencyMs = Date.now() - startTime;
+      if (connection._onRequestComplete) {
+        connection._onRequestComplete(route, latencyMs, !responseSent);
       }
     }
   }
@@ -137,7 +162,7 @@ class Router {
     try {
       topic = Serializer.decode(payload).topic;
     } catch {
-      connection.sendError('PROTOCOL_ERROR', 'Invalid subscribe payload', messageId);
+      connection.sendError('MALFORMED_PAYLOAD', 'Invalid subscribe payload', messageId);
       return;
     }
 
@@ -156,7 +181,7 @@ class Router {
     try {
       topic = Serializer.decode(payload).topic;
     } catch {
-      connection.sendError('PROTOCOL_ERROR', 'Invalid unsubscribe payload', messageId);
+      connection.sendError('MALFORMED_PAYLOAD', 'Invalid unsubscribe payload', messageId);
       return;
     }
 

@@ -13,6 +13,53 @@ _Changes staged for the next release_
 
 ---
 
+## [1.2.0] — 2026-05-19
+
+### Added
+- **Error taxonomy**: `AfterLinkError` base class + 22 typed subclasses (`ProtocolError`, `AuthError`, `RouteError`, `ValidationError`, `RateLimitError`, `ConnectionError`, `ServerError`, `CompressionError`)
+- `fromError()` — convert any `Error` to typed `AfterLinkError`
+- `fromFramePayload()` — deserialize error from ERROR frame payload
+- `getErrorClassByCode()` — look up error class by code string
+- TypeScript definitions (`.d.ts`) for `@afterlink/core`, `@afterlink/server`, `@afterlink/client`
+- **Health endpoint** (`/__health`, `/__health/live`, `/__health/ready`, `/__health/stats`)
+- Protocol detection on TCP socket (`GET` vs HELLO frame) for same-port health
+- Optional separate HTTP port for health endpoint
+- Configurable health thresholds (max connections, error rate, latency)
+- Bearer token authentication for health endpoints
+- **Browser SDK** (`@afterlink/browser`) — zero-dependency WebSocket client
+- Auto-reconnect with exponential backoff and jitter
+- Ping/keepalive support
+- Pub/Sub over WebSocket transport
+- **WebSocket bridge** (`ws-bridge.js`) — translates WS binary frames to AfterLink frames
+- CORS origin validation for WebSocket connections
+- **CLI tool** (`@afterlink/cli`) — terminal testing and monitoring utility
+- `afterlink ping` — PING/PONG latency measurement with stats
+- `afterlink call` — request/response with route invocation
+- `afterlink inspect` — raw frame inspector with annotated hex dump
+- `afterlink monitor` — live terminal dashboard (connections, req/sec, latency, error rate, top routes)
+- `~/.afterlinkrc` connection profile loader
+- Colored terminal output with JSON/raw/trace modes
+- `examples/browser-example/` — working browser demo with inline client, health dashboard, chat pub/sub
+- 39 unit tests for error classes
+- 11 unit tests for health status computation
+- 8 CLI integration tests (real server)
+- 9 browser integration tests (WebSocket bridge ↔ client)
+
+### Changed
+- `Connection.js` now handles PING/PONG frames at the connection level (no longer dispatched to router)
+- `Server.js` rewritten with stats tracking (`getStats()`), health endpoint integration, WS bridge startup, and state machine (`initialized` → `running` → `closing` → `closed`)
+- `Router.js` updated with latency tracking via `finally` block and `_onRequestComplete` callback hook
+- Replaced all `throw new Error()` with typed errors across `@afterlink/core`, `@afterlink/server`, `@afterlink/client`
+- `ws` dependency added to `@afterlink/server` for WebSocket bridge
+- `commander` dependency added to `@afterlink/cli`
+
+### Fixed
+- Reverted `Frame.js` and `Serializer.js` to native `Error`/`RangeError` to eliminate circular `require()` dependencies with the new `errors/` module
+- Used `workspace:*` protocol for `@afterlink/core` dependency in client/server packages to fix vitest module resolution
+- Browser client `ws.send()` now sends Buffer directly (not `frame.buffer`) to avoid ArrayBuffer size mismatch with `ws` library
+
+---
+
 ## [1.1.2] — 2026-05-19
 
 ### Added

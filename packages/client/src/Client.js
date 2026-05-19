@@ -18,6 +18,13 @@ const {
   },
   Serializer,
   compression,
+  errors: {
+    ConnectionTimeoutError,
+    TLSCertInvalidError,
+    AfterLinkError,
+    fromFramePayload,
+    DecompressionFailedError,
+  },
 } = require('@afterlink/core');
 const PendingRequests = require('./PendingRequests');
 
@@ -79,7 +86,7 @@ class Client {
           this.socket.destroy();
           this.socket = null;
         }
-        reject(new Error(`Connection to ${this.url.hostname}:${port} timed out`));
+        reject(new ConnectionTimeoutError(this.url.hostname, port));
       }, this.options.connectTimeout);
 
       try {
@@ -109,13 +116,9 @@ class Client {
         this._connecting = false;
         this._connected = false;
         if (err.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE' || err.code === 'DEPTH_ZERO_SELF_SIGNED_CERT') {
-          const tlsErr = new Error(`TLS certificate verification failed: ${err.message}`);
-          tlsErr.code = 'TLS_CERT_UNTRUSTED';
-          reject(tlsErr);
+          reject(new TLSCertInvalidError(`TLS certificate verification failed: ${err.message}`));
         } else if (err.code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
-          const tlsErr = new Error(`TLS certificate hostname mismatch`);
-          tlsErr.code = 'TLS_CERT_ERROR';
-          reject(tlsErr);
+          reject(new TLSCertInvalidError(`TLS certificate hostname mismatch`));
         } else {
           reject(err);
         }
@@ -343,7 +346,7 @@ class Client {
           this._compression.algorithm
         );
       } catch (err) {
-        this.pending.reject(messageId, new Error(`Failed to decompress: ${err.message}`));
+        this.pending.reject(messageId, new DecompressionFailedError(`Failed to decompress: ${err.message}`));
         return;
       }
     }
@@ -368,12 +371,8 @@ class Client {
         break;
       }
       case ERROR: {
-        try {
-          const err = Serializer.decode(decodedPayload);
-          this.pending.reject(messageId, Object.assign(new Error(err.message), err));
-        } catch {
-          this.pending.reject(messageId, new Error('Unknown server error'));
-        }
+        const err = fromFramePayload(decodedPayload, messageId);
+        this.pending.reject(messageId, err);
         break;
       }
       case PUBLISH: {

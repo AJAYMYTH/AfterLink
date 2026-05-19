@@ -1,4 +1,4 @@
-const { Frame } = require('@afterlink/core');
+const { Frame, errors: { MalformedPayloadError } } = require('@afterlink/core');
 
 class FrameAccumulator {
   constructor(onFrame, options = {}) {
@@ -12,7 +12,7 @@ class FrameAccumulator {
 
     if (this.buffer.length > this.maxBufferSize) {
       this.buffer = Buffer.alloc(0);
-      throw new Error(`Accumulator buffer exceeded maximum size of ${this.maxBufferSize} bytes`);
+      throw new MalformedPayloadError(`Accumulator buffer exceeded maximum size of ${this.maxBufferSize} bytes`);
     }
 
     while (this.buffer.length > 0) {

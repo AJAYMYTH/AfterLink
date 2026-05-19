@@ -15,6 +15,8 @@ Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byt
 [![Downloads](https://img.shields.io/npm/dt/afterlink.svg)](https://www.npmjs.com/package/afterlink)
 [![TLS](https://img.shields.io/badge/TLS-1.2%2F1.3-brightgreen.svg)](./CHANGELOG.md)
 [![Compression](https://img.shields.io/badge/Compression-zlib%2FBrotli-orange.svg)](./CHANGELOG.md)
+[![CLI](https://img.shields.io/badge/CLI-afterlink-yellow.svg)](./docs/cli.md)
+[![Browser](https://img.shields.io/badge/Browser-WebSocket-blue.svg)](./docs/browser.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 [**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Discussions**](https://github.com/AJAYMYTH/AfterLink/discussions) · [**Changelog**](./CHANGELOG.md)
@@ -73,9 +75,11 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | Package | Description | Link |
 |---|---|---|
 | **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
-| **`@afterlink/core`** | Frame codec and MessagePack serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
-| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, middleware) | [npm](https://www.npmjs.com/package/@afterlink/server) |
-| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@afterlink/client) |
+| **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
+| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |
+| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |
+| **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |
+| **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor) | [npm](https://www.npmjs.com/package/@afterlink/cli) |
 
 ---
 
@@ -439,6 +443,7 @@ node index.js
 | `tls-example` | TLS server + client with dev certs |
 | `compression-example` | zlib/Brotli compression demo |
 | `rate-limit-shutdown-example` | Rate limiting + graceful shutdown |
+| `browser-example` | Browser WebSocket client + health dashboard |
 
 ---
 
@@ -456,6 +461,8 @@ const server = new Server({
   compression: { enabled: true, algorithm: 'zlib', threshold: 1024, level: 6 },
   rateLimit: { enabled: true, requestsPerSecond: 100, burstSize: 200 },
   shutdown: { drainTimeout: 5000, reason: 'planned_restart' },
+  health: { enabled: true, port: 4002, token: 'secret', thresholds: {...} },
+  browser: { enabled: true, port: 4001, path: '/ws', cors: { origins: '*' } },
 });
 
 server.on('routeName', async (req, res) => { ... }, schema);
@@ -470,6 +477,7 @@ await server.close();           // Graceful shutdown (async)
 await server.close({ force: true }); // Force close (skip drain)
 server.getConnectionCount();
 server.getRouteCount();
+server.getStats();              // { connections, requests, uptime, routes }
 server.isTLS();
 ```
 
@@ -505,12 +513,22 @@ client.isTLS();
 AfterLink/
 ├── packages/
 │   ├── core/               # Protocol core (Frame, Serializer, Compression)
-│   │   └── src/codec/      # Compression codec (zlib/Brotli)
+│   │   ├── src/codec/      # Compression codec (zlib/Brotli)
+│   │   ├── src/errors/     # Error taxonomy (22 typed error classes)
+│   │   └── types/          # TypeScript definitions
 │   ├── server/             # Server SDK (TCP, Router, Pub/Sub)
 │   │   ├── src/middleware/ # Rate limiting middleware
 │   │   ├── src/shutdown/   # Graceful shutdown handler
-│   │   └── src/tls/        # Dev certificate generator
-│   └── client/             # Client SDK (TCP, Reconnect, TLS)
+│   │   ├── src/tls/        # Dev certificate generator
+│   │   ├── src/health/     # Health endpoint handler
+│   │   ├── src/browser/    # WebSocket bridge for browser clients
+│   │   └── types/          # TypeScript definitions
+│   ├── client/             # Client SDK (TCP, Reconnect, TLS)
+│   │   └── types/          # TypeScript definitions
+│   ├── browser/            # Browser SDK (WebSocket transport)
+│   │   └── types/          # TypeScript definitions
+│   └── cli/                # CLI tool (ping, call, inspect, monitor)
+│       └── types/          # TypeScript definitions
 ├── examples/
 │   ├── demo-runner/        # Interactive showcase (7 demos)
 │   ├── demo-chat/          # Real-time chat app
@@ -519,9 +537,14 @@ AfterLink/
 │   ├── hello-world/        # Simple ping/pong
 │   ├── tls-example/        # TLS server + client demo
 │   ├── compression-example/# Compression demo
-│   └── rate-limit-shutdown-example/
+│   ├── rate-limit-shutdown-example/
+│   └── browser-example/    # Browser WebSocket + health dashboard
 ├── benchmarks/             # Performance benchmarks (vs WebSocket, Socket.IO)
 ├── docs/                   # Protocol and API documentation
+│   ├── cli.md              # CLI reference
+│   ├── browser.md          # Browser client guide
+│   ├── health.md           # Health endpoint guide
+│   └── errors.md           # Error handling guide
 ├── scripts/                # Release scripts (changelog check)
 ├── CHANGELOG.md            # Formal versioned changelog
 ├── install.sh              # Linux/macOS installer
@@ -537,13 +560,15 @@ AfterLink/
 ## Testing
 
 ```bash
-# Run all tests
+# Run all tests (106 tests)
 pnpm test
 
 # Individual package tests
-pnpm test:core     # 25 tests (Frame, Serializer, Compression)
-pnpm test:server   # 8 tests (Rate Limit, Shutdown)
+pnpm test:core     # 64 tests (Frame, Serializer, Compression, Errors)
+pnpm test:server   # 19 tests (Rate Limit, Shutdown, Health)
 pnpm test:client   # 6 tests (Client API)
+pnpm test:browser  # 9 tests (WebSocket bridge integration)
+pnpm test:cli      # 8 tests (CLI integration)
 
 # Integration tests
 node test-demos.js
@@ -604,6 +629,7 @@ AfterLink is secure by default. See [SECURITY.md](./SECURITY.md) for full detail
 - **Dev Certificates:** `generateDevCerts()` for self-signed certs without external tools
 - **Rate Limiting:** Per-connection token-bucket rate limiter prevents abuse
 - **JWT Auth:** Built-in JWT validation in HELLO handshake
+- **Error Taxonomy:** 22 typed error classes for precise error handling and debugging
 
 ```bash
 pnpm audit --prod
@@ -671,15 +697,15 @@ NODE_ENV=production
 | **Graceful shutdown** | Drain active requests, `SERVER_CLOSING` frame | ✅ Done |
 | **CHANGELOG.md** | Formal versioned changelog | ✅ Done |
 
-### Phase 2 — v1.2 · Developer Experience (Weeks 5–8)
+### ~~Phase 2~~ — v1.2 · Developer Experience ✅ **COMPLETE**
 
-| Feature | Description |
-|---|---|
-| **`afterlink` CLI tool** | `afterlink ping`, `afterlink call <route>`, `afterlink monitor` in terminal |
-| **`@afterlink/browser`** | Native WebSocket transport wrapper so browsers can connect directly |
-| **TypeScript types** | Full `.d.ts` type definitions for server, client, and core packages |
-| **Health check endpoint** | Built-in `/__health` route returning server stats and uptime |
-| **Better error codes** | Structured error taxonomy: `AUTH_FAILED`, `ROUTE_NOT_FOUND`, `TIMEOUT`, etc. |
+| Feature | Description | Status |
+|---|---|---|
+| **`afterlink` CLI tool** | `ping`, `call`, `inspect`, `monitor` commands | ✅ Done |
+| **`@afterlink/browser`** | WebSocket transport with auto-reconnect | ✅ Done |
+| **TypeScript types** | `.d.ts` for core, server, client, browser, cli | ✅ Done |
+| **Health check endpoint** | `/__health`, `/__health/live`, `/__health/ready`, `/__health/stats` | ✅ Done |
+| **Error taxonomy** | 22 typed error classes with `fromError()` and `fromFramePayload()` | ✅ Done |
 
 ### Phase 3 — v2.0 · Scale & Ecosystem (Weeks 9–16)
 
@@ -702,9 +728,9 @@ May 2026 ───────────────────────�
 Week 1–2    [████] ✅ TLS encryption + compression flag
 Week 2–3    [████] ✅ Rate limiting middleware
 Week 3–4    [████] ✅ Graceful shutdown + CHANGELOG
-Week 5–6    [░░░░] CLI tool (afterlink ping/call/monitor)
-Week 6–7    [░░░░] @afterlink/browser WebSocket transport
-Week 7–8    [░░░░] TypeScript definitions + health check
+Week 5–6    [████] ✅ Error taxonomy + TypeScript definitions
+Week 6–7    [████] ✅ Health endpoint + Browser SDK
+Week 7–8    [████] ✅ CLI tool + integration tests
 Week 9–10   [░░░░] Redis-backed cluster pub/sub
 Week 11–12  [░░░░] Python SDK
 Week 13–14  [░░░░] Dart/Flutter SDK
@@ -715,7 +741,7 @@ Week 16      [░░░░] Prometheus metrics + playground UI launch
 | Milestone | Target Date | Version | Status |
 |---|---|---|---|
 | TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | ✅ Released |
-| CLI tool + browser SDK + TypeScript | July 2026 | v1.2.0 | 🔄 Planned |
+| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | ✅ Released |
 | Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | 🔄 Planned |
 | Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | 🔄 Planned |
 

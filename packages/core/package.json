@@ -1,8 +1,24 @@
 {
   "name": "@afterlink/core",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "AfterLink Protocol Core - Frame codec and serialization",
   "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./errors": {
+      "types": "./types/errors.d.ts",
+      "require": "./src/errors/index.js",
+      "default": "./src/errors/index.js"
+    },
+    "./types/errors": {
+      "types": "./types/errors.d.ts"
+    }
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -21,6 +37,7 @@
   ],
   "files": [
     "src/**/*.js",
+    "types/**/*.d.ts",
     "README.md"
   ],
   "publishConfig": {

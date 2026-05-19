@@ -1,8 +1,15 @@
 const {
   Frame,
-  FrameTypes: { HELLO, HELLO_ACK, ERROR },
+  FrameTypes: { HELLO, HELLO_ACK, ERROR, PING, PONG, REQUEST },
   Serializer,
   compression,
+  errors: {
+    AuthRequiredError,
+    AuthFailedError,
+    DecompressionFailedError,
+    MalformedPayloadError,
+    fromError,
+  },
 } = require('@afterlink/core');
 const FrameAccumulator = require('./FrameAccumulator');
 
@@ -60,7 +67,7 @@ class Connection {
       this.accumulator.push(data);
     } catch (err) {
       this._onError(err);
-      this.sendError('PROTOCOL_ERROR', err.message);
+      this.sendError('INVALID_FRAME', err.message);
       this.socket.destroy();
     }
   }
@@ -70,6 +77,10 @@ class Connection {
 
     if (frame.type === HELLO && !this.session) {
       this._handleHandshake(frame);
+    } else if (frame.type === PING && this.session) {
+      // Respond to PING with PONG
+      const pongPayload = frame.payload.length > 0 ? frame.payload : Serializer.encode({ timestamp: Date.now() });
+      this.send(PONG, 0, frame.messageId, pongPayload);
     } else if (this.session) {
       // Decompress incoming frame if compressed
       if (compression.isCompressed(frame.flags)) {
@@ -80,13 +91,12 @@ class Connection {
             this._compression.algorithm
           );
         } catch (err) {
-          this.sendError('DECOMPRESSION_ERROR', 'Failed to decompress payload');
+          this.sendError('DECOMPRESSION_FAILED', 'Failed to decompress payload');
           return;
         }
       }
 
       // Track active requests for graceful shutdown
-      const { REQUEST } = require('@afterlink/core').FrameTypes;
       if (frame.type === REQUEST) {
         this._activeRequests.add(frame.messageId);
       }
@@ -156,7 +166,11 @@ class Connection {
       });
       this.send(HELLO_ACK, 0, frame.messageId, ackPayload);
     } catch (err) {
-      this.sendError('AUTH_INVALID', err.message);
+      if (err instanceof AuthFailedError) {
+        this.sendError(err.code, err.message);
+      } else {
+        this.sendError('AUTH_FAILED', err.message);
+      }
       this.socket.destroy();
     }
   }
