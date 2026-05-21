@@ -69,19 +69,19 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | Feature | AfterLink | HTTP/REST | WebSocket | gRPC | MQTT |
 |---|---|---|---|---|---|
 | **Setup complexity** | Very Easy | Easy | Medium | Hard | Medium |
-| **Binary protocol** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes |
-| **TLS encryption** | ✅ Built-in | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Payload compression** | ✅ zlib/Brotli | ✅ gzip | ❌ No | ✅ Yes | ❌ No |
-| **Schema validation** | ✅ Built-in | ❌ No | ❌ No | Proto only | ❌ No |
-| **Multiplexing** | ✅ Yes | ❌ No (HTTP/1.1) | ❌ No | ✅ Yes | ❌ No |
-| **Pub/Sub** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ✅ Yes |
-| **Streaming** | ✅ First-class | SSE only | Manual | ✅ Yes | ❌ No |
-| **Browser support** | ✅ Yes (TCP/WS) | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
-| **Auto-reconnect** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ✅ Yes |
-| **Rate limiting** | ✅ Built-in | ❌ No | ❌ No | ❌ No | ❌ No |
-| **Graceful shutdown** | ✅ Built-in | ✅ Yes | ❌ No | ✅ Yes | ❌ No |
-| **Built-in auth** | ✅ Yes (JWT) | ❌ No | ❌ No | Optional | Optional |
-| **CLI tooling** | ✅ Yes | curl | ❌ No | Limited | Limited |
+| **Binary protocol** | Yes | No | Yes | Yes | Yes |
+| **TLS encryption** | Yes | Yes | Yes | Yes | Yes |
+| **Payload compression** | zlib/Brotli | gzip | No | Yes | No |
+| **Schema validation** | Yes | No | No | Proto only | No |
+| **Multiplexing** | Yes | No (HTTP/1.1) | No | Yes | No |
+| **Pub/Sub** | Yes | No | No | No | Yes |
+| **Streaming** | Yes | SSE only | Manual | Yes | No |
+| **Browser support** | Yes (TCP/WS) | Yes | Yes | No | No |
+| **Auto-reconnect** | Yes | No | No | No | Yes |
+| **Rate limiting** | Yes | No | No | No | No |
+| **Graceful shutdown** | Yes | Yes | No | Yes | No |
+| **Built-in auth** | Yes (JWT) | No | No | Optional | Optional |
+| **CLI tooling** | Yes | curl | No | Limited | Limited |
 | **Header overhead** | **10 bytes** | 200–800 bytes | 2–14 bytes | 5–50 bytes | 2–5 bytes |
 | **Latency (LAN)** | **< 1ms** | 5–50ms | 1–10ms | 1–5ms | 5–20ms |
 
@@ -704,25 +704,25 @@ NODE_ENV=production
 
 > The following upgrades are planned across three phases. See the [Upgrade Schedule](#upgrade-schedule) below for timeline details.
 
-### ~~Phase 1~~ — v1.1 · Protocol & Stability ✅ **COMPLETE**
+### ~~Phase 1~~ — v1.1 · Protocol & Stability — **COMPLETE**
 
 | Feature | Description | Status |
 |---|---|---|
-| **TLS/SSL encryption** | End-to-end encrypted connections via `afterlinks://` | ✅ Done |
-| **Payload compression** | zlib/Brotli compression on the Flags byte | ✅ Done |
-| **Rate limiting middleware** | Per-connection token-bucket rate limiter | ✅ Done |
-| **Graceful shutdown** | Drain active requests, `SERVER_CLOSING` frame | ✅ Done |
-| **CHANGELOG.md** | Formal versioned changelog | ✅ Done |
+| **TLS/SSL encryption** | End-to-end encrypted connections via `afterlinks://` | Done |
+| **Payload compression** | zlib/Brotli compression on the Flags byte | Done |
+| **Rate limiting middleware** | Per-connection token-bucket rate limiter | Done |
+| **Graceful shutdown** | Drain active requests, `SERVER_CLOSING` frame | Done |
+| **CHANGELOG.md** | Formal versioned changelog | Done |
 
-### ~~Phase 2~~ — v1.2 · Developer Experience ✅ **COMPLETE**
+### ~~Phase 2~~ — v1.2 · Developer Experience — **COMPLETE**
 
 | Feature | Description | Status |
 |---|---|---|
-| **`afterlink` CLI tool** | `ping`, `call`, `inspect`, `monitor` commands | ✅ Done |
-| **`@afterlink/browser`** | WebSocket transport with auto-reconnect | ✅ Done |
-| **TypeScript types** | `.d.ts` for core, server, client, browser, cli | ✅ Done |
-| **Health check endpoint** | `/__health`, `/__health/live`, `/__health/ready`, `/__health/stats` | ✅ Done |
-| **Error taxonomy** | 22 typed error classes with `fromError()` and `fromFramePayload()` | ✅ Done |
+| **`afterlink` CLI tool** | `ping`, `call`, `inspect`, `monitor` commands | Done |
+| **`@afterlink/browser`** | WebSocket transport with auto-reconnect | Done |
+| **TypeScript types** | `.d.ts` for core, server, client, browser, cli | Done |
+| **Health check endpoint** | `/__health`, `/__health/live`, `/__health/ready`, `/__health/stats` | Done |
+| **Error taxonomy** | 22 typed error classes with `fromError()` and `fromFramePayload()` | Done |
 
 ### Phase 3 — v2.0 · Scale & Ecosystem (Weeks 9–16)
 
@@ -742,12 +742,12 @@ NODE_ENV=production
 ```
 May 2026 ──────────────────────────────────────────────── Aug 2026
 
-Week 1–2    [████] ✅ TLS encryption + compression flag
-Week 2–3    [████] ✅ Rate limiting middleware
-Week 3–4    [████] ✅ Graceful shutdown + CHANGELOG
-Week 5–6    [████] ✅ Error taxonomy + TypeScript definitions
-Week 6–7    [████] ✅ Health endpoint + Browser SDK
-Week 7–8    [████] ✅ CLI tool + integration tests
+Week 1–2    [████] TLS encryption + compression flag
+Week 2–3    [████] Rate limiting middleware
+Week 3–4    [████] Graceful shutdown + CHANGELOG
+Week 5–6    [████] Error taxonomy + TypeScript definitions
+Week 6–7    [████] Health endpoint + Browser SDK
+Week 7–8    [████] CLI tool + integration tests
 Week 9–10   [░░░░] Redis-backed cluster pub/sub
 Week 11–12  [░░░░] Python SDK
 Week 13–14  [░░░░] Dart/Flutter SDK
@@ -757,8 +757,8 @@ Week 16      [░░░░] Prometheus metrics + playground UI launch
 
 | Milestone | Target Date | Version | Status |
 |---|---|---|---|
-| TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | ✅ Released |
-| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | ✅ Released |
+| TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | Released |
+| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | Released |
 | Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | 🔄 Planned |
 | Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | 🔄 Planned |
 

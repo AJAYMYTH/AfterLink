@@ -387,12 +387,12 @@
             <thead><tr><th>Feature</th><th class="highlight">AfterLink</th><th>HTTP/REST</th><th>WebSocket</th><th>gRPC</th><th>MQTT</th></tr></thead>
             <tbody>
               <tr><td>Setup</td><td class="highlight">Very Easy</td><td>Easy</td><td>Medium</td><td>Hard</td><td>Medium</td></tr>
-              <tr><td>Binary Protocol</td><td class="highlight"><span class="check">✅</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
-              <tr><td>Schema Validation</td><td class="highlight"><span class="check">✅</span> Built-in</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td>Proto only</td><td><span class="cross">❌</span></td></tr>
-              <tr><td>Multiplexing</td><td class="highlight"><span class="check">✅</span></td><td><span class="cross">❌</span> HTTP/1.1</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
-              <tr><td>Pub/Sub</td><td class="highlight"><span class="check">✅</span> Built-in</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
-              <tr><td>Streaming</td><td class="highlight"><span class="check">✅</span> First-class</td><td>SSE only</td><td>Manual</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
-              <tr><td>Auto-Reconnect</td><td class="highlight"><span class="check">✅</span> Built-in</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+              <tr><td>Binary Protocol</td><td class="highlight"><span class="icon-check" aria-label="Yes"></span></td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-check" aria-label="Yes"></span></td><td><span class="icon-check" aria-label="Yes"></span></td><td><span class="icon-check" aria-label="Yes"></span></td></tr>
+              <tr><td>Schema Validation</td><td class="highlight"><span class="icon-check" aria-label="Yes"></span> Built-in</td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-cross" aria-label="No"></span></td><td>Proto only</td><td><span class="icon-cross" aria-label="No"></span></td></tr>
+              <tr><td>Multiplexing</td><td class="highlight"><span class="icon-check" aria-label="Yes"></span></td><td><span class="icon-cross" aria-label="No"></span> HTTP/1.1</td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-check" aria-label="Yes"></span></td><td><span class="icon-cross" aria-label="No"></span></td></tr>
+              <tr><td>Pub/Sub</td><td class="highlight"><span class="icon-check" aria-label="Yes"></span> Built-in</td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-check" aria-label="Yes"></span></td></tr>
+              <tr><td>Streaming</td><td class="highlight"><span class="icon-check" aria-label="Yes"></span> First-class</td><td>SSE only</td><td>Manual</td><td><span class="icon-check" aria-label="Yes"></span></td><td><span class="icon-cross" aria-label="No"></span></td></tr>
+              <tr><td>Auto-Reconnect</td><td class="highlight"><span class="icon-check" aria-label="Yes"></span> Built-in</td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-cross" aria-label="No"></span></td><td><span class="icon-check" aria-label="Yes"></span></td></tr>
               <tr><td>Header Size</td><td class="highlight">10 bytes</td><td>200–800 bytes</td><td>2–14 bytes</td><td>5–50 bytes</td><td>2–5 bytes</td></tr>
             </tbody>
           </table>
@@ -590,12 +590,12 @@ main();</code></pre></div></div></div>
               <table class="agent-table">
                 <thead><tr><th>Agent</th><th>Status</th></tr></thead>
                 <tbody>
-                  <tr><td>Claude Code</td><td><span class="check">✅</span></td></tr>
-                  <tr><td>Cursor</td><td><span class="check">✅</span></td></tr>
-                  <tr><td>GitHub Copilot</td><td><span class="check">✅</span></td></tr>
-                  <tr><td>Windsurf</td><td><span class="check">✅</span></td></tr>
-                  <tr><td>OpenCode</td><td><span class="check">✅</span></td></tr>
-                  <tr><td>40+ more</td><td><span class="check">✅</span></td></tr>
+                  <tr><td>Claude Code</td><td><span class="icon-check" aria-label="Supported"></span></td></tr>
+                  <tr><td>Cursor</td><td><span class="icon-check" aria-label="Supported"></span></td></tr>
+                  <tr><td>GitHub Copilot</td><td><span class="icon-check" aria-label="Supported"></span></td></tr>
+                  <tr><td>Windsurf</td><td><span class="icon-check" aria-label="Supported"></span></td></tr>
+                  <tr><td>OpenCode</td><td><span class="icon-check" aria-label="Supported"></span></td></tr>
+                  <tr><td>40+ more</td><td><span class="icon-check" aria-label="Supported"></span></td></tr>
                 </tbody>
               </table>
               <p class="agent-skill-links">
@@ -661,8 +661,8 @@ main();</code></pre></div></div></div>
           <p class="section-description">The upgrade schedule for AfterLink.</p>
         </div>
         <div class="roadmap-grid">
-          <div class="roadmap-card fade-in"><h3>Phase 1 — v1.1 ✅</h3><ul class="roadmap-checklist"><li class="done">TLS encryption</li><li class="done">Payload compression</li><li class="done">Rate limiting</li><li class="done">Graceful shutdown</li><li class="done">CHANGELOG.md</li><li class="done">npm README visibility</li></ul></div>
-          <div class="roadmap-card fade-in"><h3>Phase 2 — v1.2 ✅</h3><ul class="roadmap-checklist"><li class="done">CLI tool</li><li class="done">Browser SDK</li><li class="done">TypeScript types</li><li class="done">Health check</li><li class="done">Error taxonomy</li></ul></div>
+          <div class="roadmap-card fade-in"><h3>Phase 1 — v1.1 <span class="badge-complete" aria-label="Complete"></span></h3><ul class="roadmap-checklist"><li class="done">TLS encryption</li><li class="done">Payload compression</li><li class="done">Rate limiting</li><li class="done">Graceful shutdown</li><li class="done">CHANGELOG.md</li><li class="done">npm README visibility</li></ul></div>
+          <div class="roadmap-card fade-in"><h3>Phase 2 — v1.2 <span class="badge-complete" aria-label="Complete"></span></h3><ul class="roadmap-checklist"><li class="done">CLI tool</li><li class="done">Browser SDK</li><li class="done">TypeScript types</li><li class="done">Health check</li><li class="done">Error taxonomy</li></ul></div>
           <div class="roadmap-card fade-in"><h3>Phase 3 — v2.0</h3><ul class="roadmap-checklist"><li>Cluster mode</li><li>Python SDK</li><li>Dart SDK</li><li>Metrics dashboard</li></ul></div>
         </div>
         <div class="roadmap-progress"><div class="progress-bar"><div class="progress-fill" data-width="100"></div></div><div class="progress-label">Phase 2 Complete — Current: v1.2.0</div></div>
