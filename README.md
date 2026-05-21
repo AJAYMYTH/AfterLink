@@ -759,8 +759,8 @@ Week 16      [░░░░] Prometheus metrics + playground UI launch
 |---|---|---|---|
 | TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | Released |
 | CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | Released |
-| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | 🔄 Planned |
-| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | 🔄 Planned |
+| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | Planned |
+| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | Planned |
 
 ---
 

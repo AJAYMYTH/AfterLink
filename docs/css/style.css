@@ -81,7 +81,7 @@ body.light {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  transition: var(--transition-base);
+  transition: var(--transition-normal);
 }
 
 body.light #navbar {
@@ -321,6 +321,14 @@ body.light #navbar.scrolled {
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 24px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+#typewriter {
+  display: inline-block;
+  min-height: 1.2em;
+  text-align: left;
 }
 
 .typewriter-cursor {
@@ -800,6 +808,11 @@ body.light #navbar.scrolled {
   font-size: 0.875rem;
   cursor: pointer;
   margin-bottom: 24px;
+}
+
+.frame-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .frame-table {
@@ -1454,13 +1467,20 @@ body.light #navbar.scrolled {
 }
 
 .roadmap-checklist li::before {
-  content: '☐';
+  content: '';
   position: absolute;
   left: 0;
-  color: var(--text-secondary);
+  top: 10px;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b9094' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.roadmap-checklist li.done::before { content: '☑'; color: var(--color-success); }
+.roadmap-checklist li.done::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
 .roadmap-checklist li.done { color: var(--text-primary); }
 
 .roadmap-progress {
@@ -1670,59 +1690,6 @@ body.light #navbar.scrolled {
 .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
 .back-to-top:hover { transform: translateY(-4px); box-shadow: var(--shadow-glow); }
 
-/* Search Modal */
-.search-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  z-index: 2000;
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 20vh;
-}
-
-.search-overlay.open { display: flex; }
-
-.search-modal {
-  width: 90%;
-  max-width: 600px;
-  background: var(--bg-surface);
-  border: 1px solid var(--bg-border);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-}
-
-.search-input {
-  width: 100%;
-  padding: 20px 24px;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-size: 1.125rem;
-  font-family: var(--font-body);
-}
-
-.search-input:focus { outline: none; }
-
-.search-results {
-  max-height: 400px;
-  overflow-y: auto;
-  border-top: 1px solid var(--bg-border);
-}
-
-.search-result {
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--bg-border);
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.search-result:hover { background: var(--bg-elevated); }
-.search-result h4 { font-size: 0.9375rem; margin-bottom: 4px; }
-.search-result p { font-size: 0.8125rem; color: var(--text-secondary); }
-
 /* Mobile Nav Overlay */
 .mobile-nav {
   position: fixed;
@@ -1816,7 +1783,6 @@ body.light #navbar.scrolled {
   #navbar { top: 12px; width: calc(100% - 24px); border-radius: 12px; }
   .nav-links { display: none; }
   .nav-toggle { display: flex; }
-  .nav-github { display: none; }
   .how-it-works-steps { grid-template-columns: repeat(2, 1fr); }
   .step-connector { display: none; }
   .benchmark-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1995,6 +1961,26 @@ body.light #navbar.scrolled {
   .mobile-nav-close { top: 16px; right: 16px; width: 40px; height: 40px; }
 }
 
+@media (max-width: 360px) {
+  .hero-title { font-size: 1.75rem; }
+  .hero-badge { font-size: 0.6875rem; padding: 4px 10px; }
+  .hero-description { font-size: 0.875rem; }
+  .section-title { font-size: 1.375rem; }
+  .install-command { font-size: 0.6875rem; padding: 6px 10px; gap: 4px; }
+  .hero-skill-install .install-command { font-size: 0.6875rem; }
+  .stat-value { font-size: 1.25rem; }
+  .agent-logo { min-width: 100px; height: 72px; padding: 10px 12px; }
+  .agent-logo svg { width: 22px; height: 22px; }
+  .agent-logo span { font-size: 0.625rem; }
+  .benchmark-value { font-size: 1.25rem; }
+  .feature-card, .quickstart-card { padding: 14px; }
+  .contact-form { padding: 12px; }
+  .terminal-body { padding: 12px; font-size: 0.6875rem; }
+  .install-tab { padding: 6px 12px; font-size: 0.75rem; }
+  .api-tab { padding: 6px 12px; font-size: 0.75rem; }
+  .faq-question { padding: 12px 14px; font-size: 0.875rem; }
+}
+
 /* AI Agent Skill Section */
 .agent-skill-content { max-width: 900px; margin: 0 auto; }
 
@@ -2073,35 +2059,6 @@ body.light #navbar.scrolled {
 
 .skill-cover-item:hover span {
   color: var(--text-primary);
-}
-
-.agent-skill-desc {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  max-width: 600px;
-  line-height: 1.6;
-}
-
-.agent-skill-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.agent-skill-card {
-  padding: 28px;
-  border-radius: var(--radius-lg);
-  background: var(--bg-surface);
-  border: 1px solid var(--bg-border);
-}
-
-.agent-skill-card h3 {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--accent-primary);
 }
 
 /* Agents Marquee - Full page width, Supabase style */
@@ -2201,13 +2158,6 @@ body.light #navbar.scrolled {
   text-align: center;
   font-size: 0.875rem;
 }
-
-.agent-skill-links a {
-  color: var(--accent-primary);
-  text-decoration: none;
-}
-
-.agent-skill-links a:hover { text-decoration: underline; }
 
 .agent-skill-links a {
   color: var(--accent-primary);

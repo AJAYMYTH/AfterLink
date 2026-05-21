@@ -121,28 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroStats = document.querySelector('.hero-stats');
   if (heroStats) heroObserver.observe(heroStats);
 
-  // ─── Benchmark Counters ──────────────────────────────
-  const benchObserver = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      document.querySelectorAll('.benchmark-value[data-target]').forEach(el => {
-        const target = parseInt(el.dataset.target);
-        const duration = 2000;
-        const start = performance.now();
-        function update(now) {
-          const elapsed = now - start;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          el.textContent = Math.floor(eased * target).toLocaleString() + '+';
-          if (progress < 1) requestAnimationFrame(update);
-        }
-        requestAnimationFrame(update);
-      });
-      benchObserver.disconnect();
-    }
-  }, { threshold: 0.3 });
-  const benchmarkGrid = document.querySelector('.benchmark-grid');
-  if (benchmarkGrid) benchObserver.observe(benchmarkGrid);
-
   // ─── Bar Chart Animation ─────────────────────────────
   const barObserver = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting) {
@@ -241,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       const codeEl = document.getElementById(btn.dataset.target);
       if (!codeEl) return;
-      const text = codeEl.textContent.replace(/\$/g, '').trim();
+      const text = codeEl.textContent.replace(/^\s*\$\s*/gm, '').trim();
       navigator.clipboard.writeText(text);
       btn.classList.add('copied');
       btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
@@ -468,7 +446,9 @@ for await (const chunk of stream) {
         });
 
         if (response.ok) {
-          window.location.href = 'success.html';
+          contactForm.reset();
+          contactForm.style.display = 'none';
+          formSuccess.classList.add('show');
         } else {
           const data = await response.json();
           if (data.errors) {

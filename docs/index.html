@@ -176,7 +176,7 @@
         <div class="hero-stats">
           <div class="stat"><span class="stat-value" data-target="10">0</span><span class="stat-label">Byte Header</span></div>
           <div class="stat-divider"></div>
-          <div class="stat"><span class="stat-value" data-target="1">&lt;1ms</span><span class="stat-label">LAN Latency</span></div>
+          <div class="stat"><span class="stat-value">&lt;1ms</span><span class="stat-label">LAN Latency</span></div>
           <div class="stat-divider"></div>
           <div class="stat"><span class="stat-value" data-target="100000">0</span><span class="stat-label">Req/sec</span></div>
           <div class="stat-divider"></div>
@@ -361,27 +361,29 @@
             <div class="frame-byte payload"><span>...payload...</span><div class="frame-label">MessagePack Data</div></div>
           </div>
         </div>
-        <table class="frame-table">
-          <thead><tr><th>Code</th><th>Type</th><th>Direction</th><th>Description</th></tr></thead>
-          <tbody>
-            <tr><td>0x01</td><td>REQUEST</td><td>C → S</td><td>Client request to a named route</td></tr>
-            <tr><td>0x02</td><td>RESPONSE</td><td>S → C</td><td>Server response to a request</td></tr>
-            <tr><td>0x03</td><td>STREAM_START</td><td>S → C</td><td>Begin a streaming sequence</td></tr>
-            <tr><td>0x04</td><td>STREAM_DATA</td><td>S → C</td><td>A chunk of streamed data</td></tr>
-            <tr><td>0x05</td><td>STREAM_END</td><td>S → C</td><td>End of stream</td></tr>
-            <tr><td>0x06</td><td>ERROR</td><td>Both</td><td>Error response</td></tr>
-            <tr><td>0x07</td><td>PING</td><td>Both</td><td>Keep-alive ping</td></tr>
-            <tr><td>0x08</td><td>PONG</td><td>Both</td><td>Keep-alive pong</td></tr>
-            <tr><td>0x09</td><td>BROADCAST</td><td>S → C</td><td>Push to all clients</td></tr>
-            <tr><td>0x0A</td><td>SUBSCRIBE</td><td>C → S</td><td>Subscribe to a topic</td></tr>
-            <tr><td>0x0B</td><td>UNSUBSCRIBE</td><td>C → S</td><td>Unsubscribe from a topic</td></tr>
-            <tr><td>0x0C</td><td>PUBLISH</td><td>Both</td><td>Publish message to a topic</td></tr>
-            <tr><td>0x0D</td><td>CLOSE</td><td>Both</td><td>Graceful connection close</td></tr>
-            <tr><td>0x0E</td><td>CLOSE_ACK</td><td>Both</td><td>Acknowledge close</td></tr>
-            <tr><td>0x0F</td><td>HELLO</td><td>C → S</td><td>Initial handshake</td></tr>
-            <tr><td>0x10</td><td>HELLO_ACK</td><td>S → C</td><td>Handshake acknowledgment</td></tr>
-          </tbody>
-        </table>
+        <div class="frame-table-wrapper">
+          <table class="frame-table">
+            <thead><tr><th>Code</th><th>Type</th><th>Direction</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>0x01</td><td>REQUEST</td><td>C → S</td><td>Client request to a named route</td></tr>
+              <tr><td>0x02</td><td>RESPONSE</td><td>S → C</td><td>Server response to a request</td></tr>
+              <tr><td>0x03</td><td>STREAM_START</td><td>S → C</td><td>Begin a streaming sequence</td></tr>
+              <tr><td>0x04</td><td>STREAM_DATA</td><td>S → C</td><td>A chunk of streamed data</td></tr>
+              <tr><td>0x05</td><td>STREAM_END</td><td>S → C</td><td>End of stream</td></tr>
+              <tr><td>0x06</td><td>ERROR</td><td>Both</td><td>Error response</td></tr>
+              <tr><td>0x07</td><td>PING</td><td>Both</td><td>Keep-alive ping</td></tr>
+              <tr><td>0x08</td><td>PONG</td><td>Both</td><td>Keep-alive pong</td></tr>
+              <tr><td>0x09</td><td>BROADCAST</td><td>S → C</td><td>Push to all clients</td></tr>
+              <tr><td>0x0A</td><td>SUBSCRIBE</td><td>C → S</td><td>Subscribe to a topic</td></tr>
+              <tr><td>0x0B</td><td>UNSUBSCRIBE</td><td>C → S</td><td>Unsubscribe from a topic</td></tr>
+              <tr><td>0x0C</td><td>PUBLISH</td><td>Both</td><td>Publish message to a topic</td></tr>
+              <tr><td>0x0D</td><td>CLOSE</td><td>Both</td><td>Graceful connection close</td></tr>
+              <tr><td>0x0E</td><td>CLOSE_ACK</td><td>Both</td><td>Acknowledge close</td></tr>
+              <tr><td>0x0F</td><td>HELLO</td><td>C → S</td><td>Initial handshake</td></tr>
+              <tr><td>0x10</td><td>HELLO_ACK</td><td>S → C</td><td>Handshake acknowledgment</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
