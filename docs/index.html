@@ -3,19 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AfterLink — Binary Communication Protocol</title>
-  <meta name="description" content="A custom 10-byte binary protocol for real-time messaging. Faster than HTTP, simpler than gRPC. Published on npm.">
+  <title>AfterLink — Fast Binary Protocol for Real-Time Messaging | npm</title>
+  <meta name="description" content="AfterLink is a custom 10-byte binary protocol for Node.js — 76% faster than WebSocket, with built-in pub/sub, schema validation, CLI tools, and browser support. npm install afterlink.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='25' r='12' fill='%2300d4ff' opacity='0.9'/><circle cx='25' cy='75' r='12' fill='%238b5cf6' opacity='0.9'/><circle cx='75' cy='75' r='12' fill='%2310b981' opacity='0.9'/><line x1='50' y1='37' x2='25' y2='63' stroke='%2300d4ff' stroke-width='3' opacity='0.6'/><line x1='50' y1='37' x2='75' y2='63' stroke='%2300d4ff' stroke-width='3' opacity='0.6'/><line x1='25' y1='75' x2='75' y2='75' stroke='%2310b981' stroke-width='3' opacity='0.6'/></svg>">
-  <meta property="og:title" content="AfterLink — Binary Communication Protocol" />
-  <meta property="og:description" content="A custom 10-byte binary protocol for real-time messaging. Faster than HTTP, simpler than gRPC." />
+  <link rel="canonical" href="https://afterlinkdocs.vercel.app/">
+  <meta property="og:title" content="AfterLink — Fast Binary Protocol for Real-Time Messaging | npm" />
+  <meta property="og:description" content="AfterLink is a custom 10-byte binary protocol for Node.js — 76% faster than WebSocket, with built-in pub/sub, schema validation, CLI tools, and browser support." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://afterlinkdocs.vercel.app/" />
+  <meta property="og:image" content="https://afterlinkdocs.vercel.app/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AfterLink — Binary Communication Protocol" />
-  <meta name="twitter:description" content="10-byte binary frame. < 1ms latency. 100K+ req/sec." />
+  <meta name="twitter:title" content="AfterLink — Fast Binary Protocol for Real-Time Messaging | npm" />
+  <meta name="twitter:description" content="10-byte binary frame. &lt;1ms latency. 30K+ msg/sec. npm install afterlink." />
+  <meta name="twitter:image" content="https://afterlinkdocs.vercel.app/assets/og-image.png" />
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AfterLink",
+    "description": "A custom 10-byte binary protocol for real-time messaging. Faster than HTTP, simpler than gRPC.",
+    "url": "https://afterlinkdocs.vercel.app",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Node.js 20+",
+    "license": "https://opensource.org/licenses/MIT",
+    "author": {
+      "@type": "Person",
+      "name": "Javali Ajayakumar",
+      "url": "https://github.com/AJAYMYTH"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "softwareVersion": "1.2.0",
+    "downloadUrl": "https://www.npmjs.com/package/afterlink",
+    "sameAs": [
+      "https://github.com/AJAYMYTH/AfterLink",
+      "https://www.npmjs.com/package/afterlink"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is AfterLink?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AfterLink is a custom application-layer binary protocol for Node.js that replaces HTTP, WebSockets, and gRPC with a single unified protocol using a 10-byte frame header."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How fast is AfterLink compared to WebSocket?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AfterLink processes 30,167 messages/sec at 0.033ms average latency — 76.9% faster than WebSocket and 190.4% faster than Socket.IO."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does AfterLink work in the browser?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The @afterlink/browser package provides a WebSocket transport that connects to the built-in ws-bridge on your AfterLink server."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div id="progressBar"></div>
@@ -40,7 +106,7 @@
       <div class="nav-right">
         <span class="version-badge">v1.2.0</span>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </button>
         <button class="nav-toggle" id="navToggle" aria-label="Open menu">
           <span></span><span></span><span></span>
@@ -51,7 +117,7 @@
 
   <div class="mobile-nav" id="mobileNav">
     <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <a href="#home" class="mobile-nav-link">Home</a>
     <a href="#features" class="mobile-nav-link">Features</a>
@@ -72,7 +138,8 @@
       <div class="hero-content">
         <div class="hero-badge"><span class="badge-dot"></span><span>v1.2.0 — CLI, Browser SDK, Health & TypeScript</span></div>
         <h1 class="hero-title">
-          <span id="typewriter">Fast Communication</span><span class="typewriter-cursor"></span>
+          <span>Fast Communication Protocol for Node.js</span>
+          <span id="typewriter"></span>
         </h1>
         <p class="hero-description">A custom application-layer binary protocol designed to be faster, simpler, and more developer-friendly than HTTP. Persistent connections, real-time pub/sub, and automatic validation — all in a <strong>10-byte binary frame</strong>.</p>
         <div class="hero-install">
@@ -80,7 +147,7 @@
             <span class="install-prompt">$</span>
             <code>npm install afterlink</code>
             <button class="copy-btn-hero" id="copyHeroBtn" aria-label="Copy install command">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
           </div>
           <div class="hero-actions">
@@ -89,7 +156,7 @@
             <a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener" class="btn btn-secondary btn-github">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
               GitHub
-              <span class="github-stars"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="starCount">--</span></span>
+              <span class="github-stars"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="starCount">--</span></span>
             </a>
           </div>
         </div>
@@ -106,7 +173,7 @@
         </div>
         <div class="scroll-down">
           <span>Scroll to explore</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
     </section>
@@ -115,83 +182,83 @@
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Features</span>
-          <h2 class="section-title">Everything you need for <span class="gradient-text">modern communication</span></h2>
-          <p class="section-description">AfterLink replaces HTTP, WebSockets, and gRPC with a single, unified protocol that's faster and easier to use.</p>
+          <h2 class="section-title">Replace HTTP, WebSockets, and gRPC with <span class="gradient-text">one protocol</span></h2>
+          <p class="section-description">AfterLink is 76% faster than WebSocket, with 90% less overhead — built-in pub/sub, schema validation, CLI tools, and browser support.</p>
         </div>
         <div class="features-grid">
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <div class="feature-icon" aria-label="Binary Protocol">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
             <h3>Binary Protocol</h3>
             <p>10-byte frame header with MessagePack serialization. 90% smaller than HTTP headers.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            <div class="feature-icon" aria-label="Request Response">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
             </div>
             <h3>Request/Response</h3>
             <p>RPC-style calls with automatic correlation via message IDs. Multiplex hundreds of requests over one connection.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/><line x1="2" y1="20" x2="2.01" y2="20"/></svg>
+            <div class="feature-icon" aria-label="Pub Sub">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/><line x1="2" y1="20" x2="2.01" y2="20"/></svg>
             </div>
             <h3>Built-in Pub/Sub</h3>
             <p>Subscribe to topics and broadcast messages over the same TCP connection. No WebSockets needed.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <div class="feature-icon" aria-label="Schema Validation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <h3>Schema Validation</h3>
             <p>Automatic Zod validation on every request. Invalid payloads rejected before your handler runs.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <div class="feature-icon" aria-label="Auto Reconnect">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             </div>
             <h3>Auto-Reconnect</h3>
             <p>Clients recover from network drops automatically with configurable retry strategies.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <div class="feature-icon" aria-label="Backend Agnostic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
             <h3>Backend-Agnostic</h3>
             <p>Works with Supabase, InsForge, Firebase, AWS, MongoDB, or any backend you choose.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>
+            <div class="feature-icon" aria-label="Streaming">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>
             </div>
             <h3>Streaming</h3>
             <p>First-class streaming API with <code>STREAM_START</code>, <code>DATA</code>, and <code>END</code> frames for chunked data.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <div class="feature-icon" aria-label="CLI Tooling">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             </div>
             <h3>CLI Tooling</h3>
             <p>Built-in <code>afterlink</code> CLI for testing routes, inspecting frames, and monitoring servers live.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div class="feature-icon" aria-label="Error Taxonomy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
             <h3>Error Taxonomy</h3>
             <p>29 typed error classes with <code>fromError()</code> and <code>fromFramePayload()</code> for precise debugging.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <div class="feature-icon" aria-label="Health Monitoring">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             </div>
             <h3>Health Monitoring</h3>
             <p>Built-in <code>/__health</code> endpoint with liveness, readiness, and stats probes for load balancers.</p>
           </div>
           <div class="feature-card fade-in">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <div class="feature-icon" aria-label="TypeScript Ready">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             </div>
             <h3>TypeScript Ready</h3>
             <p>Full <code>.d.ts</code> type definitions for all packages — autocomplete and type safety out of the box.</p>
@@ -231,7 +298,7 @@
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Performance</span>
-          <h2 class="section-title">Built for <span class="gradient-text">Speed</span></h2>
+          <h2 class="section-title">30,167 msg/sec at <span class="gradient-text">0.033ms latency</span></h2>
           <p class="section-description">Real benchmarks against WebSocket and Socket.IO. Node.js v24.14.1, 10,000 iterations.</p>
         </div>
         <div class="benchmark-grid">
@@ -334,8 +401,8 @@
       <div class="container">
         <div class="section-header">
           <span class="section-badge">Installation</span>
-          <h2 class="section-title">Get started in <span class="gradient-text">minutes</span></h2>
-          <p class="section-description">Choose your preferred package manager and start building.</p>
+          <h2 class="section-title">From <span class="gradient-text">npm install</span> to first request</h2>
+          <p class="section-description">Choose your preferred package manager and start building in under 5 minutes.</p>
         </div>
         <div class="install-tabs">
           <button class="install-tab active" data-tab="npm">npm</button>
@@ -382,7 +449,7 @@
           </div>
         </div>
         <div class="install-note">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
           <span>Requires <strong>Node.js 20+</strong>. MIT License — free for personal and commercial use.</span>
         </div>
       </div>
@@ -466,22 +533,22 @@ main();</code></pre></div></div></div>
         </div>
         <div class="api-panel active" id="panel-server">
           <div class="api-list">
-            <div class="api-item"><button class="api-item-header"><code>new Server(options)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Creates a new AfterLink server instance.</p><p><strong>Options:</strong> <code>port</code>, <code>host</code>, <code>maxConnections</code>, <code>auth</code></p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>server.on(route, handler, schema?)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Registers a route handler with optional Zod schema validation.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>server.use(middleware)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Adds middleware to the request pipeline (auth, logging, rate limiting).</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>server.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to all subscribers of a topic.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>server.listen()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Starts the TCP server and begins accepting connections.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>server.close()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully shuts down the server and closes all connections.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>new Server(options)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Creates a new AfterLink server instance.</p><p><strong>Options:</strong> <code>port</code>, <code>host</code>, <code>maxConnections</code>, <code>auth</code></p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.on(route, handler, schema?)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Registers a route handler with optional Zod schema validation.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.use(middleware)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Adds middleware to the request pipeline (auth, logging, rate limiting).</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to all subscribers of a topic.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.listen()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Starts the TCP server and begins accepting connections.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>server.close()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully shuts down the server and closes all connections.</p></div></div></div>
           </div>
         </div>
         <div class="api-panel" id="panel-client">
           <div class="api-list">
-            <div class="api-item"><button class="api-item-header"><code>new Client(url, options?)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Creates a new AfterLink client instance.</p><p><strong>Options:</strong> <code>timeout</code>, <code>autoReconnect</code>, <code>maxReconnectAttempts</code>, <code>pingInterval</code></p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>client.connect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Establishes a TCP connection and performs HELLO handshake.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>client.request(route, body)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Sends a request to the server and returns the response.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>client.subscribe(topic, handler)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Subscribes to a topic and registers a callback for incoming messages.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>client.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to a topic from the client side.</p></div></div></div>
-            <div class="api-item"><button class="api-item-header"><code>client.disconnect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully closes the connection.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>new Client(url, options?)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Creates a new AfterLink client instance.</p><p><strong>Options:</strong> <code>timeout</code>, <code>autoReconnect</code>, <code>maxReconnectAttempts</code>, <code>pingInterval</code></p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.connect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Establishes a TCP connection and performs HELLO handshake.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.request(route, body)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Sends a request to the server and returns the response.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.subscribe(topic, handler)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Subscribes to a topic and registers a callback for incoming messages.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to a topic from the client side.</p></div></div></div>
+            <div class="api-item"><button class="api-item-header"><code>client.disconnect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully closes the connection.</p></div></div></div>
           </div>
         </div>
       </div>
@@ -557,9 +624,9 @@ main();</code></pre></div></div></div>
         </div>
         <div class="contact-grid">
           <div class="contact-methods">
-            <div class="contact-method"><div class="contact-method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><h4>Email</h4><a href="mailto:contact.javaliajayakumar@gmail.com">contact.javaliajayakumar@gmail.com</a></div></div>
-            <div class="contact-method"><div class="contact-method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></div><div><h4>GitHub</h4><a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">AJAYMYTH/AfterLink</a></div></div>
-            <div class="contact-method"><div class="contact-method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h4>Security</h4><a href="mailto:contact.javaliajayakumar@gmail.com">Report vulnerabilities</a></div></div>
+            <div class="contact-method"><div class="contact-method-icon" aria-label="Email"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><h4>Email</h4><a href="mailto:contact.javaliajayakumar@gmail.com">contact.javaliajayakumar@gmail.com</a></div></div>
+            <div class="contact-method"><div class="contact-method-icon" aria-label="GitHub"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 2.953 1.098.857-.238 1.787-.357 2.717-.357.93 0 1.86.119 2.717.357 1.945-1.42 2.953-1.098 2.953-1.098.652 1.652.24 2.873.116 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></div><div><h4>GitHub</h4><a href="https://github.com/AJAYMYTH/AfterLink" target="_blank" rel="noopener">AJAYMYTH/AfterLink</a></div></div>
+            <div class="contact-method"><div class="contact-method-icon" aria-label="Security"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h4>Security</h4><a href="mailto:contact.javaliajayakumar@gmail.com">Report vulnerabilities</a></div></div>
           </div>
           <form class="contact-form" id="contactForm" action="https://formspree.io/f/mgoqwaqp" method="POST" novalidate>
             <input type="text" name="_gotcha" style="display:none">
@@ -567,9 +634,9 @@ main();</code></pre></div></div></div>
             <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email"><div class="form-error">Please enter a valid email</div></div>
             <div class="form-group"><label for="subject">Subject</label><select id="subject" name="subject" required><option value="">Select a topic</option><option value="Bug Report">Bug Report</option><option value="Feature Request">Feature Request</option><option value="Question">Question</option><option value="Security">Security Issue</option><option value="Other">Other</option></select></div>
             <div class="form-group"><label for="message">Message</label><textarea id="message" name="message" required placeholder="Describe your issue, feature request, or question..." rows="5" autocomplete="off"></textarea><div class="form-error">Message must be at least 10 characters</div></div>
-            <button type="submit" class="btn btn-primary btn-full"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message</button>
+            <button type="submit" class="btn btn-primary btn-full"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Message</button>
           </form>
-          <div class="form-success" id="formSuccess"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><h3>Message Sent!</h3><p>Thank you for reaching out. We'll get back to you soon.</p></div>
+          <div class="form-success" id="formSuccess"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><h3>Message Sent!</h3><p>Thank you for reaching out. We'll get back to you soon.</p></div>
         </div>
       </div>
     </section>
@@ -588,9 +655,9 @@ main();</code></pre></div></div></div>
     </div>
   </footer>
 
-  <button id="backToTop" class="back-to-top" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+  <button id="backToTop" class="back-to-top" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg></button>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
 
