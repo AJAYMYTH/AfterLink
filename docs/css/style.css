@@ -2014,6 +2014,75 @@ body.light #navbar.scrolled {
   line-height: 1.6;
 }
 
+.agent-skill-covers {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.agent-skill-card {
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+}
+
+.agent-skill-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+  color: var(--accent-primary);
+}
+
+.skill-covers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.skill-cover-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  transition: var(--transition-fast);
+}
+
+.skill-cover-item:hover {
+  border-color: var(--accent-primary);
+  background: var(--accent-glow);
+}
+
+.skill-cover-item svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.skill-cover-item span {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.skill-cover-item:hover span {
+  color: var(--text-primary);
+}
+
+.agent-skill-desc {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
 .agent-skill-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2140,21 +2209,30 @@ body.light #navbar.scrolled {
 
 .agent-skill-links a:hover { text-decoration: underline; }
 
+.agent-skill-links a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.agent-skill-links a:hover { text-decoration: underline; }
+
 @media (max-width: 768px) {
-  .agent-skill-grid { grid-template-columns: 1fr; }
+  .agent-skill-install { gap: 16px; margin-bottom: 32px; }
+  .agent-skill-desc { font-size: 0.9375rem; }
   .agent-skill-card { padding: 20px; }
+  .agent-skill-card h3 { font-size: 1rem; margin-bottom: 16px; }
+  .skill-covers-grid { grid-template-columns: 1fr; gap: 8px; }
+  .skill-cover-item { padding: 12px 14px; }
+  .skill-cover-item svg { width: 18px; height: 18px; }
+  .skill-cover-item span { font-size: 0.75rem; }
   .agents-marquee-section { padding: 32px 0; }
   .agent-logo { min-width: 110px; height: 80px; padding: 12px 14px; }
   .agent-logo svg { width: 26px; height: 26px; }
   .agent-logo span { font-size: 0.6875rem; }
   .agents-marquee-track { gap: 14px; }
   .agents-marquee-row { gap: 14px; }
-}
-
-@media (max-width: 640px) {
-  .agent-skill-install { gap: 16px; margin-bottom: 32px; }
-  .agent-skill-desc { font-size: 0.9375rem; }
   .agent-skill-card { padding: 16px; }
-  .agent-table { font-size: 0.8125rem; }
-  .agent-table th, .agent-table td { padding: 8px 10px; }
+  .skill-cover-item { padding: 10px 12px; gap: 10px; }
+  .skill-cover-item svg { width: 16px; height: 16px; }
+  .skill-cover-item span { font-size: 0.6875rem; }
 }
