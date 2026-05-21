@@ -1915,3 +1915,114 @@ body.light #navbar.scrolled {
   .mobile-nav a { font-size: 1.25rem; }
   .mobile-nav-close { top: 16px; right: 16px; width: 40px; height: 40px; }
 }
+
+/* AI Agent Skill Section */
+.agent-skill-content { max-width: 900px; margin: 0 auto; }
+
+.agent-skill-install {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.agent-skill-desc {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.agent-skill-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.agent-skill-card {
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+}
+
+.agent-skill-card h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--accent-primary);
+}
+
+.agent-skill-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agent-skill-list li {
+  padding-left: 24px;
+  position: relative;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.agent-skill-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.agent-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+}
+
+.agent-table th, .agent-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.agent-table th {
+  background: var(--bg-elevated);
+  font-family: var(--font-code);
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.agent-table td { color: var(--text-secondary); }
+
+.agent-skill-links {
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.agent-skill-links a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.agent-skill-links a:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .agent-skill-grid { grid-template-columns: 1fr; }
+  .agent-skill-card { padding: 20px; }
+}
+
+@media (max-width: 640px) {
+  .agent-skill-install { gap: 16px; margin-bottom: 32px; }
+  .agent-skill-desc { font-size: 0.9375rem; }
+  .agent-skill-card { padding: 16px; }
+  .agent-table { font-size: 0.8125rem; }
+  .agent-table th, .agent-table td { padding: 8px 10px; }
+}

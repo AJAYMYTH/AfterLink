@@ -4,7 +4,9 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
+| 1.2.x   | :white_check_mark: |
+| 1.1.x   | :white_check_mark: |
+| 1.0.x   | :x:                |
 
 ## Reporting a Vulnerability
 
@@ -54,6 +56,14 @@ AfterLink is designed with security as a core principle. Here is how we protect 
 * **Non-Root Execution:** AfterLink should never be run as root.
 * **Process Isolation:** Designed to run in containers with restricted permissions.
 * **Memory Safety:** Automatic garbage collection and connection cleanup prevent leaks.
+
+## AI Agent Skill
+
+The [AfterLink Agent Skill](https://github.com/AJAYMYTH/afterlink-skill) is a read-only documentation package. It contains no executable code, no dependencies, and no network calls. It only provides context files that AI agents load into their working memory.
+
+- **No runtime impact:** The skill does not modify your codebase or add dependencies.
+- **No secrets exposure:** The skill has no access to your environment variables, API keys, or credentials.
+- **Install command:** `npx skills add AJAYMYTH/afterlink-skill`
 
 ## Best Practices for Users
 

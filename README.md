@@ -17,11 +17,28 @@ Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byt
 [![Compression](https://img.shields.io/badge/Compression-zlib%2FBrotli-orange.svg)](./CHANGELOG.md)
 [![CLI](https://img.shields.io/badge/CLI-afterlink-yellow.svg)](./docs/cli.md)
 [![Browser](https://img.shields.io/badge/Browser-WebSocket-blue.svg)](./docs/browser.md)
+[![Agent Skill](https://img.shields.io/badge/Agent_Skill-npx_skills_add-blue)](https://github.com/AJAYMYTH/afterlink-skill)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 [**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Discussions**](https://github.com/AJAYMYTH/AfterLink/discussions) · [**Changelog**](./CHANGELOG.md)
 
 </div>
+
+---
+
+## AI Agent Skill
+
+AfterLink has an official skill for AI coding agents. Install it once and your agent automatically knows how to build AfterLink apps — server setup, pub/sub, streaming, middleware, TLS, browser bridges, testing, and error handling — without reading docs.
+
+```bash
+npx skills add AJAYMYTH/afterlink-skill
+```
+
+**Supported agents:** Claude Code, Cursor, GitHub Copilot, Windsurf, OpenCode, and 40+ more.
+
+The skill covers 10 task areas: scaffolding servers, pub/sub patterns, streaming, middleware, TLS, WebSocket bridges, health endpoints, rate limiting, project integration, and writing tests.
+
+→ [Skill repository](https://github.com/AJAYMYTH/afterlink-skill) · [skills.sh directory](https://skills.sh)
 
 ---
 

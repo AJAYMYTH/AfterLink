@@ -100,6 +100,7 @@
         <a href="#installation" class="nav-link">Install</a>
         <a href="#quickstart" class="nav-link">Quick Start</a>
         <a href="#api" class="nav-link">API</a>
+        <a href="#agent-skill" class="nav-link">AI Agent</a>
         <a href="#troubleshooting" class="nav-link">FAQ</a>
         <a href="#releases" class="nav-link">Releases</a>
         <a href="#contact" class="nav-link">Contact</a>
@@ -128,6 +129,7 @@
     <a href="#installation" class="mobile-nav-link">Install</a>
     <a href="#quickstart" class="mobile-nav-link">Quick Start</a>
     <a href="#api" class="mobile-nav-link">API</a>
+    <a href="#agent-skill" class="mobile-nav-link">AI Agent</a>
     <a href="#troubleshooting" class="mobile-nav-link">FAQ</a>
     <a href="#releases" class="mobile-nav-link">Releases</a>
     <a href="#contact" class="mobile-nav-link">Contact</a>
@@ -550,6 +552,57 @@ main();</code></pre></div></div></div>
             <div class="api-item"><button class="api-item-header"><code>client.subscribe(topic, handler)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Subscribes to a topic and registers a callback for incoming messages.</p></div></div></div>
             <div class="api-item"><button class="api-item-header"><code>client.publish(topic, data)</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Publishes a message to a topic from the client side.</p></div></div></div>
             <div class="api-item"><button class="api-item-header"><code>client.disconnect()</code><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="api-item-body"><div class="api-item-content"><p>Gracefully closes the connection.</p></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agent-skill" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">AI Agents</span>
+          <h2 class="section-title">Build with <span class="gradient-text">AI Agents</span></h2>
+          <p class="section-description">Install the AfterLink skill once. Your AI agent knows the entire API — no docs needed.</p>
+        </div>
+        <div class="agent-skill-content">
+          <div class="agent-skill-install">
+            <div class="terminal"><div class="terminal-header"><div class="terminal-buttons"><span class="terminal-btn close"></span><span class="terminal-btn minimize"></span><span class="terminal-btn maximize"></span></div><span class="terminal-title">Terminal</span><button class="copy-btn-terminal" data-target="code-skill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div><div class="terminal-body"><pre><code id="code-skill"><span class="terminal-prompt">$</span> npx skills add AJAYMYTH/afterlink-skill</code></pre></div></div>
+            <p class="agent-skill-desc">One command. Your AI coding agent loads the full AfterLink API, patterns, and best practices into its context. Then just say <strong>"use AfterLink"</strong> — it already knows how to build your app.</p>
+          </div>
+          <div class="agent-skill-grid">
+            <div class="agent-skill-card fade-in">
+              <h3>What the Skill Covers</h3>
+              <ul class="agent-skill-list">
+                <li>Scaffold new server + client</li>
+                <li>Pub/Sub pattern for real-time messaging</li>
+                <li>Streaming with STREAM frames</li>
+                <li>Middleware (JWT auth + logging)</li>
+                <li>TLS (dev certs + production)</li>
+                <li>Browser WebSocket bridge</li>
+                <li>Health endpoint setup</li>
+                <li>Rate limiting + compression</li>
+                <li>Integrating into existing projects</li>
+                <li>Writing tests for AfterLink routes</li>
+              </ul>
+            </div>
+            <div class="agent-skill-card fade-in">
+              <h3>Supported Agents</h3>
+              <table class="agent-table">
+                <thead><tr><th>Agent</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>Claude Code</td><td><span class="check">✅</span></td></tr>
+                  <tr><td>Cursor</td><td><span class="check">✅</span></td></tr>
+                  <tr><td>GitHub Copilot</td><td><span class="check">✅</span></td></tr>
+                  <tr><td>Windsurf</td><td><span class="check">✅</span></td></tr>
+                  <tr><td>OpenCode</td><td><span class="check">✅</span></td></tr>
+                  <tr><td>40+ more</td><td><span class="check">✅</span></td></tr>
+                </tbody>
+              </table>
+              <p class="agent-skill-links">
+                <a href="https://github.com/AJAYMYTH/afterlink-skill" target="_blank" rel="noopener">Skill Repo</a> ·
+                <a href="https://skills.sh" target="_blank" rel="noopener">skills.sh</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
