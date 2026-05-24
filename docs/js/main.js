@@ -13,44 +13,119 @@ document.addEventListener('DOMContentLoaded', () => {
       : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
   });
 
+  // ─── Toast Notification System ───────────────────────
+  const toastContainer = document.getElementById('toastContainer');
+
+  function showToast(message) {
+    if (!toastContainer) return;
+    // Remove existing toast
+    toastContainer.innerHTML = '';
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${message}`;
+    toastContainer.appendChild(toast);
+    // Auto-remove after animation completes
+    setTimeout(() => { toast.remove(); }, 2200);
+  }
+
   // ─── Progress Bar ────────────────────────────────────
   const progressBar = document.getElementById('progressBar');
-  window.addEventListener('scroll', () => {
+  const backToTop = document.getElementById('backToTop');
+  const progressRing = document.getElementById('progressRing');
+  const ringCircumference = 2 * Math.PI * 21; // ~131.95
+
+  // ─── Navbar Auto-Hide on Scroll (mobile) ─────────────
+  const navbar = document.getElementById('navbar');
+  let lastScrollY = 0;
+  let scrollDelta = 0;
+  const SCROLL_THRESHOLD = 60;
+
+  function handleScroll() {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = (scrollTop / docHeight) * 100;
-    progressBar.style.width = progress + '%';
-  });
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+    // Progress bar
+    if (progressBar) progressBar.style.width = progress + '%';
+
+    // Back to top visibility
+    if (backToTop) backToTop.classList.toggle('visible', scrollTop > 500);
+
+    // Progress ring on back-to-top
+    if (progressRing) {
+      const scrollFraction = docHeight > 0 ? scrollTop / docHeight : 0;
+      const offset = ringCircumference * (1 - scrollFraction);
+      progressRing.style.strokeDashoffset = offset;
+    }
+
+    // Navbar scrolled state
+    if (navbar) navbar.classList.toggle('scrolled', scrollTop > 50);
+
+    // Navbar auto-hide on mobile (≤1024px)
+    if (window.innerWidth <= 1024 && navbar) {
+      const direction = scrollTop - lastScrollY;
+
+      if (direction > 0) {
+        // Scrolling down
+        scrollDelta += direction;
+        if (scrollDelta > SCROLL_THRESHOLD && scrollTop > 200) {
+          navbar.classList.add('nav-hidden');
+        }
+      } else {
+        // Scrolling up
+        scrollDelta = 0;
+        navbar.classList.remove('nav-hidden');
+      }
+    } else if (navbar) {
+      navbar.classList.remove('nav-hidden');
+    }
+
+    lastScrollY = scrollTop;
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
   // ─── Back to Top ─────────────────────────────────────
-  const backToTop = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => {
-    backToTop.classList.toggle('visible', window.scrollY > 500);
-  });
-  backToTop.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  if (backToTop) {
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 
-  // ─── Navbar Scroll ───────────────────────────────────
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
-  });
-
-  // ─── Mobile Nav ──────────────────────────────────────
+  // ─── Mobile Nav with Scroll Lock ─────────────────────
   const navToggle = document.getElementById('navToggle');
   const mobileNav = document.getElementById('mobileNav');
   const mobileNavClose = document.getElementById('mobileNavClose');
+  let savedScrollPos = 0;
 
-  navToggle.addEventListener('click', () => mobileNav.classList.add('open'));
-  mobileNavClose.addEventListener('click', () => mobileNav.classList.remove('open'));
+  function openMobileNav() {
+    savedScrollPos = window.scrollY;
+    body.classList.add('nav-open');
+    body.style.top = `-${savedScrollPos}px`;
+    mobileNav.classList.add('open');
+    // Show navbar when mobile nav is open
+    if (navbar) navbar.classList.remove('nav-hidden');
+  }
+
+  function closeMobileNav() {
+    body.classList.remove('nav-open');
+    body.style.top = '';
+    mobileNav.classList.remove('open');
+    window.scrollTo(0, savedScrollPos);
+  }
+
+  if (navToggle) navToggle.addEventListener('click', openMobileNav);
+  if (mobileNavClose) mobileNavClose.addEventListener('click', closeMobileNav);
+
+  // Mobile nav links — close on click and update active state
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
-    link.addEventListener('click', () => mobileNav.classList.remove('open'));
+    link.addEventListener('click', closeMobileNav);
   });
 
-  // ─── Active Nav Link ─────────────────────────────────
+  // ─── Active Nav Link (Desktop + Mobile) ───────────────
   const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.nav-link');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
   function updateActiveNav() {
     const scrollY = window.scrollY + 100;
@@ -59,14 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const height = section.offsetHeight;
       const id = section.getAttribute('id');
       if (scrollY >= top && scrollY < top + height) {
+        // Desktop nav
         navItems.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${id}`) link.classList.add('active');
+        });
+        // Mobile nav
+        mobileNavLinks.forEach(link => {
           link.classList.remove('active');
           if (link.getAttribute('href') === `#${id}`) link.classList.add('active');
         });
       }
     });
   }
-  window.addEventListener('scroll', updateActiveNav);
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
 
   // ─── Typewriter ──────────────────────────────────────
   const typewriterEl = document.getElementById('typewriter');
@@ -157,11 +238,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
 
-  // ─── Hero Install Copy ───────────────────────────────
+  // ─── Hero Install Copy (with toast) ──────────────────
   const copyHeroBtn = document.getElementById('copyHeroBtn');
   if (copyHeroBtn) {
     copyHeroBtn.addEventListener('click', () => {
       navigator.clipboard.writeText('npm install afterlink');
+      showToast('Copied to clipboard!');
       copyHeroBtn.classList.add('copied');
       copyHeroBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
       setTimeout(() => {
@@ -175,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (copySkillBtn) {
     copySkillBtn.addEventListener('click', () => {
       navigator.clipboard.writeText('npx skills add AJAYMYTH/afterlink-skill');
+      showToast('Copied to clipboard!');
       copySkillBtn.classList.add('copied');
       copySkillBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
       setTimeout(() => {
@@ -214,13 +297,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ─── Terminal Copy Buttons ───────────────────────────
+  // ─── Terminal Copy Buttons (with toast) ──────────────
   document.querySelectorAll('.copy-btn-terminal').forEach(btn => {
     btn.addEventListener('click', () => {
       const codeEl = document.getElementById(btn.dataset.target);
       if (!codeEl) return;
       const text = codeEl.textContent.replace(/^\s*\$\s*/gm, '').trim();
       navigator.clipboard.writeText(text);
+      showToast('Copied to clipboard!');
       btn.classList.add('copied');
       btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
       setTimeout(() => {
@@ -240,21 +324,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ─── API Accordion ───────────────────────────────────
+  // ─── API Accordion (with keyboard support) ──────────
   document.querySelectorAll('.api-item-header').forEach(header => {
-    header.addEventListener('click', () => {
-      const item = header.parentElement;
+    // Set ARIA attributes
+    header.setAttribute('role', 'button');
+    header.setAttribute('tabindex', '0');
+    const item = header.parentElement;
+    header.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
+
+    function toggleItem() {
       item.classList.toggle('open');
+      header.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
+    }
+
+    header.addEventListener('click', toggleItem);
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleItem();
+      }
     });
   });
 
-  // ─── FAQ Accordion ───────────────────────────────────
+  // ─── FAQ Accordion (with keyboard support) ──────────
   document.querySelectorAll('.faq-question').forEach(question => {
-    question.addEventListener('click', () => {
-      const item = question.parentElement;
+    // Set ARIA attributes
+    question.setAttribute('role', 'button');
+    question.setAttribute('tabindex', '0');
+    const item = question.parentElement;
+    question.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
+
+    function toggleFaq() {
       const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('open');
+        const q = i.querySelector('.faq-question');
+        if (q) q.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        question.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    question.addEventListener('click', toggleFaq);
+    question.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleFaq();
+      }
     });
   });
 
@@ -395,6 +513,19 @@ for await (const chunk of stream) {
       typeOutput();
     });
   }
+
+  // ─── Terminal Overflow Detection ─────────────────────
+  function checkTerminalOverflow() {
+    document.querySelectorAll('.terminal-body').forEach(el => {
+      if (el.scrollWidth > el.clientWidth) {
+        el.classList.add('has-overflow');
+      } else {
+        el.classList.remove('has-overflow');
+      }
+    });
+  }
+  checkTerminalOverflow();
+  window.addEventListener('resize', checkTerminalOverflow);
 
   // ─── Form Validation ─────────────────────────────────
   const contactForm = document.getElementById('contactForm');
