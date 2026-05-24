@@ -329,21 +329,39 @@ body.light #navbar.scrolled {
   display: inline-block;
   min-height: 1.2em;
   text-align: left;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#typewriter.tagline-exit {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+#typewriter.tagline-enter {
+  opacity: 1;
+  transform: translateY(0);
+  mask-image: linear-gradient(to top, transparent 0%, transparent 15%, black 50%, black 100%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, transparent 15%, black 50%, black 100%);
+  mask-size: 100% 300%;
+  -webkit-mask-size: 100% 300%;
+  mask-position: 0 100%;
+  -webkit-mask-position: 0 100%;
+  animation: wipe-up-mask 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wipe-up-mask {
+  0% {
+    mask-position: 0 100%;
+    -webkit-mask-position: 0 100%;
+  }
+  100% {
+    mask-position: 0 0%;
+    -webkit-mask-position: 0 0%;
+  }
 }
 
 .typewriter-cursor {
-  display: inline-block;
-  width: 3px;
-  height: 1em;
-  background: var(--accent-primary);
-  margin-left: 4px;
-  animation: cursor-blink 1s step-end infinite;
-  vertical-align: text-bottom;
-}
-
-@keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  display: none;
 }
 
 .hero-description {

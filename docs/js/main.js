@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
-  // ─── Typewriter ──────────────────────────────────────
+  // ─── Typewriter Wipe Reveal ──────────────────────────
   const typewriterEl = document.getElementById('typewriter');
   const phrases = [
     '76% Faster than WebSockets',
@@ -179,29 +179,39 @@ document.addEventListener('DOMContentLoaded', () => {
     'Auto Zod Validation',
     'Full TypeScript Support'
   ];
-  let phraseIndex = 0, charIndex = 0, isDeleting = false;
+  let phraseIndex = 0;
 
-  function typeWriter() {
-    const current = phrases[phraseIndex];
-    if (isDeleting) {
-      typewriterEl.textContent = current.substring(0, charIndex--);
-    } else {
-      typewriterEl.textContent = current.substring(0, charIndex++);
-    }
-
-    let speed = isDeleting ? 50 : 100;
-
-    if (!isDeleting && charIndex === current.length + 1) {
-      speed = 2000;
-      isDeleting = true;
-    } else if (isDeleting && charIndex < 0) {
-      isDeleting = false;
+  function rotatePhrases() {
+    if (!typewriterEl) return;
+    
+    // Slide out tagline
+    typewriterEl.classList.add('tagline-exit');
+    
+    setTimeout(() => {
+      // Transition to next tagline
       phraseIndex = (phraseIndex + 1) % phrases.length;
-      speed = 500;
-    }
-    setTimeout(typeWriter, speed);
+      typewriterEl.textContent = phrases[phraseIndex];
+      
+      typewriterEl.classList.remove('tagline-exit');
+      typewriterEl.classList.add('tagline-enter');
+      
+      // Clean enter class once animation completes
+      setTimeout(() => {
+        typewriterEl.classList.remove('tagline-enter');
+      }, 1000);
+      
+    }, 400); // matches slide-out exit transition speed
   }
-  typeWriter();
+
+  if (typewriterEl) {
+    typewriterEl.textContent = phrases[0];
+    typewriterEl.classList.add('tagline-enter');
+    setTimeout(() => {
+      typewriterEl.classList.remove('tagline-enter');
+    }, 1000);
+    
+    setInterval(rotatePhrases, 3500); // transition phrase every 3.5 seconds
+  }
 
   // ─── Animated Counters ───────────────────────────────
   function animateCounters() {
