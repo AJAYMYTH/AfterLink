@@ -261,9 +261,43 @@ body.light #navbar.scrolled {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+  overflow: hidden;
+}
+
+.hero-glow-1, .hero-glow-2 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.hero-glow-1 {
+  background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%);
+  top: -10%;
+  left: 10%;
+  animation: glow-float-1 15s ease-in-out infinite alternate;
+}
+
+.hero-glow-2 {
+  background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
+  bottom: -10%;
+  right: 10%;
+  animation: glow-float-2 18s ease-in-out infinite alternate;
+}
+
+@keyframes glow-float-1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.08; }
+  50% { transform: translate(60px, 40px) scale(1.15); opacity: 0.15; }
+  100% { transform: translate(-40px, 60px) scale(0.9); opacity: 0.08; }
+}
+
+@keyframes glow-float-2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.08; }
+  50% { transform: translate(-50px, -60px) scale(0.9); opacity: 0.14; }
+  100% { transform: translate(40px, 30px) scale(1.1); opacity: 0.08; }
 }
 
 .hero-grid {
@@ -274,6 +308,23 @@ body.light #navbar.scrolled {
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  animation: grid-drift 25s linear infinite;
+}
+
+body.light .hero-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 60px 60px;
+  }
 }
 
 .hero-content {
