@@ -119,7 +119,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mobile nav links — close on click and update active state
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
-    link.addEventListener('click', closeMobileNav);
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href');
+      
+      // Close nav first
+      body.classList.remove('nav-open');
+      body.style.top = '';
+      mobileNav.classList.remove('open');
+      
+      // Smooth scroll to target section
+      const targetSection = document.querySelector(targetId);
+      if (targetSection) {
+        const headerOffset = 80;
+        const elementPosition = targetSection.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
   });
 
   // ─── Active Nav Link (Desktop + Mobile) ───────────────
@@ -151,7 +172,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Typewriter ──────────────────────────────────────
   const typewriterEl = document.getElementById('typewriter');
-  const phrases = ['Fast Communication', 'Binary Protocol', 'Zero Boilerplate', '< 1ms Latency'];
+  const phrases = [
+    '76% Faster than WebSockets',
+    '10-Byte Binary Frames',
+    'Built-in Pub/Sub & RPC',
+    'Auto Zod Validation',
+    'Full TypeScript Support'
+  ];
   let phraseIndex = 0, charIndex = 0, isDeleting = false;
 
   function typeWriter() {
