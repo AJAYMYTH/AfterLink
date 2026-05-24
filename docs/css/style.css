@@ -326,10 +326,19 @@ body.light #navbar.scrolled {
 }
 
 #typewriter {
-  display: inline-block;
+  display: block;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: 1.2;
   min-height: 1.2em;
-  text-align: left;
+  text-align: center;
+  margin: 12px auto 0;
   transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+@media (max-width: 768px) {
+  #typewriter {
+    min-height: 2.4em; /* reserve space for 2 lines to prevent hero section jumping on mobile layout shifts */
+  }
 }
 
 #typewriter.tagline-exit {
