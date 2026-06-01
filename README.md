@@ -92,7 +92,7 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | Package | Description | Link |
 |---|---|---|
 | **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
-| **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
+| **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@afterlink/core) |
 | **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |
 | **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |
 | **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |
@@ -466,6 +466,36 @@ node index.js
 
 ## API Reference
 
+### TcpClient (`@afterlink/core`)
+
+A lightweight Promise-based TCP client — use it for testing, custom integrations,
+or any Node.js service that connects to an AfterLink server.
+
+```js
+const { TcpClient } = require('@afterlink/core');
+
+const client = new TcpClient({
+  host: 'localhost',
+  port: 4000,
+  connectTimeout: 5000,   // ms to wait for HELLO_ACK
+  requestTimeout: 10000,  // ms to wait for RESPONSE
+});
+
+// Connect (optionally with JWT auth)
+const ack = await client.connect({ auth: process.env.JWT_TOKEN });
+console.log(ack.session_id); // 'session_...'
+
+// Make a typed request
+const { body } = await client.request('messages/send', { text: 'hello' });
+
+// Listen for events
+client.on('disconnect', () => console.log('disconnected'));
+client.on('error', (err) => console.error(err));
+client.on('closing', ({ reason }) => console.log('server closing:', reason));
+
+client.disconnect();
+```
+
 ### Server
 
 ```js
@@ -759,6 +789,7 @@ Week 16      [░░░░] Prometheus metrics + playground UI launch
 |---|---|---|---|
 | TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | Released |
 | CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | Released |
+| JWT auth fixes, TcpClient, ws-bridge hardening | June 2026 | v1.2.1 | Released |
 | Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | Planned |
 | Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | Planned |
 

@@ -13,6 +13,47 @@ _Changes staged for the next release_
 
 ---
 
+
+## [1.2.1] — 2026-06-01
+
+### Fixed
+
+- **Connection._validateAuth** — replaced synchronous require('jose') with await import('jose').
+  jose v6 is ESM-only; the old require() crashed with ERR_REQUIRE_ESM on Node 18+ or
+  ReferenceError: TextEncoder is not defined on older runtimes. Affects both TCP
+  (Connection.js) and WebSocket (ws-bridge.js).
+
+- **Connection._handleHandshake** — made async and added await before _validateAuth.
+  Previously the JWT verification promise resolved after the session was constructed,
+  causing session.user to always be null and invalid tokens to pass unchecked.
+
+- **session.user** — decoded JWT payload is now stored on this._jwtPayload and
+  written to session.user during the HELLO handshake. All route handlers and
+  middleware now receive the correct user context via req.session.user.
+
+- **ws-bridge - JWT auth** — handleWsHandshake is now async and verifies the auth
+  field from the HELLO payload with jwtVerify. WebSocket sessions now populate
+  session.user on the same basis as TCP sessions.
+
+- **ws-bridge - frame coalescing** — fixed silent frame loss when HELLO and REQUEST
+  arrive in the same TCP packet. Buffer bytes after HELLO are now preserved and
+  processed immediately.
+
+- **ws-bridge - CORS** — connections without an Origin header are now allowed when
+  cors.origins is empty (default). Node.js test clients no longer receive a 403
+  in local development.
+
+### Added
+
+- **@afterlink/core - TcpClient** — new class for TCP connections wrapping net.Socket
+  with full AfterLink framing. Provides Promise-based connect(helloData) and
+  request(route, body); auto-handles HELLO_ACK, PING/PONG, and SERVER_CLOSING.
+
+- **TypeScript** — TcpClient, TcpClientOptions, and HelloData interfaces added
+  to packages/core/types/index.d.ts.
+
+---
+
 ## [1.2.0] — 2026-05-19
 
 ### Added

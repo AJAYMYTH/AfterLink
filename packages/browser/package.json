@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/browser",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "AfterLink Browser Client - WebSocket transport for browser environments",
   "main": "src/index.js",
   "types": "types/index.d.ts",

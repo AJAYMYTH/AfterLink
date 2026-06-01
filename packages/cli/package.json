@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/cli",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "AfterLink CLI — test, debug, and monitor AfterLink servers from the terminal",
   "main": "src/index.js",
   "types": "types/index.d.ts",
