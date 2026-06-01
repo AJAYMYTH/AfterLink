@@ -20,7 +20,16 @@ function createWsBridge(server, config) {
       }
 
       const origin = info.req.headers.origin;
+
+      // FIX (Problem 9): Allow connections with no Origin header so that
+      // Node.js test clients (which don't set Origin by default) can connect
+      // during development. To keep this secure in production, set
+      // cors.origins to an explicit list and remove this bypass.
       if (!origin) {
+        // If origins list is empty or explicitly allows '*', permit no-origin.
+        if (!Array.isArray(cors.origins) || cors.origins.length === 0) {
+          return cb(true);
+        }
         return cb(false, 403, 'Forbidden');
       }
 
@@ -58,29 +67,61 @@ function handleWsConnection(ws, req, server) {
     connectedAt: new Date().toISOString(),
     remoteAddress: req.socket.remoteAddress || 'unknown',
     compression: 'none',
+    // FIX (Problem 5): user is populated after HELLO auth is validated below.
+    user: null,
   };
 
+  // FIX (Problem 6): maintain a persistent binary buffer across all 'message'
+  // events so that coalesced TCP frames (e.g. HELLO + REQUEST in one packet)
+  // are all decoded correctly instead of silently dropping trailing frames.
   let buffer = Buffer.alloc(0);
   let handshakeComplete = false;
 
-  ws.on('message', (data) => {
+  ws.on('message', async (data) => {
     if (!Buffer.isBuffer(data)) {
       data = Buffer.from(data);
     }
 
     if (!handshakeComplete) {
-      handleWsHandshake(data, ws, session, (err) => {
-        if (err) {
-          ws.close(1008, err.message);
-          return;
-        }
-        handshakeComplete = true;
-      });
-      return;
+      // Accumulate data into the buffer so we can decode the HELLO frame.
+      buffer = Buffer.concat([buffer, data]);
+
+      // Try to decode a complete HELLO frame from the buffer.
+      const helloFrame = Frame.decode(buffer);
+      if (!helloFrame) {
+        // Incomplete frame — wait for more data.
+        return;
+      }
+
+      if (helloFrame.type !== FrameTypes.HELLO) {
+        ws.close(1008, 'Send HELLO frame first');
+        return;
+      }
+
+      // FIX (Problem 6): advance past the HELLO frame so any remaining bytes
+      // (e.g. a REQUEST coalesced in the same TCP packet) are preserved and
+      // processed below after the handshake is marked complete.
+      const remaining = buffer.slice(helloFrame.totalSize);
+
+      try {
+        // FIX (Problem 5): parse the auth field from the HELLO payload and
+        // verify the JWT so that session.user is populated correctly.
+        await handleWsHandshake(helloFrame, ws, session, server.config.auth);
+      } catch (err) {
+        ws.close(1008, err.message);
+        return;
+      }
+
+      handshakeComplete = true;
+
+      // FIX (Problem 6): reset the buffer to whatever arrived after the HELLO
+      // frame; fall through to the regular frame-processing loop below.
+      buffer = remaining;
+    } else {
+      buffer = Buffer.concat([buffer, data]);
     }
 
-    buffer = Buffer.concat([buffer, data]);
-
+    // Drain all complete frames from the buffer.
     while (buffer.length >= 10) {
       const frame = Frame.decode(buffer);
       if (!frame) break;
@@ -101,31 +142,38 @@ function handleWsConnection(ws, req, server) {
   });
 }
 
-function handleWsHandshake(data, ws, session, callback) {
-  try {
-    const frame = Frame.decode(data);
-    if (!frame || frame.type !== FrameTypes.HELLO) {
-      callback(new Error('Send HELLO frame first'));
-      return;
-    }
+// FIX (Problem 5): handleWsHandshake is now async and accepts the server auth
+// config. It verifies the JWT from the HELLO auth field using dynamic
+// import('jose') (fixes the ESM-in-CJS crash), then stores the decoded payload
+// on session.user so every downstream route handler has access to it.
+async function handleWsHandshake(frame, ws, session, authConfig) {
+  const helloData = Serializer.decode(frame.payload);
+  session.version = helloData.version || 'AL/1.1';
+  session.capabilities = helloData.capabilities || [];
 
-    const helloData = Serializer.decode(frame.payload);
-    session.version = helloData.version || 'AL/1.1';
-    session.capabilities = helloData.capabilities || [];
-
-    const ackPayload = Serializer.encode({
-      session_id: session.id,
-      server_version: 'AL/1.1',
-      capabilities: ['streaming', 'pubsub', 'compression'],
-      compression: 'none',
-    });
-
-    const ackFrame = Frame.encode(FrameTypes.HELLO_ACK, 0, frame.messageId, ackPayload);
-    ws.send(ackFrame, { binary: true });
-    callback(null);
-  } catch (err) {
-    callback(err);
+  // Authenticate the connection if the server is configured with JWT auth.
+  if (authConfig?.type === 'jwt' && authConfig.secret && helloData.auth) {
+    // FIX (Problem 2): use dynamic import() so jose v6 (ESM-only) loads
+    // correctly inside this CJS module without crashing.
+    const { jwtVerify } = await import('jose');
+    const { payload } = await jwtVerify(
+      helloData.auth,
+      new TextEncoder().encode(authConfig.secret)
+    );
+    // FIX (Problem 5): attach the verified JWT payload as session.user so
+    // middleware and route handlers can authorise based on the token claims.
+    session.user = payload;
   }
+
+  const ackPayload = Serializer.encode({
+    session_id: session.id,
+    server_version: 'AL/1.1',
+    capabilities: ['streaming', 'pubsub', 'compression'],
+    compression: 'none',
+  });
+
+  const ackFrame = Frame.encode(FrameTypes.HELLO_ACK, 0, frame.messageId, ackPayload);
+  ws.send(ackFrame, { binary: true });
 }
 
 function handleWsFrame(frame, ws, session, router, server) {
@@ -181,7 +229,14 @@ function handleWsRequest(frame, ws, session, router, server) {
   }
 
   let responseSent = false;
-  const req = { body, session, route, connection: { session, getRemoteAddress: () => session.remoteAddress } };
+  // FIX (Problem 5): pass the fully-populated session (including session.user)
+  // into the req object so middleware and route handlers receive user context.
+  const req = {
+    body,
+    session,
+    route,
+    connection: { session, getRemoteAddress: () => session.remoteAddress },
+  };
   const res = {
     send: (data) => {
       if (responseSent) return;

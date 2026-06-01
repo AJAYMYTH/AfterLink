@@ -111,13 +111,19 @@ class Connection {
     }
   }
 
-  _handleHandshake(frame) {
+  // FIX (Problems 2, 3, 4): _handleHandshake is now async so it can properly
+  // await _validateAuth before constructing the session. This prevents a race
+  // condition where the JWT promise resolves after session creation, which
+  // caused session.user to always be null.
+  async _handleHandshake(frame) {
     try {
       const data = Serializer.decode(frame.payload);
       const sessionId = `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
+      // FIX (Problem 4): await the auth validation so the JWT payload is
+      // available before we build this.session below.
       if (this.options.auth && data.auth) {
-        this._validateAuth(data.auth);
+        await this._validateAuth(data.auth);
       }
 
       // Negotiate compression
@@ -150,6 +156,9 @@ class Connection {
         connectedAt: new Date().toISOString(),
         remoteAddress: this.getRemoteAddress(),
         compression: agreedAlgorithm,
+        // FIX (Problem 3): store the decoded JWT payload as session.user so
+        // authenticated routes can access req.session.user.
+        user: this._jwtPayload || null,
       };
 
       const ackPayload = Serializer.encode({
@@ -175,10 +184,25 @@ class Connection {
     }
   }
 
-  _validateAuth(token) {
+  // FIX (Problem 2): _validateAuth is now async and uses dynamic import('jose')
+  // instead of require('jose'). jose v6+ is an ESM-only package — synchronous
+  // CJS require() crashes with ERR_REQUIRE_ESM (or ReferenceError: TextEncoder
+  // is not defined on older Node). Dynamic import() works correctly in both
+  // CJS and ESM contexts.
+  //
+  // FIX (Problem 3): the decoded payload is stored on this._jwtPayload so
+  // _handleHandshake can attach it to session.user after awaiting this method.
+  async _validateAuth(token) {
     if (this.options.auth?.type === 'jwt' && this.options.auth.secret) {
-      const { jwtVerify } = require('jose');
-      return jwtVerify(token, new TextEncoder().encode(this.options.auth.secret));
+      // Dynamic import works for ESM-only packages inside a CJS module.
+      const { jwtVerify } = await import('jose');
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(this.options.auth.secret)
+      );
+      // Store decoded payload so _handleHandshake can attach it to session.user.
+      this._jwtPayload = payload;
+      return payload;
     }
   }
 
