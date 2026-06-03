@@ -1,7 +1,7 @@
 
 <div align="center">
 
-<img width="1774" height="887" alt="AfterLink README.md File Logo" src="https://github.com/user-attachments/assets/86d02a7b-628b-4096-9784-a63f178643d6" />
+<img width="500" alt="AfterLink README.md File Logo" src="https://github.com/user-attachments/assets/86d02a7b-628b-4096-9784-a63f178643d6" />
 
 # AfterLink
 
