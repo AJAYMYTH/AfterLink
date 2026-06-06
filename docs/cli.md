@@ -186,6 +186,30 @@ afterlink monitor <host:port> [options]
 
 Press `q` to quit.
 
+### `upgrade` — Upgrade AfterLink packages
+
+Upgrades all installed AfterLink packages in the current project (dependencies and devDependencies) to their latest versions. Detects the package manager (npm, pnpm, yarn) automatically from the lockfile.
+
+```bash
+afterlink upgrade [options]
+```
+
+**Options:**
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `-g, --global` | Upgrade AfterLink packages globally | false |
+
+**Examples:**
+
+```bash
+# Upgrade all AfterLink packages in the current project
+afterlink upgrade
+
+# Upgrade globally
+afterlink upgrade --global
+```
+
 ---
 
 ## Connection Profiles

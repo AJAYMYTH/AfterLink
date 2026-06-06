@@ -154,12 +154,12 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 
 | Package | Description | Link |
 |---|---|---|
-| **`afterlink`** | Meta-package — installs core + server + client | [npm](https://www.npmjs.com/package/afterlink) |
+| **`afterlink`** | Meta-package — installs all available AfterLink packages (core, server, client, browser, cli, ai-assistant) at their latest versions | [npm](https://www.npmjs.com/package/afterlink) |
 | **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@afterlink/core) |
 | **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |
 | **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |
 | **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |
-| **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor) | [npm](https://www.npmjs.com/package/@afterlink/cli) |
+| **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor, upgrade) | [npm](https://www.npmjs.com/package/@afterlink/cli) |
 | **`@afterlink/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@afterlink/ai-assistant) |
 
 ---
@@ -201,11 +201,21 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 
 ### Installation
 
-```bash
-# Install all packages (recommended)
-npm install afterlink
+To install all standard packages (core, server, client, browser, cli, ai-assistant) at their latest versions:
 
-# Or install individual packages
+```bash
+npm install afterlink@latest
+```
+
+To upgrade all installed AfterLink packages in an existing project to their latest versions, run:
+
+```bash
+npx afterlink upgrade
+```
+
+Or install individual packages:
+
+```bash
 npm install @afterlink/core @afterlink/server @afterlink/client
 ```
 

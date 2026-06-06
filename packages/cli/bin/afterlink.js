@@ -4,6 +4,7 @@ const { pingCommand } = require('../src/commands/ping');
 const { callCommand } = require('../src/commands/call');
 const { monitorCommand } = require('../src/commands/monitor');
 const { inspectCommand } = require('../src/commands/inspect');
+const { upgradeCommand } = require('../src/commands/upgrade');
 
 program
   .name('afterlink')
@@ -14,5 +15,6 @@ program.addCommand(pingCommand);
 program.addCommand(callCommand);
 program.addCommand(monitorCommand);
 program.addCommand(inspectCommand);
+program.addCommand(upgradeCommand);
 
 program.parse();

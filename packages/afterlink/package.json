@@ -29,11 +29,13 @@
   },
   "scripts": {},
   "dependencies": {
-    "@afterlink/core": "^1.2.1",
-    "@afterlink/server": "^1.2.1",
-    "@afterlink/client": "^1.2.1"
+    "@afterlink/core": "latest",
+    "@afterlink/server": "latest",
+    "@afterlink/client": "latest"
   },
   "optionalDependencies": {
-    "@afterlink/cli": "^1.2.1"
+    "@afterlink/cli": "latest",
+    "@afterlink/browser": "latest",
+    "@afterlink/ai-assistant": "latest"
   }
 }
