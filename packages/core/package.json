@@ -4,6 +4,12 @@
   "description": "AfterLink Protocol Core - Frame codec and serialization",
   "main": "src/index.js",
   "types": "types/index.d.ts",
+  "browser": {
+    "net": false,
+    "tls": false,
+    "zlib": false,
+    "./src/TcpClient.js": false
+  },
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
