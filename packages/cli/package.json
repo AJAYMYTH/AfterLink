@@ -1,16 +1,16 @@
 {
   "name": "@afterlink/cli",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "AfterLink CLI — test, debug, and monitor AfterLink servers from the terminal",
   "main": "src/index.js",
   "types": "types/index.d.ts",
   "bin": {
-    "afterlink": "./bin/afterlink.js"
+    "afterlink": "bin/afterlink.js"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AJAYMYTH/AfterLink.git",
+    "url": "git+https://github.com/AJAYMYTH/AfterLink.git",
     "directory": "packages/cli"
   },
   "keywords": [

@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/client",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "AfterLink Protocol Client SDK - TCP client with auto-reconnect and subscriptions",
   "main": "src/index.js",
   "types": "types/index.d.ts",
