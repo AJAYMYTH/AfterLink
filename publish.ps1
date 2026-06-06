@@ -14,7 +14,7 @@ function Publish-Package {
   param($dir, $pkg)
   Write-Host "Publishing $pkg..." -ForegroundColor Yellow
   Set-Location $dir
-  pnpm publish --no-git-checks --access public
+  pnpm publish --no-git-checks --access public --registry=https://registry.npmjs.org
   if ($LASTEXITCODE -eq 0) {
     Write-Host "  ✅ $pkg published!" -ForegroundColor Green
   } else {
