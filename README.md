@@ -18,6 +18,7 @@ Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byt
 [![CLI](https://img.shields.io/badge/CLI-afterlink-yellow.svg)](./docs/cli.md)
 [![Browser](https://img.shields.io/badge/Browser-WebSocket-blue.svg)](./docs/browser.md)
 [![Agent Skill](https://img.shields.io/badge/Agent_Skill-npx_skills_add-blue)](https://github.com/AJAYMYTH/afterlink-skill)
+[![AI Assistant](https://img.shields.io/badge/AI_Assistant-Offline_RAG-purple.svg)](https://www.npmjs.com/package/@afterlink/ai-assistant)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 [**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Discussions**](https://github.com/AJAYMYTH/AfterLink/discussions) · [**Changelog**](./CHANGELOG.md)
@@ -39,6 +40,68 @@ npx skills add AJAYMYTH/afterlink-skill
 The skill covers 10 task areas: scaffolding servers, pub/sub patterns, streaming, middleware, TLS, WebSocket bridges, health endpoints, rate limiting, project integration, and writing tests.
 
 → [Skill repository](https://github.com/AJAYMYTH/afterlink-skill) · [skills.sh directory](https://skills.sh)
+
+---
+
+## 🤖 AI Assistant (Offline)
+
+AfterLink ships a **100% offline proprietary AI assistant** — a local RAG (Retrieval-Augmented Generation) pipeline that answers technical questions about AfterLink right inside your terminal. No internet. No API keys. No cloud.
+
+```bash
+npm install -g @afterlink/ai-assistant
+afterlink-ai
+```
+
+**Example session:**
+
+```
+You > how to set up a TLS server
+
+Assistant > [Source: Server SDK: tls.js | Confidence: 99.4% | Latency: 493ms]
+
+🔹 [DESCRIPTION / OVERVIEW]
+To enable TLS on your AfterLink server, use generateDevCerts() for local
+development or pass your own key/cert pair for production.
+
+⚡ [CODE BOILERPLATE & EXAMPLE]
+┌──────────────────────────────────────────────────────────────────────┐
+│ const { Server, generateDevCerts } = require('@afterlink/server');   │
+│ const { key, cert } = await generateDevCerts({ commonName: 'srv' }); │
+│ const server = new Server({                                          │
+│   port: 4443,                                                        │
+│   tls: { enabled: true, key, cert, rejectUnauthorized: false },      │
+│ });                                                                  │
+│ await server.listen();                                               │
+└──────────────────────────────────────────────────────────────────────┘
+
+🔗 [OFFICIAL RESOURCES & SOURCES]
+  * Main Documentation:  https://afterlink-docs.vercel.app
+  * GitHub Code Base:    https://github.com/AJAYMYTH/AfterLink
+```
+
+### How it works
+
+| Component | Technology |
+|---|---|
+| **Vector store** | FAISS (local, in-process) |
+| **Embeddings** | `all-MiniLM-L6-v2` via `@xenova/transformers` |
+| **Keyword search** | BM25 (Okapi BM25, offline) |
+| **Reranker** | `ms-marco-MiniLM-L-6-v2` cross-encoder |
+| **Query preprocessing** | Levenshtein spell-correction + acronym expansion |
+| **Memory** | Sliding-window session context (10 turns) |
+
+### Benchmark
+
+| Metric | Result | Target |
+|---|---|---|
+| Overall accuracy | **100%** (54/54 queries) | ≥ 80% |
+| Avg query latency | **434 ms** | < 500 ms |
+| RAM usage | **~250 MB** | < 1 GB |
+| Internet required | **None** | Offline |
+
+The assistant handles exact questions, typos (`isntall`, `configuer`), synonyms, abbreviations (`TLS`, `JWT`, `WS`), follow-up context, and out-of-scope rejection — all offline.
+
+→ [Full benchmark report](./BENCHMARKS.md) · [npm](https://www.npmjs.com/package/@afterlink/ai-assistant)
 
 ---
 
@@ -91,12 +154,13 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 
 | Package | Description | Link |
 |---|---|---|
-| **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
+| **`afterlink`** | Meta-package — installs core + server + client | [npm](https://www.npmjs.com/package/afterlink) |
 | **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@afterlink/core) |
 | **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |
 | **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |
 | **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |
 | **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor) | [npm](https://www.npmjs.com/package/@afterlink/cli) |
+| **`@afterlink/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@afterlink/ai-assistant) |
 
 ---
 
@@ -574,8 +638,10 @@ AfterLink/
 │   │   └── types/          # TypeScript definitions
 │   ├── browser/            # Browser SDK (WebSocket transport)
 │   │   └── types/          # TypeScript definitions
-│   └── cli/                # CLI tool (ping, call, inspect, monitor)
-│       └── types/          # TypeScript definitions
+│   ├── cli/                # CLI tool (ping, call, inspect, monitor)
+│   │   └── types/          # TypeScript definitions
+│   └── ai-assistant/       # Offline RAG AI assistant (100% local)
+│       └── src/            # rag.js, chat.js, preprocess.js, reranker.js
 ├── examples/
 │   ├── demo-runner/        # Interactive showcase (7 demos)
 │   ├── demo-chat/          # Real-time chat app
@@ -787,11 +853,12 @@ Week 16      [░░░░] Prometheus metrics + playground UI launch
 
 | Milestone | Target Date | Version | Status |
 |---|---|---|---|
-| TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | Released |
-| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | Released |
-| JWT auth fixes, TcpClient, ws-bridge hardening | June 2026 | v1.2.1 | Released |
-| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | Planned |
-| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | Planned |
+| TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | ✅ Released |
+| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | ✅ Released |
+| JWT auth fixes, TcpClient, ws-bridge hardening | June 2026 | v1.2.1 | ✅ Released |
+| **Offline RAG AI assistant (100% accuracy)** | **June 2026** | **v1.2.1** | **✅ Released** |
+| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | 🔜 Planned |
+| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | 🔜 Planned |
 
 ---
 
