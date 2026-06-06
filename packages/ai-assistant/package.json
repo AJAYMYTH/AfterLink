@@ -4,11 +4,11 @@
   "description": "Offline AI assistant for AfterLink — 100% local RAG pipeline with FAISS vector search, BM25, cross-encoder reranking, and an interactive terminal UI",
   "main": "src/chat.js",
   "bin": {
-    "afterlink-ai": "./src/chat.js"
+    "afterlink-ai": "src/chat.js"
   },
   "scripts": {
     "ingest": "node src/ingest.js",
-    "chat":   "node src/chat.js",
+    "chat": "node src/chat.js",
     "benchmark": "node src/benchmark.js"
   },
   "keywords": [

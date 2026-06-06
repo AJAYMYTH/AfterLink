@@ -9,8 +9,23 @@ AfterLink-v1.1.0-Phase1-PRD.md
 
 # AI Assistant generated/binary data (large files not needed in source control)
 data/afterlink_index/
+data/feedback.json
 packages/ai-assistant/src/model-weights.json
 packages/ai-assistant/src/vocabulary.json
 
 # AI upgrade scratch work
 AI-upgrade/
+
+# Google site verification (auto-generated, not needed in source)
+googlee7e38f2aff23cac0.html
+
+# Throwaway test / scratch files
+test-proof.txt
+test-demos.js
+verify-features.js
+
+# AI agent internal lock file
+skills-lock.json
+
+# One-time publish utility (not needed by contributors)
+publish.ps1
