@@ -62,7 +62,7 @@
   {
     "id": "doc_README_md_npm_packages",
     "title": "Overview: npm Packages",
-    "content": "### npm Packages\n\n## 📖 DESCRIPTION / OVERVIEW\n| Package | Description | Link |\n|---|---|---|\n| **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |\n| **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@afterlink/core) |\n| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |\n| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |\n| **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |\n| **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor) | [npm](https://www.npmjs.com/package/@afterlink/cli) |\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### npm Packages\n\n## 📖 DESCRIPTION / OVERVIEW\n| Package | Description | Link |\n|---|---|---|\n| **`afterlink`** | Meta-package — installs all available AfterLink packages (core, server, client, browser, cli, ai-assistant) at their latest versions | [npm](https://www.npmjs.com/package/afterlink) |\n| **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@afterlink/core) |\n| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |\n| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |\n| **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |\n| **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor, upgrade) | [npm](https://www.npmjs.com/package/@afterlink/cli) |\n| **`@afterlink/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@afterlink/ai-assistant) |\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -282,7 +282,7 @@
   {
     "id": "doc_README_md_project_structure",
     "title": "Overview: Project Structure",
-    "content": "### Project Structure\n\n## 📖 DESCRIPTION / OVERVIEW\n```\nAfterLink/\n├── packages/\n│   ├── core/               # Protocol core (Frame, Serializer, Compression)\n│   │   ├── src/codec/      # Compression codec (zlib/Brotli)\n│   │   ├── src/errors/     # Error taxonomy (22 typed error classes)\n│   │   └── types/          # TypeScript definitions\n│   ├── server/             # Server SDK (TCP, Router, Pub/Sub)\n│   │   ├── src/middleware/ # Rate limiting middleware\n│   │   ├── src/shutdown/   # Graceful shutdown handler\n│   │   ├── src/tls/        # Dev certificate generator\n│   │   ├── src/health/     # Health endpoint handler\n│   │   ├── src/browser/    # WebSocket bridge for browser clients\n│   │   └── types/          # TypeScript definitions\n│   ├── client/             # Client SDK (TCP, Reconnect, TLS)\n│   │   └── types/          # TypeScript definitions\n│   ├── browser/            # Browser SDK (WebSocket transport)\n│   │   └── types/          # TypeScript definitions\n│   └── cli/                # CLI tool (ping, call, inspect, monitor)\n│       └── types/          # TypeScript definitions\n├── examples/\n│   ├── demo-runner/        # Interactive showcase (7 demos)\n│   ├── demo-chat/          # Real-time chat app\n│   ├── demo-dashboard/     # Stock price dashboard\n│   ├── demo-microservice/  # CRUD with validation\n│   ├── hello-world/        # Simple ping/pong\n│   ├── tls-example/        # TLS server + client demo\n│   ├── compression-example/# Compression demo\n│   ├── rate-limit-shutdown-example/\n│   └── browser-example/    # Browser WebSocket + health dashboard\n├── benchmarks/             # Performance benchmarks (vs WebSocket, Socket.IO)\n├── docs/                   # Protocol and API documentation\n│   ├── cli.md              # CLI reference\n│   ├── browser.md          # Browser client guide\n│   ├── health.md           # Health endpoint guide\n│   └── errors.md           # Error handling guide\n├── scripts/                # Release scripts (changelog check)\n├── CHANGELOG.md            # Formal versioned changelog\n├── install.sh              # Linux/macOS installer\n├── install.ps1             # Windows installer\n├── DEPLOYMENT.md           # Full deployment guide\n├── SECURITY.md             # Security policy\n├── BENCHMARKS.md           # Benchmark results and methodology\n└── README.md\n```\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### Project Structure\n\n## 📖 DESCRIPTION / OVERVIEW\n```\nAfterLink/\n├── packages/\n│   ├── core/               # Protocol core (Frame, Serializer, Compression)\n│   │   ├── src/codec/      # Compression codec (zlib/Brotli)\n│   │   ├── src/errors/     # Error taxonomy (22 typed error classes)\n│   │   └── types/          # TypeScript definitions\n│   ├── server/             # Server SDK (TCP, Router, Pub/Sub)\n│   │   ├── src/middleware/ # Rate limiting middleware\n│   │   ├── src/shutdown/   # Graceful shutdown handler\n│   │   ├── src/tls/        # Dev certificate generator\n│   │   ├── src/health/     # Health endpoint handler\n│   │   ├── src/browser/    # WebSocket bridge for browser clients\n│   │   └── types/          # TypeScript definitions\n│   ├── client/             # Client SDK (TCP, Reconnect, TLS)\n│   │   └── types/          # TypeScript definitions\n│   ├── browser/            # Browser SDK (WebSocket transport)\n│   │   └── types/          # TypeScript definitions\n│   ├── cli/                # CLI tool (ping, call, inspect, monitor)\n│   │   └── types/          # TypeScript definitions\n│   └── ai-assistant/       # Offline RAG AI assistant (100% local)\n│       └── src/            # rag.js, chat.js, preprocess.js, reranker.js\n├── examples/\n│   ├── demo-runner/        # Interactive showcase (7 demos)\n│   ├── demo-chat/          # Real-time chat app\n│   ├── demo-dashboard/     # Stock price dashboard\n│   ├── demo-microservice/  # CRUD with validation\n│   ├── hello-world/        # Simple ping/pong\n│   ├── tls-example/        # TLS server + client demo\n│   ├── compression-example/# Compression demo\n│   ├── rate-limit-shutdown-example/\n│   └── browser-example/    # Browser WebSocket + health dashboard\n├── benchmarks/             # Performance benchmarks (vs WebSocket, Socket.IO)\n├── docs/                   # Protocol and API documentation\n│   ├── cli.md              # CLI reference\n│   ├── browser.md          # Browser client guide\n│   ├── health.md           # Health endpoint guide\n│   └── errors.md           # Error handling guide\n├── scripts/                # Release scripts (changelog check)\n├── CHANGELOG.md            # Formal versioned changelog\n├── install.sh              # Linux/macOS installer\n├── install.ps1             # Windows installer\n├── DEPLOYMENT.md           # Full deployment guide\n├── SECURITY.md             # Security policy\n├── BENCHMARKS.md           # Benchmark results and methodology\n└── README.md\n```\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -452,7 +452,7 @@
   {
     "id": "doc_README_md_upgrade_schedule",
     "title": "Overview: Upgrade Schedule",
-    "content": "### Upgrade Schedule\n\n## 📖 DESCRIPTION / OVERVIEW\n```\nMay 2026 ──────────────────────────────────────────────── Aug 2026\n\nWeek 1–2    [████] TLS encryption + compression flag\nWeek 2–3    [████] Rate limiting middleware\nWeek 3–4    [████] Graceful shutdown + CHANGELOG\nWeek 5–6    [████] Error taxonomy + TypeScript definitions\nWeek 6–7    [████] Health endpoint + Browser SDK\nWeek 7–8    [████] CLI tool + integration tests\nWeek 9–10   [░░░░] Redis-backed cluster pub/sub\nWeek 11–12  [░░░░] Python SDK\nWeek 13–14  [░░░░] Dart/Flutter SDK\nWeek 15      [░░░░] Protocol v2 frame design + migration guide\nWeek 16      [░░░░] Prometheus metrics + playground UI launch\n```\n\n| Milestone | Target Date | Version | Status |\n|---|---|---|---|\n| TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | Released |\n| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | Released |\n| JWT auth fixes, TcpClient, ws-bridge hardening | June 2026 | v1.2.1 | Released |\n| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | Planned |\n| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | Planned |\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### Upgrade Schedule\n\n## 📖 DESCRIPTION / OVERVIEW\n```\nMay 2026 ──────────────────────────────────────────────── Aug 2026\n\nWeek 1–2    [████] TLS encryption + compression flag\nWeek 2–3    [████] Rate limiting middleware\nWeek 3–4    [████] Graceful shutdown + CHANGELOG\nWeek 5–6    [████] Error taxonomy + TypeScript definitions\nWeek 6–7    [████] Health endpoint + Browser SDK\nWeek 7–8    [████] CLI tool + integration tests\nWeek 9–10   [░░░░] Redis-backed cluster pub/sub\nWeek 11–12  [░░░░] Python SDK\nWeek 13–14  [░░░░] Dart/Flutter SDK\nWeek 15      [░░░░] Protocol v2 frame design + migration guide\nWeek 16      [░░░░] Prometheus metrics + playground UI launch\n```\n\n| Milestone | Target Date | Version | Status |\n|---|---|---|---|\n| TLS + compression + rate limiting + shutdown | May 2026 | v1.1.0 | ✅ Released |\n| CLI + browser SDK + TypeScript + health + errors | May 2026 | v1.2.0 | ✅ Released |\n| JWT auth fixes, TcpClient, ws-bridge hardening | June 2026 | v1.2.1 | ✅ Released |\n| Offline RAG AI assistant (100% accuracy) | June 2026 | v1.2.1 | ✅ Released |\n| **`afterlink upgrade` CLI, workspace fixes, security package hardening** | **June 2026** | **v1.2.4** | **✅ Released** |\n| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | 🔜 Planned |\n| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | 🔜 Planned |\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -482,7 +482,7 @@
   {
     "id": "doc_README_md_license",
     "title": "Overview: License",
-    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Built with precision. Designed for speed.**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Binary-precise. Real-time ready to built with Precision , Built for speed**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -782,7 +782,7 @@
   {
     "id": "doc_docs_cli_md__monitor_live_terminal_dashboard",
     "title": "Documentation: `monitor` — Live terminal dashboard",
-    "content": "### `monitor` — Live terminal dashboard\n\n## 📖 DESCRIPTION / OVERVIEW\nReal-time dashboard polling the `/__health` endpoint with connection stats, request rates, latency, error rates, and top routes.\n\n```bash\nafterlink monitor <host:port> [options]\n```\n\n**Options:**\n\n| Flag | Description | Default |\n|------|-------------|---------|\n| `--tls` | Use TLS | false |\n| `-r, --refresh <ms>` | Refresh interval | 2000 |\n| `--token <key>` | Health endpoint bearer token | - |\n| `--json` | NDJSON streaming output | false |\n| `--filter <route>` | Filter request stream by route | - |\n| `--profile <name>` | Connection profile | - |\n\n**Dashboard displays:**\n- Server status (healthy/degraded/unhealthy)\n- Active connections\n- Requests per second\n- Average latency\n- Error rate\n- Uptime\n- Top 5 routes with bar charts\n- Live request stream (route + latency)\n\nPress `q` to quit.\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### `monitor` — Live terminal dashboard\n\n## 📖 DESCRIPTION / OVERVIEW\nReal-time dashboard polling the `/__health` endpoint with connection stats, request rates, latency, error rates, and top routes.\n\n```bash\nafterlink monitor <host:port> [options]\n```\n\n**Options:**\n\n| Flag | Description | Default |\n|------|-------------|---------|\n| `--tls` | Use TLS | false |\n| `-r, --refresh <ms>` | Refresh interval | 2000 |\n| `--token <key>` | Health endpoint bearer token | - |\n| `--json` | NDJSON streaming output | false |\n| `--filter <route>` | Filter request stream by route | - |\n| `--profile <name>` | Connection profile | - |\n\n**Dashboard displays:**\n- Server status (healthy/degraded/unhealthy)\n- Active connections\n- Requests per second\n- Average latency\n- Error rate\n- Uptime\n- Top 5 routes with bar charts\n- Live request stream (route + latency)\n\nPress `q` to quit.\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -1982,7 +1982,7 @@
   {
     "id": "doc_packages_core_README_md_license",
     "title": "Core Protocol: License",
-    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Built with precision. Designed for speed.**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Binary-precise. Real-time ready to built with Precision , Built for speed**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -2632,7 +2632,7 @@
   {
     "id": "doc_packages_server_README_md_license",
     "title": "Server SDK: License",
-    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Built with precision. Designed for speed.**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Binary-precise. Real-time ready to built with Precision , Built for speed**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -3232,7 +3232,7 @@
   {
     "id": "doc_packages_client_README_md_license",
     "title": "Client SDK: License",
-    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Built with precision. Designed for speed.**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "content": "### License\n\n## 📖 DESCRIPTION / OVERVIEW\n[MIT](./LICENSE) — Free for personal and commercial use.\n\n---\n\n**Binary-precise. Real-time ready to built with Precision , Built for speed**\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
     "metadata": {
       "category": "documentation",
       "version": "1.0.0",
@@ -3342,7 +3342,7 @@
   {
     "id": "code_packages_cli_bin_afterlink_js",
     "title": "CLI Tool: afterlink.js",
-    "content": "File: afterlink.js\n```javascript\n#!/usr/bin/env node\nconst { program } = require('commander');\nconst { pingCommand } = require('../src/commands/ping');\nconst { callCommand } = require('../src/commands/call');\nconst { monitorCommand } = require('../src/commands/monitor');\nconst { inspectCommand } = require('../src/commands/inspect');\n\nprogram\n  .name('afterlink')\n  .description('AfterLink CLI — test, debug, and monitor AfterLink servers')\n  .version(require('../package.json').version);\n\nprogram.addCommand(pingCommand);\nprogram.addCommand(callCommand);\nprogram.addCommand(monitorCommand);\nprogram.addCommand(inspectCommand);\n\nprogram.parse();\n\n```",
+    "content": "File: afterlink.js\n```javascript\n#!/usr/bin/env node\nconst { program } = require('commander');\nconst { pingCommand } = require('../src/commands/ping');\nconst { callCommand } = require('../src/commands/call');\nconst { monitorCommand } = require('../src/commands/monitor');\nconst { inspectCommand } = require('../src/commands/inspect');\nconst { upgradeCommand } = require('../src/commands/upgrade');\n\nprogram\n  .name('afterlink')\n  .description('AfterLink CLI — test, debug, and monitor AfterLink servers')\n  .version(require('../package.json').version);\n\nprogram.addCommand(pingCommand);\nprogram.addCommand(callCommand);\nprogram.addCommand(monitorCommand);\nprogram.addCommand(inspectCommand);\nprogram.addCommand(upgradeCommand);\n\nprogram.parse();\n\n```",
     "metadata": {
       "category": "code",
       "version": "1.0.0",
@@ -3423,6 +3423,86 @@
     "id": "code_packages_cli_vitest_config_js",
     "title": "CLI Tool: vitest.config.js",
     "content": "File: vitest.config.js\n```javascript\nimport { defineConfig } from 'vitest/config';\n\nexport default defineConfig({\n  test: {\n    globals: true,\n    testTimeout: 15000,\n  },\n});\n\n```",
+    "metadata": {
+      "category": "code",
+      "version": "1.0.0",
+      "difficulty": "beginner"
+    }
+  },
+  {
+    "id": "doc_README_md__ai_assistant_offline_",
+    "title": "Overview: 🤖 AI Assistant (Offline)",
+    "content": "### 🤖 AI Assistant (Offline)\n\n## 📖 DESCRIPTION / OVERVIEW\nAfterLink ships a **100% offline proprietary AI assistant** — a local RAG (Retrieval-Augmented Generation) pipeline that answers technical questions about AfterLink right inside your terminal. No internet. No API keys. No cloud.\n\n```bash\nnpm install -g @afterlink/ai-assistant\nafterlink-ai\n```\n\n**Example session:**\n\n```\nYou > how to set up a TLS server\n\nAssistant > [Source: Server SDK: tls.js | Confidence: 99.4% | Latency: 493ms]\n\n🔹 [DESCRIPTION / OVERVIEW]\nTo enable TLS on your AfterLink server, use generateDevCerts() for local\ndevelopment or pass your own key/cert pair for production.\n\n⚡ [CODE BOILERPLATE & EXAMPLE]\n┌──────────────────────────────────────────────────────────────────────┐\n│ const { Server, generateDevCerts } = require('@afterlink/server');   │\n│ const { key, cert } = await generateDevCerts({ commonName: 'srv' }); │\n│ const server = new Server({                                          │\n│   port: 4443,                                                        │\n│   tls: { enabled: true, key, cert, rejectUnauthorized: false },      │\n│ });                                                                  │\n│ await server.listen();                                               │\n└──────────────────────────────────────────────────────────────────────┘\n\n🔗 [OFFICIAL RESOURCES & SOURCES]\n  * Main Documentation:  https://afterlink-docs.vercel.app\n  * GitHub Code Base:    https://github.com/AJAYMYTH/AfterLink\n```\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "high"
+    }
+  },
+  {
+    "id": "doc_README_md_how_it_works",
+    "title": "Overview: How it works",
+    "content": "### How it works\n\n## 📖 DESCRIPTION / OVERVIEW\n| Component | Technology |\n|---|---|\n| **Vector store** | FAISS (local, in-process) |\n| **Embeddings** | `all-MiniLM-L6-v2` via `@xenova/transformers` |\n| **Keyword search** | BM25 (Okapi BM25, offline) |\n| **Reranker** | `ms-marco-MiniLM-L-6-v2` cross-encoder |\n| **Query preprocessing** | Levenshtein spell-correction + acronym expansion |\n| **Memory** | Sliding-window session context (10 turns) |\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "medium"
+    }
+  },
+  {
+    "id": "doc_README_md_benchmark",
+    "title": "Overview: Benchmark",
+    "content": "### Benchmark\n\n## 📖 DESCRIPTION / OVERVIEW\n| Metric | Result | Target |\n|---|---|---|\n| Overall accuracy | **100%** (54/54 queries) | ≥ 80% |\n| Avg query latency | **434 ms** | < 500 ms |\n| RAM usage | **~250 MB** | < 1 GB |\n| Internet required | **None** | Offline |\n\nThe assistant handles exact questions, typos (`isntall`, `configuer`), synonyms, abbreviations (`TLS`, `JWT`, `WS`), follow-up context, and out-of-scope rejection — all offline.\n\n→ [Full benchmark report](./BENCHMARKS.md) · [npm](https://www.npmjs.com/package/@afterlink/ai-assistant)\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "high"
+    }
+  },
+  {
+    "id": "doc_README_md_installation",
+    "title": "Overview: Installation",
+    "content": "### Installation\n\n## 📖 DESCRIPTION / OVERVIEW\nTo install all standard packages (core, server, client, browser, cli, ai-assistant) at their latest versions:\n\n```bash\nnpm install afterlink@latest\n```\n\nTo upgrade all installed AfterLink packages in an existing project to their latest versions, run:\n\n```bash\nnpx afterlink upgrade\n```\n\nOr install individual packages:\n\n```bash\nnpm install @afterlink/core @afterlink/server @afterlink/client\n```\n\n**From source:**\n\n```bash\ngit clone https://github.com/AJAYMYTH/AfterLink.git\ncd AfterLink\nnpm install -g pnpm\npnpm install\n```\n\n## 💻 HOW TO USE / IMPLEMENTATION\nTo set up AfterLink in your project, execute these standard terminal steps:\n```javascript\n// 1. Create a project folder and navigate in:\n//    mkdir my-afterlink-app && cd my-afterlink-app\n\n// 2. Initialize Node.js environment:\n//    npm init -y\n\n// 3. Install the AfterLink framework:\n//    npm install afterlink\n```\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "beginner"
+    }
+  },
+  {
+    "id": "doc_docs_cli_md__upgrade_upgrade_afterlink_packages",
+    "title": "Documentation: `upgrade` — Upgrade AfterLink packages",
+    "content": "### `upgrade` — Upgrade AfterLink packages\n\n## 📖 DESCRIPTION / OVERVIEW\nUpgrades all installed AfterLink packages in the current project (dependencies and devDependencies) to their latest versions. Detects the package manager (npm, pnpm, yarn) automatically from the lockfile.\n\n```bash\nafterlink upgrade [options]\n```\n\n**Options:**\n\n| Flag | Description | Default |\n|------|-------------|---------|\n| `-g, --global` | Upgrade AfterLink packages globally | false |\n\n**Examples:**\n\n```bash\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "beginner"
+    }
+  },
+  {
+    "id": "doc_docs_cli_md_upgrade_all_afterlink_packages_in_the_current_project",
+    "title": "Documentation: Upgrade all AfterLink packages in the current project",
+    "content": "### Upgrade all AfterLink packages in the current project\n\n## 📖 DESCRIPTION / OVERVIEW\nafterlink upgrade\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "beginner"
+    }
+  },
+  {
+    "id": "doc_docs_cli_md_upgrade_globally",
+    "title": "Documentation: Upgrade globally",
+    "content": "### Upgrade globally\n\n## 📖 DESCRIPTION / OVERVIEW\nafterlink upgrade --global\n```\n\n---\n\n## 💻 HOW TO USE / IMPLEMENTATION\nFor complete usage references, see the official AfterLink documentation at: https://afterlinkdocs.vercel.app\n",
+    "metadata": {
+      "category": "documentation",
+      "version": "1.0.0",
+      "difficulty": "beginner"
+    }
+  },
+  {
+    "id": "code_packages_cli_src_commands_upgrade_js",
+    "title": "CLI Tool: upgrade.js",
+    "content": "File: upgrade.js\n```javascript\nconst { Command } = require('commander');\nconst fs = require('fs');\nconst path = require('path');\nconst { execSync } = require('child_process');\n\nconst ALL_AFTERLINK_PACKAGES = [\n  'afterlink',\n  '@afterlink/core',\n  '@afterlink/server',\n  '@afterlink/client',\n  '@afterlink/browser',\n  '@afterlink/cli',\n  '@afterlink/ai-assistant'\n];\n\nconst upgradeCommand = new Command('upgrade')\n  .description('Upgrade all installed AfterLink packages in the current project to their latest versions')\n  .option('-g, --global', 'Upgrade AfterLink packages globally')\n  .action((options) => {\n    const cwd = process.cwd();\n    let packageManager = 'npm';\n\n    // Detect package manager\n    if (fs.existsSync(path.join(cwd, 'pnpm-lock.yaml'))) {\n      packageManager = 'pnpm';\n    } else if (fs.existsSync(path.join(cwd, 'yarn.lock'))) {\n      packageManager = 'yarn';\n    } else if (fs.existsSync(path.join(cwd, 'package-lock.json'))) {\n      packageManager = 'npm';\n    }\n\n    if (options.global) {\n      console.log(`Upgrading AfterLink packages globally using ${packageManager}...`);\n      let command = '';\n      if (packageManager === 'pnpm') {\n        command = `pnpm add -g ${ALL_AFTERLINK_PACKAGES.map(p => `${p}@latest`).join(' ')}`;\n      } else if (packageManager === 'yarn') {\n        command = `yarn global add ${ALL_AFTERLINK_PACKAGES.map(p => `${p}@latest`).join(' ')}`;\n      } else {\n        command = `npm install -g ${ALL_AFTERLINK_PACKAGES.map(p => `${p}@latest`).join(' ')}`;\n      }\n\n      console.log(`Running: ${command}`);\n      try {\n        execSync(command, { stdio: 'inherit' });\n        console.log('\\n✅ Successfully upgraded AfterLink packages globally!');\n      } catch (error) {\n        console.error(`\\n❌ Failed to upgrade packages globally: ${error.message}`);\n        process.exit(1);\n      }\n      return;\n    }\n\n    // Local upgrade\n    const pkgPath = path.join(cwd, 'package.json');\n    if (!fs.existsSync(pkgPath)) {\n      console.log('No package.json found in the current directory.');\n      console.log('To install/upgrade the latest AfterLink umbrella package, running npm install afterlink@latest...');\n      const command = `${packageManager} install afterlink@latest`;\n      console.log(`Running: ${command}`);\n      try {\n        execSync(command, { stdio: 'inherit' });\n        console.log('\\n✅ Successfully installed afterlink@latest!');\n      } catch (error) {\n        console.error(`\\n❌ Failed: ${error.message}`);\n        process.exit(1);\n      }\n      return;\n    }\n\n    // Read package.json\n    let pkg;\n    try {\n      pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));\n    } catch (error) {\n      console.error(`Error parsing package.json: ${error.message}`);\n      process.exit(1);\n    }\n\n    const dependenciesToUpgrade = [];\n    const devDependenciesToUpgrade = [];\n\n    const isAfterlinkPkg = (name) => name === 'afterlink' || name.startsWith('@afterlink/');\n\n    if (pkg.dependencies) {\n      Object.keys(pkg.dependencies).forEach((dep) => {\n        if (isAfterlinkPkg(dep)) {\n          dependenciesToUpgrade.push(`${dep}@latest`);\n        }\n      });\n    }\n\n    if (pkg.devDependencies) {\n      Object.keys(pkg.devDependencies).forEach((dep) => {\n        if (isAfterlinkPkg(dep)) {\n          devDependenciesToUpgrade.push(`${dep}@latest`);\n        }\n      });\n    }\n\n    if (dependenciesToUpgrade.length === 0 && devDependenciesToUpgrade.length === 0) {\n      console.log('No AfterLink packages found in package.json dependencies.');\n      console.log('Installing the umbrella package (afterlink@latest) as dependency...');\n      dependenciesToUpgrade.push('afterlink@latest');\n    }\n\n    console.log(`Upgrading AfterLink packages in the current project using ${packageManager}...`);\n\n    if (dependenciesToUpgrade.length > 0) {\n      let depCommand = '';\n      if (packageManager === 'pnpm') {\n        depCommand = `pnpm add ${dependenciesToUpgrade.join(' ')}`;\n      } else if (packageManager === 'yarn') {\n        depCommand = `yarn add ${dependenciesToUpgrade.join(' ')}`;\n      } else {\n        depCommand = `npm install ${dependenciesToUpgrade.join(' ')}`;\n      }\n      console.log(`Running: ${depCommand}`);\n      try {\n        execSync(depCommand, { stdio: 'inherit' });\n      } catch (error) {\n        console.error(`\\n❌ Failed to upgrade dependencies: ${error.message}`);\n        process.exit(1);\n      }\n    }\n\n    if (devDependenciesToUpgrade.length > 0) {\n      let devDepCommand = '';\n      if (packageManager === 'pnpm') {\n        devDepCommand = `pnpm add -D ${devDependenciesToUpgrade.join(' ')}`;\n      } else if (packageManager === 'yarn') {\n        devDepCommand = `yarn add -D ${devDependenciesToUpgrade.join(' ')}`;\n      } else {\n        devDepCommand = `npm install --save-dev ${devDependenciesToUpgrade.join(' ')}`;\n      }\n      console.log(`Running: ${devDepCommand}`);\n      try {\n        execSync(devDepCommand, { stdio: 'inherit' });\n      } catch (error) {\n        console.error(`\\n❌ Failed to upgrade devDependencies: ${error.message}`);\n        process.exit(1);\n      }\n    }\n\n    console.log('\\n✅ Successfully upgraded AfterLink packages to their latest versions!');\n  });\n\nmodule.exports = { upgradeCommand };\n\n```",
     "metadata": {
       "category": "code",
       "version": "1.0.0",

@@ -753,6 +753,6 @@ Diploma in AI & ML · GTTC Magadi, Karnataka
 
 <div align="center">
 
-**Built with precision. Designed for speed.**
+**Binary-precise. Real-time ready to built with Precision , Built for speed**
 
 </div>
