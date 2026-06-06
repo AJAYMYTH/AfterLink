@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/ai-assistant",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Offline AI assistant for AfterLink — 100% local RAG pipeline with FAISS vector search, BM25, cross-encoder reranking, and an interactive terminal UI",
   "main": "src/chat.js",
   "bin": {

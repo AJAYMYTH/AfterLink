@@ -14,11 +14,14 @@ _Changes staged for the next release_
 ---
 
 
-## [1.2.3] — 2026-06-06
+## [1.2.4] — 2026-06-06
 
 ### Added
 - Added new `afterlink upgrade` CLI command to easily keep all packages up to date.
 - Configured umbrella `afterlink` package to use `latest` version resolution for all dependencies.
+
+### Fixed
+- **Security / Vulnerability Fix:** Removed `@afterlink/ai-assistant` from the default dependencies/optionalDependencies of the `afterlink` umbrella package. This prevents heavy, vulnerable machine learning packages (such as LangChain community and Hugging Face/Xenova Transformers with their vulnerable `protobufjs` sub-dependency) from being downloaded by default, bringing the vulnerability count for standard `afterlink` installations down to **0**.
 - Switched npm publication script to use `pnpm publish` to correctly resolve `workspace:*` dependencies.
 
 ## [1.2.1] — 2026-06-01

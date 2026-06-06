@@ -1,6 +1,6 @@
 {
   "name": "afterlink",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "AfterLink Communication Protocol - Reliable and Fast communication for modern applications",
   "main": "src/index.js",
   "license": "MIT",
@@ -35,7 +35,6 @@
   },
   "optionalDependencies": {
     "@afterlink/cli": "latest",
-    "@afterlink/browser": "latest",
-    "@afterlink/ai-assistant": "latest"
+    "@afterlink/browser": "latest"
   }
 }

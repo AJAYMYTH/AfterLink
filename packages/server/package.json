@@ -1,6 +1,6 @@
 {
   "name": "@afterlink/server",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "AfterLink Protocol Server SDK - TCP server with routing, middleware, and pub/sub",
   "main": "src/index.js",
   "types": "types/index.d.ts",

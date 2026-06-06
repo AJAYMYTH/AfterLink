@@ -27,25 +27,25 @@ function Publish-Package {
 # ── Publish in dependency order ───────────────────────────────────────
 
 # 1. Core (no AfterLink deps)
-Publish-Package "packages\core"          "@afterlink/core@1.2.3"
+Publish-Package "packages\core"          "@afterlink/core@1.2.4"
 
 # 2. Server (depends on core)
-Publish-Package "packages\server"        "@afterlink/server@1.2.3"
+Publish-Package "packages\server"        "@afterlink/server@1.2.4"
 
 # 3. Client (depends on core)
-Publish-Package "packages\client"        "@afterlink/client@1.2.3"
+Publish-Package "packages\client"        "@afterlink/client@1.2.4"
 
 # 4. Browser SDK (depends on core)
-Publish-Package "packages\browser"       "@afterlink/browser@1.2.3"
+Publish-Package "packages\browser"       "@afterlink/browser@1.2.4"
 
 # 5. CLI (depends on core)
-Publish-Package "packages\cli"           "@afterlink/cli@1.2.3"
+Publish-Package "packages\cli"           "@afterlink/cli@1.2.4"
 
 # 6. AI Assistant (NEW — first publish)
-Publish-Package "packages\ai-assistant"  "@afterlink/ai-assistant@1.2.3"
+Publish-Package "packages\ai-assistant"  "@afterlink/ai-assistant@1.2.4"
 
 # 7. Umbrella package (depends on all above)
-Publish-Package "packages\afterlink"     "afterlink@1.2.3"
+Publish-Package "packages\afterlink"     "afterlink@1.2.4"
 
 Write-Host "========== Publish Complete! ==========" -ForegroundColor Cyan
 Write-Host ""
