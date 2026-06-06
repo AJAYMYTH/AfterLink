@@ -35,8 +35,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prep npm release by removing publishConfig registry
-        run: node scripts/remove-publish-config.js
+      - name: Prep npm release by removing publishConfig registry and root .npmrc
+        run: |
+          node scripts/remove-publish-config.js
+          rm -f .npmrc
 
       - name: Publish packages
         run: pnpm -r publish --access public --no-git-checks --provenance --registry=https://registry.npmjs.org
