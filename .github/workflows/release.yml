@@ -35,9 +35,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prep npm release by removing publishConfig registry and root .npmrc
+      - name: Prep npm release by restoring @afterlink scope and removing root .npmrc
         run: |
-          node scripts/remove-publish-config.js
+          node scripts/prepare-npm-publish.js
           rm -f .npmrc
 
       - name: Publish packages
