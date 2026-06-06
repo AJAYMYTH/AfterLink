@@ -14,6 +14,12 @@ _Changes staged for the next release_
 ---
 
 
+## [1.2.2] — 2026-06-06
+
+### Added
+- Added new `afterlink upgrade` CLI command to easily keep all packages up to date.
+- Configured umbrella `afterlink` package to use `latest` version resolution for all dependencies.
+
 ## [1.2.1] — 2026-06-01
 
 ### Fixed
