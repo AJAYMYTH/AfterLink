@@ -29,11 +29,11 @@
   },
   "scripts": {},
   "dependencies": {
-    "@afterlink/core": "workspace:*",
-    "@afterlink/server": "workspace:*",
-    "@afterlink/client": "workspace:*"
+    "@afterlink/core": "^1.2.1",
+    "@afterlink/server": "^1.2.1",
+    "@afterlink/client": "^1.2.1"
   },
   "optionalDependencies": {
-    "@afterlink/cli": "workspace:*"
+    "@afterlink/cli": "^1.2.1"
   }
 }
