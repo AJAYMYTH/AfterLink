@@ -5,7 +5,7 @@ The `/__health` endpoint provides HTTP-based health monitoring for AfterLink ser
 ## Configuration
 
 ```javascript
-import { Server } from '@afterlink/server';
+import { Server } from '@ajaymyth/server';
 
 const server = new Server({
   port: 4000,

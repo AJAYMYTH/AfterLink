@@ -1,4 +1,4 @@
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 async function main() {
   const client = new Client('afterlink://localhost:4000');

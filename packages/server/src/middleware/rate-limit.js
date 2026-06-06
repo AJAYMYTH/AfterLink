@@ -1,4 +1,4 @@
-const { errors: { RateLimitError } } = require('@afterlink/core');
+const { errors: { RateLimitError } } = require('@ajaymyth/core');
 
 class TokenBucket {
   constructor(capacity, refillRate) {

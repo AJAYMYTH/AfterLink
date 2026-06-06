@@ -1,6 +1,6 @@
 const { Command } = require('commander');
 const net = require('net');
-const { Frame, FrameTypes, Serializer } = require('@afterlink/core');
+const { Frame, FrameTypes, Serializer } = require('@ajaymyth/core');
 const { mergeWithProfile } = require('../config/rc');
 const { formatPingHeader, formatPingResult, formatPingStats, prettyJson } = require('../output/formatter');
 

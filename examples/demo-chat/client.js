@@ -7,7 +7,7 @@
  * Run: node client.js [--name YourName]
  */
 
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 const readline = require('readline');
 
 const name = process.argv.includes('--name')

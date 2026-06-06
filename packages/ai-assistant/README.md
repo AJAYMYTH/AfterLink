@@ -1,4 +1,4 @@
-# @afterlink/ai-assistant (Proprietary Neural Network Model)
+# @ajaymyth/ai-assistant (Proprietary Neural Network Model)
 
 A fully-custom, 100% offline **Multi-Layer Perceptron (MLP) Neural Network** built entirely from scratch in Node.js. 
 

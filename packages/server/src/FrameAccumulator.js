@@ -1,4 +1,4 @@
-const { Frame, errors: { MalformedPayloadError } } = require('@afterlink/core');
+const { Frame, errors: { MalformedPayloadError } } = require('@ajaymyth/core');
 
 class FrameAccumulator {
   constructor(onFrame, options = {}) {

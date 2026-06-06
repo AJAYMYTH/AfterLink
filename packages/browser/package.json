@@ -1,5 +1,5 @@
 {
-  "name": "@afterlink/browser",
+  "name": "@ajaymyth/browser",
   "version": "1.2.4",
   "description": "AfterLink Browser Client - WebSocket transport for browser environments",
   "main": "src/index.js",
@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AJAYMYTH/AfterLink.git",
+    "url": "git+https://github.com/AJAYMYTH/AfterLink.git",
     "directory": "packages/browser"
   },
   "keywords": [
@@ -24,17 +24,18 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "build": "node scripts/build.js",
     "test": "vitest run"
   },
   "dependencies": {
-    "@afterlink/core": "workspace:*"
+    "@ajaymyth/core": "workspace:*"
   },
   "devDependencies": {
-    "@afterlink/server": "workspace:*",
+    "@ajaymyth/server": "workspace:*",
     "esbuild": "^0.24.0",
     "vitest": "^2.1.0",
     "ws": "^8.18.0"

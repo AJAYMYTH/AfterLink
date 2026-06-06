@@ -37,9 +37,9 @@ body:
       label: Which package does this affect?
       multiple: true
       options:
-        - "@afterlink/core"
-        - "@afterlink/server"
-        - "@afterlink/client"
+        - "@ajaymyth/core"
+        - "@ajaymyth/server"
+        - "@ajaymyth/client"
         - "afterlink (meta-package)"
         - "CLI tooling"
         - "Documentation"

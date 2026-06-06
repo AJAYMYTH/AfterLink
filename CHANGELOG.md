@@ -21,7 +21,7 @@ _Changes staged for the next release_
 - Configured umbrella `afterlink` package to use `latest` version resolution for all dependencies.
 
 ### Fixed
-- **Security / Vulnerability Fix:** Removed `@afterlink/ai-assistant` from the default dependencies/optionalDependencies of the `afterlink` umbrella package. This prevents heavy, vulnerable machine learning packages (such as LangChain community and Hugging Face/Xenova Transformers with their vulnerable `protobufjs` sub-dependency) from being downloaded by default, bringing the vulnerability count for standard `afterlink` installations down to **0**.
+- **Security / Vulnerability Fix:** Removed `@ajaymyth/ai-assistant` from the default dependencies/optionalDependencies of the `afterlink` umbrella package. This prevents heavy, vulnerable machine learning packages (such as LangChain community and Hugging Face/Xenova Transformers with their vulnerable `protobufjs` sub-dependency) from being downloaded by default, bringing the vulnerability count for standard `afterlink` installations down to **0**.
 - Switched npm publication script to use `pnpm publish` to correctly resolve `workspace:*` dependencies.
 
 ## [1.2.1] — 2026-06-01
@@ -55,7 +55,7 @@ _Changes staged for the next release_
 
 ### Added
 
-- **@afterlink/core - TcpClient** — new class for TCP connections wrapping net.Socket
+- **@ajaymyth/core - TcpClient** — new class for TCP connections wrapping net.Socket
   with full AfterLink framing. Provides Promise-based connect(helloData) and
   request(route, body); auto-handles HELLO_ACK, PING/PONG, and SERVER_CLOSING.
 
@@ -71,19 +71,19 @@ _Changes staged for the next release_
 - `fromError()` — convert any `Error` to typed `AfterLinkError`
 - `fromFramePayload()` — deserialize error from ERROR frame payload
 - `getErrorClassByCode()` — look up error class by code string
-- TypeScript definitions (`.d.ts`) for `@afterlink/core`, `@afterlink/server`, `@afterlink/client`
+- TypeScript definitions (`.d.ts`) for `@ajaymyth/core`, `@ajaymyth/server`, `@ajaymyth/client`
 - **Health endpoint** (`/__health`, `/__health/live`, `/__health/ready`, `/__health/stats`)
 - Protocol detection on TCP socket (`GET` vs HELLO frame) for same-port health
 - Optional separate HTTP port for health endpoint
 - Configurable health thresholds (max connections, error rate, latency)
 - Bearer token authentication for health endpoints
-- **Browser SDK** (`@afterlink/browser`) — zero-dependency WebSocket client
+- **Browser SDK** (`@ajaymyth/browser`) — zero-dependency WebSocket client
 - Auto-reconnect with exponential backoff and jitter
 - Ping/keepalive support
 - Pub/Sub over WebSocket transport
 - **WebSocket bridge** (`ws-bridge.js`) — translates WS binary frames to AfterLink frames
 - CORS origin validation for WebSocket connections
-- **CLI tool** (`@afterlink/cli`) — terminal testing and monitoring utility
+- **CLI tool** (`@ajaymyth/cli`) — terminal testing and monitoring utility
 - `afterlink ping` — PING/PONG latency measurement with stats
 - `afterlink call` — request/response with route invocation
 - `afterlink inspect` — raw frame inspector with annotated hex dump
@@ -100,13 +100,13 @@ _Changes staged for the next release_
 - `Connection.js` now handles PING/PONG frames at the connection level (no longer dispatched to router)
 - `Server.js` rewritten with stats tracking (`getStats()`), health endpoint integration, WS bridge startup, and state machine (`initialized` → `running` → `closing` → `closed`)
 - `Router.js` updated with latency tracking via `finally` block and `_onRequestComplete` callback hook
-- Replaced all `throw new Error()` with typed errors across `@afterlink/core`, `@afterlink/server`, `@afterlink/client`
-- `ws` dependency added to `@afterlink/server` for WebSocket bridge
-- `commander` dependency added to `@afterlink/cli`
+- Replaced all `throw new Error()` with typed errors across `@ajaymyth/core`, `@ajaymyth/server`, `@ajaymyth/client`
+- `ws` dependency added to `@ajaymyth/server` for WebSocket bridge
+- `commander` dependency added to `@ajaymyth/cli`
 
 ### Fixed
 - Reverted `Frame.js` and `Serializer.js` to native `Error`/`RangeError` to eliminate circular `require()` dependencies with the new `errors/` module
-- Used `workspace:*` protocol for `@afterlink/core` dependency in client/server packages to fix vitest module resolution
+- Used `workspace:*` protocol for `@ajaymyth/core` dependency in client/server packages to fix vitest module resolution
 - Browser client `ws.send()` now sends Buffer directly (not `frame.buffer`) to avoid ArrayBuffer size mismatch with `ws` library
 
 ---
@@ -114,7 +114,7 @@ _Changes staged for the next release_
 ## [1.1.2] — 2026-05-19
 
 ### Added
-- Full README.md included in all npm packages (`@afterlink/core`, `@afterlink/server`, `@afterlink/client`, `afterlink`)
+- Full README.md included in all npm packages (`@ajaymyth/core`, `@ajaymyth/server`, `@ajaymyth/client`, `afterlink`)
 - Package pages on npm now show complete documentation, features, and quick start guides
 
 ---
@@ -130,12 +130,12 @@ _Changes staged for the next release_
 ## [1.1.0] — 2026-05-19
 
 ### Added
-- TLS/SSL encryption via `afterlinks://` URL scheme (`@afterlink/server`, `@afterlink/client`)
+- TLS/SSL encryption via `afterlinks://` URL scheme (`@ajaymyth/server`, `@ajaymyth/client`)
 - `generateDevCerts()` utility for self-signed dev certificates using `selfsigned` package
-- zlib/Brotli payload compression with per-frame Flags bit (`@afterlink/core`)
+- zlib/Brotli payload compression with per-frame Flags bit (`@ajaymyth/core`)
 - Compression negotiation in HELLO/HELLO_ACK handshake
 - Per-route compression override option
-- Per-connection token-bucket rate limiting (`@afterlink/server`)
+- Per-connection token-bucket rate limiting (`@ajaymyth/server`)
 - `RATE_LIMITED` error code with `retryAfter` in milliseconds
 - Rate limit policy communicated to client in HELLO_ACK
 - `closeAfterViolations` option to auto-close abusive connections
@@ -196,7 +196,7 @@ _Changes staged for the next release_
 - Auto-reconnect client with configurable delay and max attempts
 - Ping/pong keep-alive
 - Streaming frames (STREAM_START / STREAM_DATA / STREAM_END)
-- monorepo structure: `@afterlink/core`, `@afterlink/server`, `@afterlink/client`
+- monorepo structure: `@ajaymyth/core`, `@ajaymyth/server`, `@ajaymyth/client`
 - `afterlink` meta-package (installs all three)
 - Published to npm: https://www.npmjs.com/package/afterlink
 - Demo suite: hello-world, chat, dashboard, microservice, demo-runner

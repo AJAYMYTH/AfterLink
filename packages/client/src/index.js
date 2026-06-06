@@ -1,4 +1,4 @@
 const Client = require('./Client');
-const { errors } = require('@afterlink/core');
+const { errors } = require('@ajaymyth/core');
 
 module.exports = { Client, errors };

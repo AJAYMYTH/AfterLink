@@ -7,7 +7,7 @@
  * Run: node client.js
  */
 
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 const symbols = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'AMZN'];
 const prices = {};

@@ -29,12 +29,12 @@
   },
   "scripts": {},
   "dependencies": {
-    "@afterlink/core": "latest",
-    "@afterlink/server": "latest",
-    "@afterlink/client": "latest"
+    "@ajaymyth/core": "workspace:*",
+    "@ajaymyth/server": "workspace:*",
+    "@ajaymyth/client": "workspace:*"
   },
   "optionalDependencies": {
-    "@afterlink/cli": "latest",
-    "@afterlink/browser": "latest"
+    "@ajaymyth/cli": "workspace:*",
+    "@ajaymyth/browser": "workspace:*"
   }
 }

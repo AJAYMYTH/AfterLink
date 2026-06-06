@@ -9,8 +9,8 @@
     "client2": "node client.js --name User2"
   },
   "dependencies": {
-    "@afterlink/client": "workspace:*",
-    "@afterlink/server": "workspace:*",
+    "@ajaymyth/client": "workspace:*",
+    "@ajaymyth/server": "workspace:*",
     "zod": "3.23.0"
   }
 }

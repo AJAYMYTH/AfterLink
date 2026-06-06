@@ -101,7 +101,7 @@ describe('buildHealthResponse', () => {
     });
 
     expect(body.status).toBe('healthy');
-    expect(body.version).toBe('1.2.0');
+    expect(body.version).toBe('1.2.4');
     expect(body.protocol).toBe('AL/1.1');
     expect(body.uptime).toBe(3600);
     expect(body.connections.active).toBe(50);

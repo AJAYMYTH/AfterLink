@@ -108,7 +108,7 @@ export interface HelloData {
  * Lightweight TCP client for the AfterLink protocol.
  *
  * @example
- * const { TcpClient } = require('@afterlink/core');
+ * const { TcpClient } = require('@ajaymyth/core');
  * const client = new TcpClient({ host: 'localhost', port: 4000 });
  * await client.connect({ auth: myJwtToken });
  * const response = await client.request('messages/send', { text: 'hello' });

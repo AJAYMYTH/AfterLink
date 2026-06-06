@@ -164,9 +164,9 @@ AfterLink/
 
 | Package | Dependencies | Purpose |
 |---|---|---|
-| `@afterlink/core` | `msgpackr` | Frame encoding/decoding, serialization |
-| `@afterlink/server` | `@afterlink/core` | TCP server, routing, pub/sub broker |
-| `@afterlink/client` | `@afterlink/core` | TCP client, auto-reconnect, subscriptions |
+| `@ajaymyth/core` | `msgpackr` | Frame encoding/decoding, serialization |
+| `@ajaymyth/server` | `@ajaymyth/core` | TCP server, routing, pub/sub broker |
+| `@ajaymyth/client` | `@ajaymyth/core` | TCP client, auto-reconnect, subscriptions |
 
 ---
 
@@ -294,9 +294,9 @@ chore: update msgpackr to v1.11.0
 
 ### Scopes
 
-- `core` — `@afterlink/core` package
-- `server` — `@afterlink/server` package
-- `client` — `@afterlink/client` package
+- `core` — `@ajaymyth/core` package
+- `server` — `@ajaymyth/server` package
+- `client` — `@ajaymyth/client` package
 - `docs` — Documentation website
 - `examples` — Demo projects
 - `deps` — Dependency updates

@@ -19,13 +19,13 @@ importers:
 
   benchmarks:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../packages/client
-      '@afterlink/core':
+      '@ajaymyth/core':
         specifier: workspace:*
         version: link:../packages/core
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../packages/server
       socket.io:
@@ -40,19 +40,19 @@ importers:
 
   examples/compression-example:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
 
   examples/demo-chat:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
       zod:
@@ -61,10 +61,10 @@ importers:
 
   examples/demo-dashboard:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
       zod:
@@ -73,10 +73,10 @@ importers:
 
   examples/demo-microservice:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
       zod:
@@ -85,10 +85,10 @@ importers:
 
   examples/demo-runner:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
       zod:
@@ -97,10 +97,10 @@ importers:
 
   examples/hello-world:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
       zod:
@@ -109,40 +109,40 @@ importers:
 
   examples/rate-limit-shutdown-example:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
 
   examples/tls-example:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../../packages/client
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../../packages/server
 
   packages/afterlink:
     dependencies:
-      '@afterlink/client':
-        specifier: latest
-        version: 1.2.1
-      '@afterlink/core':
-        specifier: latest
-        version: 1.2.1
-      '@afterlink/server':
-        specifier: latest
-        version: 1.2.1
+      '@ajaymyth/client':
+        specifier: workspace:*
+        version: link:../client
+      '@ajaymyth/core':
+        specifier: workspace:*
+        version: link:../core
+      '@ajaymyth/server':
+        specifier: workspace:*
+        version: link:../server
     optionalDependencies:
-      '@afterlink/browser':
-        specifier: latest
-        version: 1.2.3
-      '@afterlink/cli':
-        specifier: latest
-        version: 1.2.3
+      '@ajaymyth/browser':
+        specifier: workspace:*
+        version: link:../browser
+      '@ajaymyth/cli':
+        specifier: workspace:*
+        version: link:../cli
 
   packages/ai-assistant:
     dependencies:
@@ -161,11 +161,11 @@ importers:
 
   packages/browser:
     dependencies:
-      '@afterlink/core':
+      '@ajaymyth/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../server
       esbuild:
@@ -180,17 +180,17 @@ importers:
 
   packages/cli:
     dependencies:
-      '@afterlink/client':
+      '@ajaymyth/client':
         specifier: workspace:*
         version: link:../client
-      '@afterlink/core':
+      '@ajaymyth/core':
         specifier: workspace:*
         version: link:../core
       commander:
         specifier: ^12.0.0
         version: 12.1.0
     devDependencies:
-      '@afterlink/server':
+      '@ajaymyth/server':
         specifier: workspace:*
         version: link:../server
       vitest:
@@ -199,7 +199,7 @@ importers:
 
   packages/client:
     dependencies:
-      '@afterlink/core':
+      '@ajaymyth/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -219,7 +219,7 @@ importers:
 
   packages/server:
     dependencies:
-      '@afterlink/core':
+      '@ajaymyth/core':
         specifier: workspace:*
         version: link:../core
       selfsigned:
@@ -234,29 +234,6 @@ importers:
         version: 1.6.1(@types/node@25.8.0)(esbuild@0.28.0)(yaml@2.9.0)
 
 packages:
-
-  '@afterlink/browser@1.2.3':
-    resolution: {integrity: sha512-CYWGGx+eEWyL/UeuxHjI3KvHlw9yZ3fn31S+sfh2S2FeHtdPT+x+zri9UnCkaB4vAb1zdg4gv77ps8TR23b6XQ==}
-
-  '@afterlink/cli@1.2.3':
-    resolution: {integrity: sha512-nJFGAthbx+wiBBjzW2zll4uvNL3MM9fGtAFgWLxd9jqpHDGV5KCfN2CXVtOVApH8hRiwYXCLDRi0EhgUmElO3A==}
-    engines: {node: '>=20.0.0'}
-    hasBin: true
-
-  '@afterlink/client@1.2.1':
-    resolution: {integrity: sha512-24gm8BL8+nxImVz/op0Yytmr1M+1hVXQI1IfysbZU4y7PMPn7AU0K3lBfCA2N3NR8sUi+E1JXRtTjRwGzzySQA==}
-
-  '@afterlink/client@1.2.3':
-    resolution: {integrity: sha512-8jihSPXVsstABGYMrN2kYAXDA2bnBOGfFEls4L7xbF9qID9JlYfT6wLHWhb9UQA6PzNth+Owf2blcnfAizeZjA==}
-
-  '@afterlink/core@1.2.1':
-    resolution: {integrity: sha512-ZiRib2YRtVDsQm1MNYqIAnEM1v5kVwUy3bwv9zvkMH46L7JFDkaxYCs6+b8GCxxPUucDxxu/ofZ4j4IcN8Nxuw==}
-
-  '@afterlink/core@1.2.3':
-    resolution: {integrity: sha512-hHC4F4DyLfrv3Zux7jK0l9tH5RyixLIdhdmc+7wFhDyFfpv4GpqlwcpNYt8YPZoYPFJqppDqEdmlOBlSNnDx7Q==}
-
-  '@afterlink/server@1.2.1':
-    resolution: {integrity: sha512-M0O4jad0tmpQkFOY5nrnFdE/Z82NT/EStTqh9FbP7xQHnsTWoB1y40FnC4P6P3WE3ipn+UyRbm+L730lMwzlgA==}
 
   '@anthropic-ai/sdk@0.27.3':
     resolution: {integrity: sha512-IjLt0gd3L4jlOfilxVXTifn42FnVffMgDC04RJK1KDZpmkBWLv0XC92MVVmkxrFZNS/7l3xWgP/I3nqtX1sQHw==}
@@ -2426,45 +2403,6 @@ packages:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
-
-  '@afterlink/browser@1.2.3':
-    dependencies:
-      '@afterlink/core': 1.2.3
-    optional: true
-
-  '@afterlink/cli@1.2.3':
-    dependencies:
-      '@afterlink/client': 1.2.3
-      '@afterlink/core': 1.2.3
-      commander: 12.1.0
-    optional: true
-
-  '@afterlink/client@1.2.1':
-    dependencies:
-      '@afterlink/core': 1.2.1
-
-  '@afterlink/client@1.2.3':
-    dependencies:
-      '@afterlink/core': 1.2.3
-    optional: true
-
-  '@afterlink/core@1.2.1':
-    dependencies:
-      msgpackr: 1.11.12
-
-  '@afterlink/core@1.2.3':
-    dependencies:
-      msgpackr: 1.11.12
-    optional: true
-
-  '@afterlink/server@1.2.1':
-    dependencies:
-      '@afterlink/core': 1.2.1
-      selfsigned: 5.5.0
-      ws: 8.20.1
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   '@anthropic-ai/sdk@0.27.3':
     dependencies:

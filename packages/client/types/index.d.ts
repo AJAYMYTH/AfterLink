@@ -1,4 +1,4 @@
-import { CompressionOptions, AfterLinkError } from '@afterlink/core/types/errors';
+import { CompressionOptions, AfterLinkError } from '@ajaymyth/core/types/errors';
 
 export interface ClientOptions {
   autoReconnect?:         boolean;
@@ -98,4 +98,4 @@ export {
   CompressionError,
   DecompressionFailedError,
   CompressionAlgorithmUnsupportedError,
-} from '@afterlink/core/types/errors';
+} from '@ajaymyth/core/types/errors';

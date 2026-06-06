@@ -50,7 +50,7 @@ function buildHealthResponse(stats, healthInfo, include = {}) {
 
   const response = {
     status: healthInfo.status,
-    version: '1.2.0',
+    version: '1.2.4',
     protocol: 'AL/1.1',
     timestamp: new Date().toISOString(),
   };

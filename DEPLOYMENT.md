@@ -55,7 +55,7 @@ pnpm install
 ```bash
 # Create your server file
 cat > server.js << 'EOF'
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 
 const server = new Server({ port: 4000 });
 
@@ -74,7 +74,7 @@ node server.js
 
 ```bash
 cat > client.js << 'EOF'
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 async function main() {
   const client = new Client('afterlink://localhost:4000');
@@ -468,7 +468,7 @@ AfterLink requires persistent TCP connections, so it's **not ideal for Vercel's 
 // vercel/api/gateway.js
 // HTTP-to-AfterLink gateway
 export default async function handler(req, res) {
-  const { Client } = require('@afterlink/client');
+  const { Client } = require('@ajaymyth/client');
 
   const client = new Client(process.env.AFTERLINK_SERVER_URL);
   await client.connect();

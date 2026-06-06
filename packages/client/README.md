@@ -73,9 +73,9 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | Package | Description | Link |
 |---|---|---|
 | **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
-| **`@afterlink/core`** | Frame codec and MessagePack serialization | [npm](https://www.npmjs.com/package/@afterlink/core) |
-| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, middleware) | [npm](https://www.npmjs.com/package/@afterlink/server) |
-| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@afterlink/client) |
+| **`@ajaymyth/core`** | Frame codec and MessagePack serialization | [npm](https://www.npmjs.com/package/@ajaymyth/core) |
+| **`@ajaymyth/server`** | Server SDK (TCP, routing, pub/sub, middleware) | [npm](https://www.npmjs.com/package/@ajaymyth/server) |
+| **`@ajaymyth/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@ajaymyth/client) |
 
 ---
 
@@ -121,7 +121,7 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 npm install afterlink
 
 # Or install individual packages
-npm install @afterlink/core @afterlink/server @afterlink/client
+npm install @ajaymyth/core @ajaymyth/server @ajaymyth/client
 ```
 
 **From source:**
@@ -138,7 +138,7 @@ pnpm install
 **Server** — `server.js`
 
 ```js
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 
 const server = new Server({ port: 4000 });
 
@@ -152,7 +152,7 @@ server.listen();
 **Client** — `client.js`
 
 ```js
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 async function main() {
   const client = new Client('afterlink://localhost:4000');
@@ -178,7 +178,7 @@ node client.js   # Terminal 2
 
 ```js
 // Server with TLS
-const { Server, generateDevCerts } = require('@afterlink/server');
+const { Server, generateDevCerts } = require('@ajaymyth/server');
 const { key, cert } = await generateDevCerts({ commonName: 'my-server' });
 
 const server = new Server({
@@ -676,7 +676,7 @@ NODE_ENV=production
 | Feature | Description |
 |---|---|
 | **`afterlink` CLI tool** | `afterlink ping`, `afterlink call <route>`, `afterlink monitor` in terminal |
-| **`@afterlink/browser`** | Native WebSocket transport wrapper so browsers can connect directly |
+| **`@ajaymyth/browser`** | Native WebSocket transport wrapper so browsers can connect directly |
 | **TypeScript types** | Full `.d.ts` type definitions for server, client, and core packages |
 | **Health check endpoint** | Built-in `/__health` route returning server stats and uptime |
 | **Better error codes** | Structured error taxonomy: `AUTH_FAILED`, `ROUTE_NOT_FOUND`, `TIMEOUT`, etc. |
@@ -685,9 +685,9 @@ NODE_ENV=production
 
 | Feature | Description |
 |---|---|
-| **`@afterlink/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter |
-| **`@afterlink/python`** | Python client/server SDK (`pip install afterlink`) |
-| **`@afterlink/dart`** | Dart/Flutter client for mobile apps |
+| **`@ajaymyth/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter |
+| **`@ajaymyth/python`** | Python client/server SDK (`pip install afterlink`) |
+| **`@ajaymyth/dart`** | Dart/Flutter client for mobile apps |
 | **Protocol v2 frame** | Extended header with routing key + priority field |
 | **Metrics & observability** | Prometheus-compatible `/metrics` endpoint + OpenTelemetry tracing |
 | **Playground UI** | Browser-based interactive demo at `afterlinkdocs.vercel.app/playground` |
@@ -703,7 +703,7 @@ Week 1–2    [████] ✅ TLS encryption + compression flag
 Week 2–3    [████] ✅ Rate limiting middleware
 Week 3–4    [████] ✅ Graceful shutdown + CHANGELOG
 Week 5–6    [░░░░] CLI tool (afterlink ping/call/monitor)
-Week 6–7    [░░░░] @afterlink/browser WebSocket transport
+Week 6–7    [░░░░] @ajaymyth/browser WebSocket transport
 Week 7–8    [░░░░] TypeScript definitions + health check
 Week 9–10   [░░░░] Redis-backed cluster pub/sub
 Week 11–12  [░░░░] Python SDK

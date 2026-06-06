@@ -1,4 +1,4 @@
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 
 const server = new Server({
   port: 4002,

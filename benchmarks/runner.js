@@ -1,5 +1,5 @@
-import { Server as AfterLinkServer } from '@afterlink/server';
-import { Client as AfterLinkClient } from '@afterlink/client';
+import { Server as AfterLinkServer } from '@ajaymyth/server';
+import { Client as AfterLinkClient } from '@ajaymyth/client';
 import { WebSocketServer, WebSocket } from 'ws';
 import { createServer } from 'node:http';
 import { Server as SocketIOServer } from 'socket.io';

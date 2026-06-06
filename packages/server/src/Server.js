@@ -8,7 +8,7 @@ const {
   errors: {
     TLSCertInvalidError,
   },
-} = require('@afterlink/core');
+} = require('@ajaymyth/core');
 
 const Connection = require('./Connection');
 const Router = require('./Router');

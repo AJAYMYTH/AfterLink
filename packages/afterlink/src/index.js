@@ -1,5 +1,5 @@
 module.exports = {
-  ...require('@afterlink/core'),
-  ...require('@afterlink/server'),
-  ...require('@afterlink/client'),
+  ...require('@ajaymyth/core'),
+  ...require('@ajaymyth/server'),
+  ...require('@ajaymyth/client'),
 };

@@ -1,4 +1,4 @@
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 async function testRateLimit() {
   const client = new Client('tcp://localhost:4002');

@@ -1,6 +1,6 @@
 const tls = require('tls');
 const net = require('net');
-const { errors: { TLSCertInvalidError } } = require('@afterlink/core');
+const { errors: { TLSCertInvalidError } } = require('@ajaymyth/core');
 
 /**
  * Creates a server transport (TCP or TLS) based on configuration.

@@ -11,9 +11,9 @@
     "memory": "node memory-bench.js"
   },
   "dependencies": {
-    "@afterlink/core": "workspace:*",
-    "@afterlink/server": "workspace:*",
-    "@afterlink/client": "workspace:*",
+    "@ajaymyth/core": "workspace:*",
+    "@ajaymyth/server": "workspace:*",
+    "@ajaymyth/client": "workspace:*",
     "ws": "^8.18.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"

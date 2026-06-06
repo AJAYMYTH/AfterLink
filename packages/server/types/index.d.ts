@@ -1,6 +1,6 @@
 import { ZodSchema } from 'zod';
-import { CompressionOptions, CompressionAlgorithm } from '@afterlink/core';
-import { AfterLinkError } from '@afterlink/core/types/errors';
+import { CompressionOptions, CompressionAlgorithm } from '@ajaymyth/core';
+import { AfterLinkError } from '@ajaymyth/core/types/errors';
 
 // ─── Server Config ─────────────────────────────────────────────────────────
 
@@ -235,4 +235,4 @@ export {
   CompressionError,
   DecompressionFailedError,
   CompressionAlgorithmUnsupportedError,
-} from '@afterlink/core/types/errors';
+} from '@ajaymyth/core/types/errors';

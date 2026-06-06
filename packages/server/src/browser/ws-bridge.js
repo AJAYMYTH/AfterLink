@@ -1,5 +1,5 @@
 const http = require('http');
-const { Frame, FrameTypes, Serializer, compression } = require('@afterlink/core');
+const { Frame, FrameTypes, Serializer, compression } = require('@ajaymyth/core');
 
 function createWsBridge(server, config) {
   const { port, path = '/ws', cors = { origins: [] } } = config;
@@ -221,7 +221,7 @@ function handleWsRequest(frame, ws, session, router, server) {
     try {
       routeConfig.schema.parse(body);
     } catch (err) {
-      const { ValidationError } = require('@afterlink/core/errors');
+      const { ValidationError } = require('@ajaymyth/core/errors');
       const validationErr = ValidationError.fromZodError(err, { requestId: frame.messageId });
       ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, Serializer.encode(validationErr.toJSON())), { binary: true });
       return;

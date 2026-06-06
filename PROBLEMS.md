@@ -7,15 +7,15 @@
 
 ## ✅ 1. `workspace:*` Protocol in Package Dependencies
 
-**Problem:** `@afterlink/*` packages use `workspace:*` protocol internally. Running `npm install` throws `ERR! EUNSUPPORTEDPROTOCOL`.
+**Problem:** `@ajaymyth/*` packages use `workspace:*` protocol internally. Running `npm install` throws `ERR! EUNSUPPORTEDPROTOCOL`.
 
 **Fix:** Use `pnpm` instead of `npm`. Add `pnpm.overrides` in `package.json` to resolve workspace references:
 ```json
 "pnpm": {
   "overrides": {
-    "@afterlink/core": "1.2.0",
-    "@afterlink/server": "1.2.0",
-    "@afterlink/browser": "1.2.0"
+    "@ajaymyth/core": "1.2.0",
+    "@ajaymyth/server": "1.2.0",
+    "@ajaymyth/browser": "1.2.0"
   }
 }
 ```
@@ -86,15 +86,15 @@ The message handler now maintains a persistent buffer. After decoding the HELLO,
 
 ---
 
-## ✅ 8. `@afterlink/core` Exports No Client Class
+## ✅ 8. `@ajaymyth/core` Exports No Client Class
 
 **Problem:** The core package exports only `{ Frame, FrameTypes, Serializer, compression, errors }`. There is no `Client` class for TCP connections. Testing the TCP server requires writing a raw socket client using `net` module + Frame encoding.
 
 **Fixed in:** `packages/core/src/TcpClient.js` *(new)* · `packages/core/src/index.js`
 
-A `TcpClient` class is now exported from `@afterlink/core`:
+A `TcpClient` class is now exported from `@ajaymyth/core`:
 ```js
-const { TcpClient } = require('@afterlink/core');
+const { TcpClient } = require('@ajaymyth/core');
 const client = new TcpClient({ host: 'localhost', port: 4000 });
 await client.connect({ auth: myJwtToken });
 const response = await client.request('messages/send', { text: 'hello' });

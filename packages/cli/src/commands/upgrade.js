@@ -5,12 +5,12 @@ const { execSync } = require('child_process');
 
 const ALL_AFTERLINK_PACKAGES = [
   'afterlink',
-  '@afterlink/core',
-  '@afterlink/server',
-  '@afterlink/client',
-  '@afterlink/browser',
-  '@afterlink/cli',
-  '@afterlink/ai-assistant'
+  '@ajaymyth/core',
+  '@ajaymyth/server',
+  '@ajaymyth/client',
+  '@ajaymyth/browser',
+  '@ajaymyth/cli',
+  '@ajaymyth/ai-assistant'
 ];
 
 const upgradeCommand = new Command('upgrade')
@@ -80,7 +80,7 @@ const upgradeCommand = new Command('upgrade')
     const dependenciesToUpgrade = [];
     const devDependenciesToUpgrade = [];
 
-    const isAfterlinkPkg = (name) => name === 'afterlink' || name.startsWith('@afterlink/');
+    const isAfterlinkPkg = (name) => name === 'afterlink' || name.startsWith('@ajaymyth/');
 
     if (pkg.dependencies) {
       Object.keys(pkg.dependencies).forEach((dep) => {

@@ -1,23 +1,23 @@
 # AfterLink Browser Client
 
-The `@afterlink/browser` package provides a zero-dependency WebSocket client for browser environments, enabling AfterLink protocol communication over WebSocket transport.
+The `@ajaymyth/browser` package provides a zero-dependency WebSocket client for browser environments, enabling AfterLink protocol communication over WebSocket transport.
 
 ## Installation
 
 ```bash
-npm install @afterlink/browser
+npm install @ajaymyth/browser
 ```
 
 Or include the bundled UMD build directly in HTML:
 
 ```html
-<script src="https://unpkg.com/@afterlink/browser/dist/afterlink-browser.min.js"></script>
+<script src="https://unpkg.com/@ajaymyth/browser/dist/afterlink-browser.min.js"></script>
 ```
 
 ## Quick Start
 
 ```javascript
-import { Client } from '@afterlink/browser';
+import { Client } from '@ajaymyth/browser';
 
 const client = new Client('ws://localhost:4001/ws');
 
@@ -42,7 +42,7 @@ await client.disconnect();
 The server must enable the WebSocket bridge:
 
 ```javascript
-import { Server } from '@afterlink/server';
+import { Server } from '@ajaymyth/server';
 
 const server = new Server({
   port: 4000,

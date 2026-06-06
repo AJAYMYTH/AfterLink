@@ -1,4 +1,4 @@
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 async function main() {
   console.log('🔒 Connecting to TLS server...');

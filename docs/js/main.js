@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── Playground ──────────────────────────────────────
   const presets = {
     ping: {
-      server: `const { Server } = require('@afterlink/server');
+      server: `const { Server } = require('@ajaymyth/server');
 const server = new Server({ port: 4000 });
 
 server.on('ping', async (req, res) => {
@@ -453,7 +453,7 @@ server.on('ping', async (req, res) => {
 });
 
 server.listen();`,
-      client: `const { Client } = require('@afterlink/client');
+      client: `const { Client } = require('@ajaymyth/client');
 const client = new Client('afterlink://localhost:4000');
 
 await client.connect();

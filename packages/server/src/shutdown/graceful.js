@@ -1,4 +1,4 @@
-const { Frame, Serializer } = require('@afterlink/core');
+const { Frame, Serializer } = require('@ajaymyth/core');
 
 const SERVER_CLOSING = 0x11;
 

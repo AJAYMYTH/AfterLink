@@ -7,13 +7,13 @@ const Serializer = require('./Serializer');
 /**
  * TcpClient — a lightweight TCP client for the AfterLink protocol.
  *
- * FIX (Problem 8): @afterlink/core previously exported no Client class,
+ * FIX (Problem 8): @ajaymyth/core previously exported no Client class,
  * forcing consumers to build raw socket clients from scratch using net.Socket
  * and the low-level Frame utilities. This class encapsulates that boilerplate
  * so testing and custom integrations are straightforward.
  *
  * @example
- * const { TcpClient } = require('@afterlink/core');
+ * const { TcpClient } = require('@ajaymyth/core');
  *
  * const client = new TcpClient({ host: 'localhost', port: 4000 });
  * await client.connect({ auth: myJwtToken });

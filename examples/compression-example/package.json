@@ -7,7 +7,7 @@
     "client": "node client.js"
   },
   "dependencies": {
-    "@afterlink/server": "workspace:*",
-    "@afterlink/client": "workspace:*"
+    "@ajaymyth/server": "workspace:*",
+    "@ajaymyth/client": "workspace:*"
   }
 }

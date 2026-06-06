@@ -9,7 +9,7 @@
  * Run: node server.js
  */
 
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 
 const messages = [];
 const server = new Server({ port: 4000 });

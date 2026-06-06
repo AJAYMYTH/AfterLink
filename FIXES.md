@@ -15,7 +15,7 @@ so future contributors understand the rationale without having to rediscover the
 **Status:** Resolved by project design — use `pnpm`.
 
 The repo uses pnpm workspaces (`pnpm-workspace.yaml`, `pnpm-lock.yaml`).
-All `@afterlink/*` packages reference each other via `workspace:*`, a pnpm-only protocol.
+All `@ajaymyth/*` packages reference each other via `workspace:*`, a pnpm-only protocol.
 
 **Always install with:**
 ```bash
@@ -26,9 +26,9 @@ If consuming AfterLink packages in your own project, pin explicit versions:
 ```json
 "pnpm": {
   "overrides": {
-    "@afterlink/core": "1.2.0",
-    "@afterlink/server": "1.2.0",
-    "@afterlink/browser": "1.2.0"
+    "@ajaymyth/core": "1.2.0",
+    "@ajaymyth/server": "1.2.0",
+    "@ajaymyth/browser": "1.2.0"
   }
 }
 ```
@@ -136,7 +136,7 @@ defaults in `packages/server/src/Server.js` constructor, not from external docs.
 
 ---
 
-### ✅ Fix 8 — `@afterlink/core` Exported No Client Class
+### ✅ Fix 8 — `@ajaymyth/core` Exported No Client Class
 
 **Files changed:** `packages/core/src/TcpClient.js` *(new)*, `packages/core/src/index.js`
 
@@ -144,13 +144,13 @@ The core package exported only low-level primitives (`Frame`, `FrameTypes`,
 `Serializer`, `compression`, `errors`). There was no ready-made TCP client,
 forcing every developer to write ~100 lines of raw socket boilerplate.
 
-**Fix:** A new `TcpClient` class is now exported from `@afterlink/core`.
+**Fix:** A new `TcpClient` class is now exported from `@ajaymyth/core`.
 It wraps `net.Socket` with the full AfterLink framing protocol, exposes
 clean Promise-based `connect()` and `request()` APIs, and automatically handles
 HELLO_ACK, PING/PONG, SERVER_CLOSING, and connection teardown.
 
 ```js
-const { TcpClient } = require('@afterlink/core');
+const { TcpClient } = require('@ajaymyth/core');
 
 const client = new TcpClient({ host: 'localhost', port: 4000 });
 await client.connect({ auth: myJwtToken });

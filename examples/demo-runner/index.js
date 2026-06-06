@@ -7,8 +7,8 @@
  * Run: node index.js
  */
 
-const { Server } = require('@afterlink/server');
-const { Client } = require('@afterlink/client');
+const { Server } = require('@ajaymyth/server');
+const { Client } = require('@ajaymyth/client');
 const { z } = require('zod');
 
 const COLORS = {

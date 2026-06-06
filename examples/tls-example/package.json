@@ -4,7 +4,7 @@
   "private": true,
   "description": "TLS/SSL example for AfterLink v1.0.1",
   "dependencies": {
-    "@afterlink/server": "workspace:*",
-    "@afterlink/client": "workspace:*"
+    "@ajaymyth/server": "workspace:*",
+    "@ajaymyth/client": "workspace:*"
   }
 }

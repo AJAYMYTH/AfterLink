@@ -96,7 +96,7 @@ node client.js
 ## How to Write Your Own AfterLink Server
 
 ```javascript
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 const { z } = require('zod'); // optional
 
 const server = new Server({ port: 4000 });
@@ -130,7 +130,7 @@ await server.listen();
 ## How to Write Your Own AfterLink Client
 
 ```javascript
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 const client = new Client('afterlink://localhost:4000');
 
@@ -160,7 +160,7 @@ AfterLink is a **communication protocol**, not a database. It works with **any**
 ### How to connect AfterLink to your backend:
 
 ```javascript
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 
 // Choose YOUR backend - AfterLink doesn't care which one:
 // const supabase = require('@supabase/supabase-js').createClient(url, key);

@@ -5,7 +5,7 @@ The AfterLink CLI (`afterlink`) is a terminal tool for testing, debugging, and m
 ## Installation
 
 ```bash
-npm install -g @afterlink/cli
+npm install -g @ajaymyth/cli
 # or use via npx
 npx afterlink --help
 ```

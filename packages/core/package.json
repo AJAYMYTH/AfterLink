@@ -1,5 +1,5 @@
 {
-  "name": "@afterlink/core",
+  "name": "@ajaymyth/core",
   "version": "1.2.4",
   "description": "AfterLink Protocol Core - Frame codec and serialization",
   "main": "src/index.js",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AJAYMYTH/AfterLink.git",
+    "url": "git+https://github.com/AJAYMYTH/AfterLink.git",
     "directory": "packages/core"
   },
   "keywords": [
@@ -41,7 +41,8 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "test": "vitest run"

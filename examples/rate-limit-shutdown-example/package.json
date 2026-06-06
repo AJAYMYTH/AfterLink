@@ -8,7 +8,7 @@
     "shutdown-test": "node client.js --close"
   },
   "dependencies": {
-    "@afterlink/server": "workspace:*",
-    "@afterlink/client": "workspace:*"
+    "@ajaymyth/server": "workspace:*",
+    "@ajaymyth/client": "workspace:*"
   }
 }

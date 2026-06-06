@@ -18,7 +18,7 @@ esbuild.build({
     'process.env.NODE_ENV': '"production"',
   },
   banner: {
-    js: '// @afterlink/browser v1.2.0 — ESM\nimport { Buffer } from "buffer/";\nglobalThis.Buffer = globalThis.Buffer || Buffer;\n',
+    js: '// @ajaymyth/browser v1.2.4 — ESM\nimport { Buffer } from "buffer/";\nglobalThis.Buffer = globalThis.Buffer || Buffer;\n',
   },
 }).then(() => {
   console.log('✓ Built ESM bundle');

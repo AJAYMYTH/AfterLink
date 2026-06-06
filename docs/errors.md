@@ -69,8 +69,8 @@ All errors extend from `AfterLinkError` and include `code`, `message`, `requestI
 ### Server-side: throwing typed errors
 
 ```javascript
-import { Server } from '@afterlink/server';
-import { errors } from '@afterlink/core';
+import { Server } from '@ajaymyth/server';
+import { errors } from '@ajaymyth/core';
 
 const server = new Server({ port: 4000 });
 
@@ -97,8 +97,8 @@ server.on('getUser', async (req, res) => {
 ### Client-side: catching typed errors
 
 ```javascript
-import { Client } from '@afterlink/client';
-import { errors } from '@afterlink/core';
+import { Client } from '@ajaymyth/client';
+import { errors } from '@ajaymyth/core';
 
 const client = new Client('afterlink://localhost:4000');
 await client.connect();
@@ -121,7 +121,7 @@ try {
 ### `fromError()` — Convert any Error to AfterLinkError
 
 ```javascript
-import { errors } from '@afterlink/core';
+import { errors } from '@ajaymyth/core';
 
 try {
   // Some operation that might throw anything
@@ -136,7 +136,7 @@ try {
 ### `fromFramePayload()` — Deserialize error from frame
 
 ```javascript
-import { errors } from '@afterlink/core';
+import { errors } from '@ajaymyth/core';
 
 // When receiving an ERROR frame
 const err = errors.fromFramePayload(frame.payload, frame.messageId);
@@ -146,7 +146,7 @@ const err = errors.fromFramePayload(frame.payload, frame.messageId);
 ### `getErrorClassByCode()` — Look up error class by code
 
 ```javascript
-import { errors } from '@afterlink/core';
+import { errors } from '@ajaymyth/core';
 
 const ErrorClass = errors.getErrorClassByCode('RATE_LIMITED');
 // Returns RateLimitError class

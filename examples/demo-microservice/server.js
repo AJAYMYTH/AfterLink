@@ -10,7 +10,7 @@
  * Run: node server.js
  */
 
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 const { z } = require('zod');
 
 const server = new Server({ port: 4002 });

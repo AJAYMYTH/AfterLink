@@ -72,7 +72,7 @@ async function runAll() {
     });
     const data = await res.json();
     if (data.status !== 'healthy') throw new Error(`Status: ${data.status}`);
-    if (data.version !== '1.2.0') throw new Error(`Version: ${data.version}`);
+    if (data.version !== '1.2.4') throw new Error(`Version: ${data.version}`);
   });
 
   await test('6. Health Endpoint - GET /__health/live returns alive', async () => {
@@ -240,14 +240,14 @@ async function runAll() {
     const pkgs = ['core', 'server', 'client', 'browser', 'cli', 'afterlink'];
     for (const pkg of pkgs) {
       const json = JSON.parse(fs.readFileSync(`packages/${pkg}/package.json`, 'utf8'));
-      if (json.version !== '1.2.0') throw new Error(`${pkg} version: ${json.version}`);
+      if (json.version !== '1.2.4') throw new Error(`${pkg} version: ${json.version}`);
     }
   });
 
-  await test('24. CHANGELOG - v1.2.0 section exists', () => {
+  await test('24. CHANGELOG - v1.2.4 section exists', () => {
     const fs = require('fs');
     const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
-    if (!changelog.includes('## [1.2.0]')) throw new Error('Missing v1.2.0 section');
+    if (!changelog.includes('## [1.2.0]')) throw new Error('Missing v1.2.4 section');
   });
 
   await test('25. Integration Tests - 106 total tests pass', () => {
@@ -268,7 +268,7 @@ async function runAll() {
   await server.close({ force: true });
 
   console.log('\n' + '='.repeat(60));
-  console.log('AFTERLINK v1.2.0 - FEATURE VERIFICATION REPORT');
+  console.log('AFTERLINK v1.2.4 - FEATURE VERIFICATION REPORT');
   console.log('='.repeat(60));
   console.log();
   for (const r of results) console.log(r);

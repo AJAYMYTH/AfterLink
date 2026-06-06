@@ -25,7 +25,7 @@ const {
     fromFramePayload,
     DecompressionFailedError,
   },
-} = require('@afterlink/core');
+} = require('@ajaymyth/core');
 const PendingRequests = require('./PendingRequests');
 
 class Client {

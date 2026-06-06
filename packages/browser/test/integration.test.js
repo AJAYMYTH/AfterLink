@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Server } from '@afterlink/server';
-import { Frame, FrameTypes, Serializer } from '@afterlink/core';
+import { Server } from '@ajaymyth/server';
+import { Frame, FrameTypes, Serializer } from '@ajaymyth/core';
 import WebSocket from 'ws';
 
 // Polyfill global WebSocket for the browser client

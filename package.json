@@ -9,10 +9,11 @@
     "examples/*"
   ],
   "scripts": {
+    "build": "pnpm -r build --if-present",
     "test": "pnpm -r test",
-    "test:core": "pnpm --filter @afterlink/core test",
-    "test:server": "pnpm --filter @afterlink/server test",
-    "test:client": "pnpm --filter @afterlink/client test",
+    "test:core": "pnpm --filter @ajaymyth/core test",
+    "test:server": "pnpm --filter @ajaymyth/server test",
+    "test:client": "pnpm --filter @ajaymyth/client test",
     "release:patch": "npm version patch && git push --tags",
     "release:minor": "npm version minor && git push --tags",
     "release:major": "npm version major && git push --tags",

@@ -1,4 +1,4 @@
-const { Frame, FrameTypes, Serializer, compression } = require('@afterlink/core');
+const { Frame, FrameTypes, Serializer, compression } = require('@ajaymyth/core');
 
 class BrowserClient {
   constructor(url, options = {}) {
@@ -161,7 +161,7 @@ class BrowserClient {
         break;
       }
       case FrameTypes.ERROR: {
-        const { fromFramePayload } = require('@afterlink/core/errors');
+        const { fromFramePayload } = require('@ajaymyth/core/errors');
         const err = fromFramePayload(decodedPayload, messageId);
         this._reject(messageId, err);
         break;

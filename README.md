@@ -18,7 +18,7 @@ Persistent connections · Built-in Pub/Sub · Automatic Zod validation · 10-byt
 [![CLI](https://img.shields.io/badge/CLI-afterlink-yellow.svg)](./docs/cli.md)
 [![Browser](https://img.shields.io/badge/Browser-WebSocket-blue.svg)](./docs/browser.md)
 [![Agent Skill](https://img.shields.io/badge/Agent_Skill-npx_skills_add-blue)](https://github.com/AJAYMYTH/afterlink-skill)
-[![AI Assistant](https://img.shields.io/badge/AI_Assistant-Offline_RAG-purple.svg)](https://www.npmjs.com/package/@afterlink/ai-assistant)
+[![AI Assistant](https://img.shields.io/badge/AI_Assistant-Offline_RAG-purple.svg)](https://www.npmjs.com/package/@ajaymyth/ai-assistant)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 [**Docs**](https://afterlinkdocs.vercel.app) · [**npm**](https://www.npmjs.com/package/afterlink) · [**Examples**](./examples) · [**Benchmarks**](./BENCHMARKS.md) · [**Discussions**](https://github.com/AJAYMYTH/AfterLink/discussions) · [**Changelog**](./CHANGELOG.md)
@@ -48,7 +48,7 @@ The skill covers 10 task areas: scaffolding servers, pub/sub patterns, streaming
 AfterLink ships a **100% offline proprietary AI assistant** — a local RAG (Retrieval-Augmented Generation) pipeline that answers technical questions about AfterLink right inside your terminal. No internet. No API keys. No cloud.
 
 ```bash
-npm install -g @afterlink/ai-assistant
+npm install -g @ajaymyth/ai-assistant
 afterlink-ai
 ```
 
@@ -65,7 +65,7 @@ development or pass your own key/cert pair for production.
 
 ⚡ [CODE BOILERPLATE & EXAMPLE]
 ┌──────────────────────────────────────────────────────────────────────┐
-│ const { Server, generateDevCerts } = require('@afterlink/server');   │
+│ const { Server, generateDevCerts } = require('@ajaymyth/server');   │
 │ const { key, cert } = await generateDevCerts({ commonName: 'srv' }); │
 │ const server = new Server({                                          │
 │   port: 4443,                                                        │
@@ -101,7 +101,7 @@ development or pass your own key/cert pair for production.
 
 The assistant handles exact questions, typos (`isntall`, `configuer`), synonyms, abbreviations (`TLS`, `JWT`, `WS`), follow-up context, and out-of-scope rejection — all offline.
 
-→ [Full benchmark report](./BENCHMARKS.md) · [npm](https://www.npmjs.com/package/@afterlink/ai-assistant)
+→ [Full benchmark report](./BENCHMARKS.md) · [npm](https://www.npmjs.com/package/@ajaymyth/ai-assistant)
 
 ---
 
@@ -155,12 +155,12 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | Package | Description | Link |
 |---|---|---|
 | **`afterlink`** | Meta-package — installs all available AfterLink packages (core, server, client, browser, cli, ai-assistant) at their latest versions | [npm](https://www.npmjs.com/package/afterlink) |
-| **`@afterlink/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@afterlink/core) |
-| **`@afterlink/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@afterlink/server) |
-| **`@afterlink/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@afterlink/client) |
-| **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |
-| **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor, upgrade) | [npm](https://www.npmjs.com/package/@afterlink/cli) |
-| **`@afterlink/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@afterlink/ai-assistant) |
+| **`@ajaymyth/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@ajaymyth/core) |
+| **`@ajaymyth/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@ajaymyth/server) |
+| **`@ajaymyth/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@ajaymyth/client) |
+| **`@ajaymyth/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@ajaymyth/browser) |
+| **`@ajaymyth/cli`** | CLI tool (ping, call, inspect, monitor, upgrade) | [npm](https://www.npmjs.com/package/@ajaymyth/cli) |
+| **`@ajaymyth/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@ajaymyth/ai-assistant) |
 
 ---
 
@@ -216,10 +216,26 @@ npx afterlink upgrade
 Or install individual packages:
 
 ```bash
-npm install @afterlink/core @afterlink/server @afterlink/client
+npm install @ajaymyth/core @ajaymyth/server @ajaymyth/client
 ```
 
+#### Installing from GitHub Packages
+
+To install `@ajaymyth/server` (or other scoped packages like `@ajaymyth/core`, `@ajaymyth/client`, etc.) from GitHub Packages:
+
+1. Create a GitHub Personal Access Token (PAT) with the `read:packages` scope.
+2. Configure your project to route the `@ajaymyth` scope to GitHub Packages by adding the following to your project's `.npmrc` file:
+   ```ini
+   @ajaymyth:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=YOUR_PERSONAL_ACCESS_TOKEN
+   ```
+3. Install the package using your package manager:
+   ```bash
+   npm install @ajaymyth/server
+   ```
+
 **From source:**
+
 
 ```bash
 git clone https://github.com/AJAYMYTH/AfterLink.git
@@ -233,7 +249,7 @@ pnpm install
 **Server** — `server.js`
 
 ```js
-const { Server } = require('@afterlink/server');
+const { Server } = require('@ajaymyth/server');
 
 const server = new Server({ port: 4000 });
 
@@ -247,7 +263,7 @@ server.listen();
 **Client** — `client.js`
 
 ```js
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 
 async function main() {
   const client = new Client('afterlink://localhost:4000');
@@ -273,7 +289,7 @@ node client.js   # Terminal 2
 
 ```js
 // Server with TLS
-const { Server, generateDevCerts } = require('@afterlink/server');
+const { Server, generateDevCerts } = require('@ajaymyth/server');
 const { key, cert } = await generateDevCerts({ commonName: 'my-server' });
 
 const server = new Server({
@@ -540,13 +556,13 @@ node index.js
 
 ## API Reference
 
-### TcpClient (`@afterlink/core`)
+### TcpClient (`@ajaymyth/core`)
 
 A lightweight Promise-based TCP client — use it for testing, custom integrations,
 or any Node.js service that connects to an AfterLink server.
 
 ```js
-const { TcpClient } = require('@afterlink/core');
+const { TcpClient } = require('@ajaymyth/core');
 
 const client = new TcpClient({
   host: 'localhost',
@@ -825,7 +841,7 @@ NODE_ENV=production
 | Feature | Description | Status |
 |---|---|---|
 | **`afterlink` CLI tool** | `ping`, `call`, `inspect`, `monitor` commands | Done |
-| **`@afterlink/browser`** | WebSocket transport with auto-reconnect | Done |
+| **`@ajaymyth/browser`** | WebSocket transport with auto-reconnect | Done |
 | **TypeScript types** | `.d.ts` for core, server, client, browser, cli | Done |
 | **Health check endpoint** | `/__health`, `/__health/live`, `/__health/ready`, `/__health/stats` | Done |
 | **Error taxonomy** | 22 typed error classes with `fromError()` and `fromFramePayload()` | Done |
@@ -834,9 +850,9 @@ NODE_ENV=production
 
 | Feature | Description |
 |---|---|
-| **`@afterlink/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter |
-| **`@afterlink/python`** | Python client/server SDK (`pip install afterlink`) |
-| **`@afterlink/dart`** | Dart/Flutter client for mobile apps |
+| **`@ajaymyth/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter |
+| **`@ajaymyth/python`** | Python client/server SDK (`pip install afterlink`) |
+| **`@ajaymyth/dart`** | Dart/Flutter client for mobile apps |
 | **Protocol v2 frame** | Extended header with routing key + priority field |
 | **Metrics & observability** | Prometheus-compatible `/metrics` endpoint + OpenTelemetry tracing |
 | **Playground UI** | Browser-based interactive demo at `afterlinkdocs.vercel.app/playground` |

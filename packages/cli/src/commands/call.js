@@ -1,7 +1,7 @@
 const { Command } = require('commander');
 const fs = require('fs');
 const path = require('path');
-const { Client } = require('@afterlink/client');
+const { Client } = require('@ajaymyth/client');
 const { mergeWithProfile } = require('../config/rc');
 const { formatCallHeader, formatCallSuccess, formatCallError, formatTraceFrame, prettyJson } = require('../output/formatter');
 
@@ -66,7 +66,7 @@ const callCommand = new Command('call')
           const origWrite = client.socket.write.bind(client.socket);
           client.socket.write = (data) => {
             if (Buffer.isBuffer(data) && data.length >= 10) {
-              const frame = require('@afterlink/core').Frame.decode(data);
+              const frame = require('@ajaymyth/core').Frame.decode(data);
               if (frame) {
                 const typeName = getFrameTypeName(frame.type);
                 const info = `payload=${frame.payload.length}B  flags=0x${frame.flags.toString(16).padStart(2, '0')}`;
@@ -80,7 +80,7 @@ const callCommand = new Command('call')
           client._handleData = (data) => {
             let buf = data;
             while (buf.length >= 10) {
-              const frame = require('@afterlink/core').Frame.decode(buf);
+              const frame = require('@ajaymyth/core').Frame.decode(buf);
               if (!frame) break;
               buf = buf.slice(frame.totalSize);
               const typeName = getFrameTypeName(frame.type);

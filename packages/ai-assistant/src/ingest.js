@@ -109,14 +109,14 @@ function cleanAndStructureMarkdown(title, body) {
       structured += `Here is a complete, ready-to-run full-stack AfterLink boilerplate:\n` +
                     `\`\`\`javascript\n` +
                     `// --- SERVER SETUP (server.js) ---\n` +
-                    `const { Server } = require('@afterlink/server');\n` +
+                    `const { Server } = require('@ajaymyth/server');\n` +
                     `const server = new Server({ port: 4000 });\n\n` +
                     `server.on('ping', async (req, res) => {\n` +
                     `  res.send({ message: 'pong', timestamp: Date.now() });\n` +
                     `});\n` +
                     `server.listen();\n\n` +
                     `// --- CLIENT SETUP (client.js) ---\n` +
-                    `const { Client } = require('@afterlink/client');\n` +
+                    `const { Client } = require('@ajaymyth/client');\n` +
                     `async function main() {\n` +
                     `  const client = new Client('afterlink://localhost:4000');\n` +
                     `  await client.connect();\n\n` +

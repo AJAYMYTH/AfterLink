@@ -17,7 +17,7 @@ const {
     fromError,
     AfterLinkError,
   },
-} = require('@afterlink/core');
+} = require('@ajaymyth/core');
 
 class Router {
   constructor() {

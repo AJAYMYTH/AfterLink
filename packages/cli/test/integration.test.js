@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFile } from 'child_process';
 import path from 'path';
-import { Server } from '@afterlink/server';
+import { Server } from '@ajaymyth/server';
 
 const CLI_PATH = path.join(__dirname, '..', 'bin', 'afterlink.js');
 

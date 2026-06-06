@@ -10,7 +10,7 @@ const {
     MalformedPayloadError,
     fromError,
   },
-} = require('@afterlink/core');
+} = require('@ajaymyth/core');
 const FrameAccumulator = require('./FrameAccumulator');
 
 class Connection {
@@ -227,7 +227,7 @@ class Connection {
       this.socket.write(frame);
 
       // Track response sent - remove from active requests
-      const { RESPONSE, ERROR } = require('@afterlink/core').FrameTypes;
+      const { RESPONSE, ERROR } = require('@ajaymyth/core').FrameTypes;
       if (type === RESPONSE || type === ERROR) {
         this._activeRequests.delete(messageId);
       }

@@ -1,5 +1,5 @@
-import { Server } from '@afterlink/server';
-import { Client } from '@afterlink/client';
+import { Server } from '@ajaymyth/server';
+import { Client } from '@ajaymyth/client';
 
 const PORT = 4100;
 const WARMUP = 100;

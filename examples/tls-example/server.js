@@ -1,4 +1,4 @@
-const { Server, generateDevCerts } = require('@afterlink/server');
+const { Server, generateDevCerts } = require('@ajaymyth/server');
 
 async function main() {
   console.log('🔐 Generating development certificates...');
