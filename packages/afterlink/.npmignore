@@ -1,0 +1,17 @@
+# Dev / test only
+node_modules/
+coverage/
+.env
+*.log
+
+# Git / CI
+.github/
+.husky/
+.agents/
+
+# Generated
+dist/
+AI-upgrade/
+
+# Heavy data files not needed by consumers
+data/afterlink_index/

@@ -1,0 +1,19 @@
+# Generated / large binary files — not needed by npm consumers
+src/model-weights.json
+src/vocabulary.json
+
+# Test / debug helpers
+src/benchmark.js
+src/debug_query.js
+src/test_reranker.js
+
+# Training artefacts
+src/train.js
+src/neural-net.js
+
+# Data directory (FAISS index + documents; built at runtime via `npm run ingest`)
+../../data/
+
+# Misc
+.DS_Store
+*.log
