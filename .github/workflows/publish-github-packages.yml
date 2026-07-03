@@ -30,6 +30,9 @@ jobs:
           cache: pnpm
           scope: '@ajaymyth'
 
+      - name: Configure npm auth
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
