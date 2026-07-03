@@ -1,20 +1,24 @@
 #!/usr/bin/env pwsh
-# AfterLink npm publish script
+# AfterLink npm/GitHub publish script
 # Run this from: C:\Users\javal\Videos\AfterLink
-# Prerequisites: npm login (already done as ajay.j_dev)
+
+param(
+  [Parameter(Mandatory=$false)]
+  [string]$Registry = "https://npm.pkg.github.com"
+)
 
 Set-Location "C:\Users\javal\Videos\AfterLink"
 
-Write-Host "`n========== AfterLink npm Publish Script ==========" -ForegroundColor Cyan
-Write-Host "Logged in as: ajay.j_dev" -ForegroundColor Green
+Write-Host "`n========== AfterLink Publish Script ==========" -ForegroundColor Cyan
+Write-Host "Target Registry: $Registry" -ForegroundColor Cyan
 Write-Host ""
 
 # ── Helper ────────────────────────────────────────────────────────────
 function Publish-Package {
   param($dir, $pkg)
-  Write-Host "Publishing $pkg..." -ForegroundColor Yellow
+  Write-Host "Publishing $pkg to $Registry..." -ForegroundColor Yellow
   Set-Location $dir
-  pnpm publish --no-git-checks --access public --registry=https://registry.npmjs.org
+  pnpm publish --no-git-checks --access public --registry=$Registry
   if ($LASTEXITCODE -eq 0) {
     Write-Host "  ✅ $pkg published!" -ForegroundColor Green
   } else {
@@ -27,41 +31,46 @@ function Publish-Package {
 # ── Publish in dependency order ───────────────────────────────────────
 
 # 1. Core (no AfterLink deps)
-Publish-Package "packages\core"          "@ajaymyth/core@1.2.4"
+Publish-Package "packages\core"          "@ajaymyth/core@2.0.0"
 
 # 2. Server (depends on core)
-Publish-Package "packages\server"        "@ajaymyth/server@1.2.4"
+Publish-Package "packages\server"        "@ajaymyth/server@2.0.0"
 
-# 3. Client (depends on core)
-Publish-Package "packages\client"        "@ajaymyth/client@1.2.4"
+# 3. Cluster (depends on server)
+Publish-Package "packages\cluster"       "@ajaymyth/cluster@2.0.0"
 
-# 4. Browser SDK (depends on core)
-Publish-Package "packages\browser"       "@ajaymyth/browser@1.2.4"
+# 4. Client (depends on core)
+Publish-Package "packages\client"        "@ajaymyth/client@2.0.0"
 
-# 5. CLI (depends on core)
-Publish-Package "packages\cli"           "@ajaymyth/cli@1.2.4"
+# 5. Browser SDK (depends on core)
+Publish-Package "packages\browser"       "@ajaymyth/browser@2.0.0"
 
-# 6. AI Assistant (NEW — first publish)
-Publish-Package "packages\ai-assistant"  "@ajaymyth/ai-assistant@1.2.4"
+# 6. CLI (depends on core)
+Publish-Package "packages\cli"           "@ajaymyth/cli@2.0.0"
 
-# 7. Umbrella package (depends on all above)
-Publish-Package "packages\afterlink"     "afterlink@1.2.4"
+# 7. AI Assistant
+Publish-Package "packages\ai-assistant"  "@ajaymyth/ai-assistant@2.0.0"
+
+# 8. Umbrella package (depends on all above)
+Publish-Package "packages\afterlink"     "afterlink@2.0.0"
 
 Write-Host "========== Publish Complete! ==========" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Verifying install works..." -ForegroundColor Yellow
 
 # ── Verify ────────────────────────────────────────────────────────────
-$tmpDir = Join-Path $env:TEMP "afterlink-verify-$(Get-Random)"
-New-Item -ItemType Directory -Path $tmpDir | Out-Null
-Set-Location $tmpDir
-npm init -y | Out-Null
-npm install afterlink
-if ($LASTEXITCODE -eq 0) {
-  node -e "const a = require('afterlink'); console.log('afterlink loaded OK:', typeof a)"
-  Write-Host "`n✅ npm install afterlink works!" -ForegroundColor Green
-} else {
-  Write-Host "`n❌ npm install afterlink failed" -ForegroundColor Red
+if ($Registry -eq "https://registry.npmjs.org") {
+  Write-Host "Verifying install works..." -ForegroundColor Yellow
+  $tmpDir = Join-Path $env:TEMP "afterlink-verify-$(Get-Random)"
+  New-Item -ItemType Directory -Path $tmpDir | Out-Null
+  Set-Location $tmpDir
+  npm init -y | Out-Null
+  npm install afterlink --registry=$Registry
+  if ($LASTEXITCODE -eq 0) {
+    node -e "const a = require('afterlink'); console.log('afterlink loaded OK:', typeof a)"
+    Write-Host "`n✅ npm install afterlink works!" -ForegroundColor Green
+  } else {
+    Write-Host "`n❌ npm install afterlink failed" -ForegroundColor Red
+  }
+  Set-Location "C:\Users\javal\Videos\AfterLink"
+  Remove-Item $tmpDir -Recurse -Force
 }
-Set-Location "C:\Users\javal\Videos\AfterLink"
-Remove-Item $tmpDir -Recurse -Force

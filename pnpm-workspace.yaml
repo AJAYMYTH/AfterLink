@@ -4,4 +4,7 @@ packages:
   - 'examples/*'
 allowBuilds:
   esbuild: set this to true or false
+  faiss-node: set this to true or false
   msgpackr-extract: set this to true or false
+  protobufjs: set this to true or false
+  sharp: set this to true or false

@@ -122,7 +122,7 @@ class BrowserClient {
 
   _handleData(data) {
     const buffer = data instanceof ArrayBuffer ? Buffer.from(data) : (Buffer.isBuffer(data) ? data : Buffer.from(data));
-    const frame = Frame.decode(buffer);
+    const frame = Frame.decodeAuto(buffer);
     if (!frame) return;
 
     this._handleFrame(frame);

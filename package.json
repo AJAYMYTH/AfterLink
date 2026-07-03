@@ -1,6 +1,6 @@
 {
   "name": "afterlink",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "AfterLink Communication Protocol: For Reliable and Fast communication",
   "private": true,
   "workspaces": [
@@ -14,6 +14,7 @@
     "test:core": "pnpm --filter @ajaymyth/core test",
     "test:server": "pnpm --filter @ajaymyth/server test",
     "test:client": "pnpm --filter @ajaymyth/client test",
+    "test:cluster": "pnpm --filter @ajaymyth/cluster test",
     "release:patch": "npm version patch && git push --tags",
     "release:minor": "npm version minor && git push --tags",
     "release:major": "npm version major && git push --tags",

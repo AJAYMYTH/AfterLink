@@ -1,0 +1,55 @@
+{
+  "vectors": [
+    {
+      "name": "v1_simple_request",
+      "version": 1,
+      "type": 1,
+      "flags": 0,
+      "messageId": 42,
+      "payloadHex": "81a5726f757465a470696e67",
+      "expectedHex": "01000000002a0000000c81a5726f757465a470696e67"
+    },
+    {
+      "name": "v1_compressed_request",
+      "version": 1,
+      "type": 1,
+      "flags": 1,
+      "messageId": 42,
+      "payloadHex": "81a5726f757465a470696e67",
+      "expectedHex": "01010000002a0000000c81a5726f757465a470696e67"
+    },
+    {
+      "name": "v2_simple_request_default_priority",
+      "version": 2,
+      "type": 1,
+      "flags": 0,
+      "messageId": 42,
+      "priority": 3,
+      "routingKey": "",
+      "payloadHex": "81a5726f757465a470696e67",
+      "expectedHex": "010002030000002a00000000000c000081a5726f757465a470696e67"
+    },
+    {
+      "name": "v2_request_ml_inference_high_priority",
+      "version": 2,
+      "type": 1,
+      "flags": 12,
+      "messageId": 42,
+      "priority": 5,
+      "routingKey": "ml-inference",
+      "payloadHex": "81a5726f757465a470696e67",
+      "expectedHex": "010c02050000002a000c0000000c00006d6c2d696e666572656e636581a5726f757465a470696e67"
+    },
+    {
+      "name": "v2_request_compressed_with_routing_key",
+      "version": 2,
+      "type": 1,
+      "flags": 9,
+      "messageId": 42,
+      "priority": 3,
+      "routingKey": "test",
+      "payloadHex": "81a5726f757465a470696e67",
+      "expectedHex": "010902030000002a00040000000c00007465737481a5726f757465a470696e67"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@ajaymyth/cluster",
+  "version": "2.0.0",
+  "description": "AfterLink Cluster — Multi-process clustering with Redis pub/sub",
+  "main": "src/index.js",
+  "types": "index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AJAYMYTH/AfterLink.git",
+    "directory": "packages/cluster"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@ajaymyth/server": "workspace:*"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.0"
+  },
+  "devDependencies": {
+    "@ajaymyth/server": "workspace:*",
+    "vitest": "^2.1.0"
+  },
+  "scripts": {
+    "test": "vitest run"
+  }
+}

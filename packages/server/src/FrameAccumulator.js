@@ -16,7 +16,7 @@ class FrameAccumulator {
     }
 
     while (this.buffer.length > 0) {
-      const frame = Frame.decode(this.buffer);
+      const frame = Frame.decodeAuto(this.buffer);
       if (!frame) break;
       this.buffer = this.buffer.slice(frame.totalSize);
       this.onFrame(frame);

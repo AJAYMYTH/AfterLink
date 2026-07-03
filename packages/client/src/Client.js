@@ -325,7 +325,7 @@ class Client {
     this._buffer = Buffer.concat([this._buffer, data]);
 
     while (this._buffer.length > 0) {
-      const frame = Frame.decode(this._buffer);
+      const frame = Frame.decodeAuto(this._buffer);
       if (!frame) break;
 
       this._buffer = this._buffer.slice(frame.totalSize);

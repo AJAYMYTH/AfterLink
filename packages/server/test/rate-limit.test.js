@@ -34,7 +34,7 @@ describe('TokenBucket', () => {
   });
 
   it('tracks violations', () => {
-    const bucket = new TokenBucket(1, 1);
+    const bucket = new TokenBucket(1, 0.000001);
     bucket.consume(); // Use the token
     bucket.consume(); // Violation 1
     bucket.consume(); // Violation 2

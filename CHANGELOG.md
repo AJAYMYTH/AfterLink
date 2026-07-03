@@ -7,9 +7,14 @@ Versioning: [Semantic Versioning](https://semver.org/)
 
 ---
 
-## [Unreleased]
+## [2.0.0] — 2026-07-03
 
-_Changes staged for the next release_
+### Added
+- **Protocol v2 Header**: Upgraded header to 16-byte fixed layout supporting version negotiation (v1 vs v2), priority queues (0-7), and custom string routing keys (0-255 bytes). Added `ROUTE_REQUEST` and `PRIORITY_ACK` frame types.
+- **Node Clustering**: Created the new `@ajaymyth/cluster` package enabling multi-process clustering with Redis-backed shared pub/sub routing, worker crash detection/restarts, and SIGUSR2 rolling restarts.
+- **Metrics & Observability**: Integrated custom self-contained Prometheus endpoint, Grafana dashboard JSON template, and custom OpenTelemetry-compliant TracingManager with AsyncLocalStorage context propagation.
+- **Python SDK**: Authored the new Python SDK (`afterlink`) providing async client, async server, sync wrapper, type hints, and Pydantic validation support.
+- **Dart Client SDK**: Authored the new Dart Client SDK (`afterlink`) supporting native TCP and web WebSocket transports using conditional compilation loaders.
 
 ---
 

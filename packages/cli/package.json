@@ -1,6 +1,6 @@
 {
   "name": "@ajaymyth/cli",
-  "version": "1.2.4",
+  "version": "2.0.0",
   "description": "AfterLink CLI — test, debug, and monitor AfterLink servers from the terminal",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -28,8 +28,7 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "scripts": {
     "test": "vitest run"

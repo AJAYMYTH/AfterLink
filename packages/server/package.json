@@ -1,6 +1,6 @@
 {
   "name": "@ajaymyth/server",
-  "version": "1.2.4",
+  "version": "2.0.0",
   "description": "AfterLink Protocol Server SDK - TCP server with routing, middleware, and pub/sub",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -26,8 +26,7 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "scripts": {
     "test": "vitest run"

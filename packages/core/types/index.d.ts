@@ -18,14 +18,32 @@ export const FrameType: {
   readonly HELLO:          0x0F;
   readonly HELLO_ACK:      0x10;
   readonly SERVER_CLOSING: 0x11;
+  readonly ROUTE_REQUEST:  0x12;
+  readonly PRIORITY_ACK:   0x13;
 };
 
 export const FLAGS: {
-  readonly COMPRESSED:      0b10000000;
-  readonly ENCRYPTED:       0b01000000;
-  readonly FINAL:           0b00100000;
-  readonly PRIORITY:        0b00010000;
-  readonly ACK_REQUIRED:    0b00001000;
+  readonly COMPRESSED:      0x01;
+  readonly ENCRYPTED:       0x02;
+  readonly PRIORITY_SET:    0x04;
+  readonly HAS_ROUTING_KEY: 0x08;
+  readonly FRAGMENTED:      0x10;
+};
+
+export const PRIORITY: {
+  readonly LOWEST:        0;
+  readonly LOW:           1;
+  readonly BELOW_NORMAL:  2;
+  readonly NORMAL:        3;
+  readonly ABOVE_NORMAL:  4;
+  readonly HIGH:          5;
+  readonly CRITICAL:      6;
+  readonly REAL_TIME:     7;
+};
+
+export const PROTOCOL_VERSION: {
+  readonly V1: 0x01;
+  readonly V2: 0x02;
 };
 
 // ─── Frame ─────────────────────────────────────────────────────────────────
@@ -38,30 +56,38 @@ export interface RawFrame {
   totalSize: number;
 }
 
-// ─── Compression ───────────────────────────────────────────────────────────
-
-export type CompressionAlgorithm = 'zlib' | 'brotli' | 'none';
-
-export interface CompressionOptions {
-  enabled?:   boolean;
-  algorithm?: CompressionAlgorithm;
-  threshold?: number;
-  level?:     1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export interface RawFrameV2 extends RawFrame {
+  version:       number;
+  priority:      number;
+  routingKeyLen: number;
+  routingKey:    string;
 }
 
-// ─── Serialization ─────────────────────────────────────────────────────────
-
-export interface Serializer {
-  encode(data: unknown): Buffer;
-  decode(buffer: Buffer): unknown;
+export interface FrameEncodeOptions {
+  version?:    number;
+  priority?:   number;
+  routingKey?: string;
 }
 
-// ─── Frame Class ───────────────────────────────────────────────────────────
-
-export class Frame {
+export class FrameV1 {
   static encode(type: number, flags: number, messageId: number, payload: Buffer): Buffer;
   static decode(buffer: Buffer): RawFrame | null;
   static headerSize(): number;
+  static maxPayloadSize(): number;
+}
+
+export class FrameV2 {
+  static encode(type: number, flags: number, messageId: number, payload: Buffer, options?: FrameEncodeOptions): Buffer;
+  static decode(buffer: Buffer): RawFrameV2 | null;
+  static headerSize(): number;
+  static maxPayloadSize(): number;
+}
+
+export class Frame {
+  static encode(type: number, flags: number, messageId: number, payload: Buffer, options?: FrameEncodeOptions): Buffer;
+  static decode(buffer: Buffer, version?: number): RawFrame | RawFrameV2 | null;
+  static decodeAuto(buffer: Buffer): RawFrame | RawFrameV2 | null;
+  static headerSize(version?: number): number;
   static maxPayloadSize(): number;
 }
 

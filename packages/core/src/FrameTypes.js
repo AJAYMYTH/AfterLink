@@ -15,13 +15,31 @@ const CLOSE_ACK = 0x0E;
 const HELLO = 0x0F;
 const HELLO_ACK = 0x10;
 const SERVER_CLOSING = 0x11;
+const ROUTE_REQUEST = 0x12;  // v2 only
+const PRIORITY_ACK = 0x13;   // v2 only
 
 const FLAGS = {
-  COMPRESSED: 0b10000000,
-  ENCRYPTED: 0b01000000,
-  FINAL: 0b00100000,
-  PRIORITY: 0b00010000,
-  ACK_REQUIRED: 0b00001000,
+  COMPRESSED:      0x01,  // Bit 0
+  ENCRYPTED:       0x02,  // Bit 1
+  PRIORITY_SET:    0x04,  // Bit 2
+  HAS_ROUTING_KEY: 0x08,  // Bit 3
+  FRAGMENTED:      0x10,  // Bit 4
+};
+
+const PRIORITY = {
+  LOWEST: 0,
+  LOW: 1,
+  BELOW_NORMAL: 2,
+  NORMAL: 3,
+  ABOVE_NORMAL: 4,
+  HIGH: 5,
+  CRITICAL: 6,
+  REAL_TIME: 7,
+};
+
+const PROTOCOL_VERSION = {
+  V1: 0x01,
+  V2: 0x02,
 };
 
 const FRAME_TYPE_NAMES = {
@@ -42,6 +60,8 @@ const FRAME_TYPE_NAMES = {
   [HELLO]: 'HELLO',
   [HELLO_ACK]: 'HELLO_ACK',
   [SERVER_CLOSING]: 'SERVER_CLOSING',
+  [ROUTE_REQUEST]: 'ROUTE_REQUEST',
+  [PRIORITY_ACK]: 'PRIORITY_ACK',
 };
 
 module.exports = {
@@ -62,6 +82,10 @@ module.exports = {
   HELLO,
   HELLO_ACK,
   SERVER_CLOSING,
+  ROUTE_REQUEST,
+  PRIORITY_ACK,
   FLAGS,
+  PRIORITY,
+  PROTOCOL_VERSION,
   FRAME_TYPE_NAMES,
 };

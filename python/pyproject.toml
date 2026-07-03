@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "afterlink"
+version = "2.0.0"
+description = "AfterLink Protocol SDK - TCP client/server with routing, middleware, and pub/sub"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Ajay Myth", email = "ajaymyth@github.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "msgpack>=1.0.8",
+    "pydantic>=2.0"
+]
+
+[project.optional-dependencies]
+uvloop = ["uvloop>=0.17.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["afterlink"]
