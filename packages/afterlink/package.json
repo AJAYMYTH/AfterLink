@@ -1,6 +1,6 @@
 {
   "name": "afterlink",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "AfterLink Communication Protocol - Reliable and Fast communication for modern applications",
   "main": "src/index.js",
   "license": "MIT",

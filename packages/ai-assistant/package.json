@@ -1,6 +1,6 @@
 {
   "name": "@ajaymyth/ai-assistant",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Offline AI assistant for AfterLink — 100% local RAG pipeline with FAISS vector search, BM25, cross-encoder reranking, and an interactive terminal UI",
   "main": "src/chat.js",
   "bin": {

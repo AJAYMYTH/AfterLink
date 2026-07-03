@@ -1,6 +1,6 @@
 {
   "name": "@ajaymyth/cli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "AfterLink CLI — test, debug, and monitor AfterLink servers from the terminal",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@ajaymyth/client": "workspace:*",
     "@ajaymyth/core": "workspace:*",
-    "commander": "^12.0.0"
+    "commander": "^12.0.1"
   },
   "engines": {
     "node": ">=20.0.0"

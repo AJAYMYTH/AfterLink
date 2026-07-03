@@ -1,6 +1,6 @@
 {
   "name": "afterlink",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "AfterLink Communication Protocol: For Reliable and Fast communication",
   "private": true,
   "workspaces": [

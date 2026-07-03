@@ -31,28 +31,28 @@ function Publish-Package {
 # ── Publish in dependency order ───────────────────────────────────────
 
 # 1. Core (no AfterLink deps)
-Publish-Package "packages\core"          "@ajaymyth/core@2.0.0"
+Publish-Package "packages\core"          "@ajaymyth/core@2.0.1"
 
 # 2. Server (depends on core)
-Publish-Package "packages\server"        "@ajaymyth/server@2.0.0"
+Publish-Package "packages\server"        "@ajaymyth/server@2.0.1"
 
 # 3. Cluster (depends on server)
-Publish-Package "packages\cluster"       "@ajaymyth/cluster@2.0.0"
+Publish-Package "packages\cluster"       "@ajaymyth/cluster@2.0.1"
 
 # 4. Client (depends on core)
-Publish-Package "packages\client"        "@ajaymyth/client@2.0.0"
+Publish-Package "packages\client"        "@ajaymyth/client@2.0.1"
 
 # 5. Browser SDK (depends on core)
-Publish-Package "packages\browser"       "@ajaymyth/browser@2.0.0"
+Publish-Package "packages\browser"       "@ajaymyth/browser@2.0.1"
 
 # 6. CLI (depends on core)
-Publish-Package "packages\cli"           "@ajaymyth/cli@2.0.0"
+Publish-Package "packages\cli"           "@ajaymyth/cli@2.0.1"
 
 # 7. AI Assistant
-Publish-Package "packages\ai-assistant"  "@ajaymyth/ai-assistant@2.0.0"
+Publish-Package "packages\ai-assistant"  "@ajaymyth/ai-assistant@2.0.1"
 
 # 8. Umbrella package (depends on all above)
-Publish-Package "packages\afterlink"     "afterlink@2.0.0"
+Publish-Package "packages\afterlink"     "afterlink@2.0.1"
 
 Write-Host "========== Publish Complete! ==========" -ForegroundColor Cyan
 Write-Host ""
