@@ -13,16 +13,52 @@ Write-Host "`n========== AfterLink Publish Script ==========" -ForegroundColor C
 Write-Host "Target Registry: $Registry" -ForegroundColor Cyan
 Write-Host ""
 
+# Ensure all packages are built before publishing
+Write-Host "Building packages..." -ForegroundColor Yellow
+pnpm build
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "❌ Build failed. Aborting publish." -ForegroundColor Red
+  exit 1
+}
+Write-Host "✅ Build completed successfully.`n" -ForegroundColor Green
+
+# Prepare npm scope if publishing to public npm registry
+if ($Registry -eq "https://registry.npmjs.org" -or $Registry -eq "https://registry.npmjs.org/") {
+  Write-Host "Preparing package scopes for public npm release..." -ForegroundColor Yellow
+  node scripts/prepare-npm-publish.js
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Failed to prepare package scopes. Aborting publish." -ForegroundColor Red
+    exit 1
+  }
+  Write-Host "✅ Package scopes prepared.`n" -ForegroundColor Green
+
+  # Re-run pnpm install to map renamed packages in the workspace
+  Write-Host "Re-running pnpm install to resolve workspace names..." -ForegroundColor Yellow
+  pnpm install --no-frozen-lockfile
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Failed to update workspace mappings. Aborting publish." -ForegroundColor Red
+    exit 1
+  }
+  Write-Host "✅ Workspace mappings updated.`n" -ForegroundColor Green
+}
+
 # ── Helper ────────────────────────────────────────────────────────────
 function Publish-Package {
-  param($dir, $pkg)
-  Write-Host "Publishing $pkg to $Registry..." -ForegroundColor Yellow
+  param($dir, $pkgNamePlaceholder)
+  
+  # Read actual package name and version from package.json
+  $pkgJsonPath = Join-Path $dir "package.json"
+  $pkgJson = Get-Content $pkgJsonPath -Raw | ConvertFrom-Json
+  $pkgName = $pkgJson.name
+  $pkgVersion = $pkgJson.version
+  
+  Write-Host "Publishing $pkgName@$pkgVersion to $Registry..." -ForegroundColor Yellow
   Set-Location $dir
   pnpm publish --no-git-checks --access public --registry=$Registry
   if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✅ $pkg published!" -ForegroundColor Green
+    Write-Host "  ✅ $pkgName@$pkgVersion published!" -ForegroundColor Green
   } else {
-    Write-Host "  ❌ $pkg FAILED (already at this version? skip and continue)" -ForegroundColor Red
+    Write-Host "  ❌ $pkgName@$pkgVersion FAILED (already at this version? skip and continue)" -ForegroundColor Red
   }
   Set-Location "C:\Users\javal\Videos\AfterLink"
   Write-Host ""

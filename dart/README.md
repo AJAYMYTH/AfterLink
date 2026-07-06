@@ -8,8 +8,7 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  afterlink:
-    path: ./path/to/afterlink
+  afterlink: ^2.0.1
 ```
 
 ## Usage

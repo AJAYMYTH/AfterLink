@@ -9,7 +9,7 @@ function walkDir(dir, callback) {
     const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
     if (stat.isDirectory()) {
-      if (file !== 'node_modules' && file !== '.git' && file !== '.agents') {
+      if (file !== 'node_modules' && file !== '.git' && file !== '.agents' && file !== 'scripts') {
         walkDir(fullPath, callback);
       }
     } else {
@@ -18,9 +18,12 @@ function walkDir(dir, callback) {
   }
 }
 
-// Walk through the project and restore the @afterlink/ scope in all package.json files
+// Walk through the project and restore the @afterlink/ scope in package.json, source files, and docs
 walkDir(rootDir, (filePath) => {
-  if (path.basename(filePath) === 'package.json') {
+  const ext = path.extname(filePath);
+  const base = path.basename(filePath);
+
+  if (base === 'package.json') {
     let content = fs.readFileSync(filePath, 'utf8');
     let modified = false;
 
@@ -38,6 +41,13 @@ walkDir(rootDir, (filePath) => {
     if (modified) {
       fs.writeFileSync(filePath, JSON.stringify(pkgJson, null, 2) + '\n', 'utf8');
       console.log(`Restored scope and stripped registry in: ${filePath}`);
+    }
+  } else if (ext === '.js' || ext === '.ts' || base.endsWith('.d.ts') || ext === '.md') {
+    let content = fs.readFileSync(filePath, 'utf8');
+    if (content.includes('@ajaymyth/')) {
+      content = content.split('@ajaymyth/').join('@afterlink/');
+      fs.writeFileSync(filePath, content, 'utf8');
+      console.log(`Restored scope in source/doc: ${filePath}`);
     }
   }
 });

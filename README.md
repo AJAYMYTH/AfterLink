@@ -161,6 +161,7 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | **`@afterlink/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@afterlink/browser) |
 | **`@afterlink/cli`** | CLI tool (ping, call, inspect, monitor, upgrade) | [npm](https://www.npmjs.com/package/@afterlink/cli) |
 | **`@afterlink/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@afterlink/ai-assistant) |
+| **`@afterlink/cluster`** | Multi-process clustering orchestrator with Redis and Redis Cluster pub/sub synchronization | [npm](https://www.npmjs.com/package/@afterlink/cluster) |
 
 ---
 

@@ -72,10 +72,14 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 
 | Package | Description | Link |
 |---|---|---|
-| **`afterlink`** | Meta-package (installs all 3) | [npm](https://www.npmjs.com/package/afterlink) |
-| **`@ajaymyth/core`** | Frame codec and MessagePack serialization | [npm](https://www.npmjs.com/package/@ajaymyth/core) |
-| **`@ajaymyth/server`** | Server SDK (TCP, routing, pub/sub, middleware) | [npm](https://www.npmjs.com/package/@ajaymyth/server) |
-| **`@ajaymyth/client`** | Client SDK (auto-reconnect, subscriptions) | [npm](https://www.npmjs.com/package/@ajaymyth/client) |
+| **`afterlink`** | Meta-package — installs all available AfterLink packages (core, server, client, browser, cli, ai-assistant) at their latest versions | [npm](https://www.npmjs.com/package/afterlink) |
+| **`@ajaymyth/core`** | Frame codec, error taxonomy, MessagePack serialization, **TcpClient** | [npm](https://www.npmjs.com/package/@ajaymyth/core) |
+| **`@ajaymyth/server`** | Server SDK (TCP, routing, pub/sub, health, WS bridge) | [npm](https://www.npmjs.com/package/@ajaymyth/server) |
+| **`@ajaymyth/client`** | Client SDK (auto-reconnect, subscriptions, TLS) | [npm](https://www.npmjs.com/package/@ajaymyth/client) |
+| **`@ajaymyth/browser`** | Browser SDK (WebSocket transport, auto-reconnect) | [npm](https://www.npmjs.com/package/@ajaymyth/browser) |
+| **`@ajaymyth/cli`** | CLI tool (ping, call, inspect, monitor, upgrade) | [npm](https://www.npmjs.com/package/@ajaymyth/cli) |
+| **`@ajaymyth/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@ajaymyth/ai-assistant) |
+| **`@ajaymyth/cluster`** | Multi-process clustering orchestrator with Redis and Redis Cluster pub/sub synchronization | [npm](https://www.npmjs.com/package/@ajaymyth/cluster) |
 
 ---
 

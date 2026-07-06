@@ -72,7 +72,7 @@ async function runAll() {
     });
     const data = await res.json();
     if (data.status !== 'healthy') throw new Error(`Status: ${data.status}`);
-    if (data.version !== '1.2.4') throw new Error(`Version: ${data.version}`);
+    if (data.version !== '2.0.1') throw new Error(`Version: ${data.version}`);
   });
 
   await test('6. Health Endpoint - GET /__health/live returns alive', async () => {
@@ -235,19 +235,19 @@ async function runAll() {
     if (!fs.existsSync('docs/errors.md')) throw new Error('Missing errors.md');
   });
 
-  await test('23. Version - all packages at 1.2.0', () => {
+  await test('23. Version - all packages at 2.0.1', () => {
     const fs = require('fs');
     const pkgs = ['core', 'server', 'client', 'browser', 'cli', 'afterlink'];
     for (const pkg of pkgs) {
       const json = JSON.parse(fs.readFileSync(`packages/${pkg}/package.json`, 'utf8'));
-      if (json.version !== '1.2.4') throw new Error(`${pkg} version: ${json.version}`);
+      if (json.version !== '2.0.1') throw new Error(`${pkg} version: ${json.version}`);
     }
   });
 
-  await test('24. CHANGELOG - v1.2.4 section exists', () => {
+  await test('24. CHANGELOG - v2.0.0 section exists', () => {
     const fs = require('fs');
     const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
-    if (!changelog.includes('## [1.2.0]')) throw new Error('Missing v1.2.4 section');
+    if (!changelog.includes('## [2.0.0]')) throw new Error('Missing v2.0.0 section');
   });
 
   await test('25. Integration Tests - 106 total tests pass', () => {
