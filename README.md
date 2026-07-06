@@ -163,6 +163,150 @@ It is faster, simpler, and more developer-friendly than HTTP for modern real-tim
 | **`@afterlink/ai-assistant`** | 🤖 Offline RAG AI assistant — answers questions about AfterLink in your terminal | [npm](https://www.npmjs.com/package/@afterlink/ai-assistant) |
 | **`@afterlink/cluster`** | Multi-process clustering orchestrator with Redis and Redis Cluster pub/sub synchronization | [npm](https://www.npmjs.com/package/@afterlink/cluster) |
 
+## Package & SDK Ecosystem Details
+
+AfterLink is structured as a modular ecosystem of packages and multi-language SDKs to support various environments and architectures.
+
+### 1. 🎛️ `@afterlink/cluster` — Clustering Orchestrator
+Enables multi-process server clustering with pub/sub synchronization using standard Redis or Redis Cluster.
+
+* **Installation**:
+  ```bash
+  npm install @afterlink/cluster
+  ```
+* **Single-Node Redis Setup**:
+  ```javascript
+  const { createCluster } = require('@afterlink/cluster');
+  const Server = require('@afterlink/server');
+
+  createCluster({
+    workers: 4,
+    redis: { host: 'localhost', port: 6379 }
+  }, () => {
+    const server = new Server();
+    server.listen(4000);
+  });
+  ```
+* **Redis Cluster Setup**:
+  ```javascript
+  const { createCluster } = require('@afterlink/cluster');
+  const Server = require('@afterlink/server');
+
+  createCluster({
+    workers: 4,
+    redis: {
+      nodes: [
+        { host: '10.0.0.1', port: 7000 },
+        { host: '10.0.0.2', port: 7001 }
+      ],
+      redisOptions: { password: 'your-password' }
+    }
+  }, () => {
+    const server = new Server();
+    server.listen(4000);
+  });
+  ```
+
+### 2. 🌐 `@afterlink/browser` — Browser Client SDK
+A lightweight client SDK designed for web browsers, wrapping connections over a WebSocket-to-TCP bridge.
+
+* **Installation**:
+  ```bash
+  npm install @afterlink/browser
+  ```
+* **Usage**:
+  ```javascript
+  import { BrowserClient } from '@afterlink/browser';
+
+  const client = new BrowserClient('ws://localhost:4000');
+  await client.connect();
+
+  const response = await client.request('greet', { name: 'World' });
+  console.log(response); // { message: 'Hello World' }
+  ```
+
+### 3. 🛠️ `@afterlink/cli` — Command Line Interface
+A command-line tool for developers to ping servers, invoke routes, monitor performance, and inspect endpoints.
+
+* **Installation**:
+  ```bash
+  npm install -g @afterlink/cli
+  ```
+* **Common Commands**:
+  - **Ping Server**: `afterlink ping tcp://localhost:4000`
+  - **Call a Route**: `afterlink call users/get --payload '{"id": 1}' --url tcp://localhost:4000`
+  - **Monitor Traffic**: `afterlink monitor tcp://localhost:4000`
+  - **Inspect Server Stats**: `afterlink inspect tcp://localhost:4000`
+
+### 4. 🤖 `@afterlink/ai-assistant` — Offline RAG AI Assistant
+An offline, RAG-powered AI assistant that answers questions about AfterLink directly from your terminal.
+
+* **Usage**:
+  ```bash
+  # Start the AI assistant interactive terminal session
+  npx afterlink-ai
+  ```
+
+### 5. 🎯 Dart Client SDK (`afterlink`)
+A pure Dart and Flutter client SDK for connecting mobile and desktop apps to AfterLink servers.
+
+* **Registry**: [pub.dev](https://pub.dev/packages/afterlink)
+* **Installation**:
+  ```yaml
+  dependencies:
+    afterlink: ^2.0.1
+  ```
+* **Usage**:
+  ```dart
+  import 'package:afterlink/afterlink.dart';
+
+  void main() async {
+    final client = AfterLinkClient(url: 'tcp://localhost:4000');
+    await client.connect();
+    
+    final result = await client.request<Map>('users/get', {'id': 1});
+    print(result);
+    
+    await client.disconnect();
+  }
+  ```
+
+### 6. 🐍 Python SDK (`afterlink`)
+A complete async-first Python client and server implementation of the AfterLink binary protocol.
+
+* **Registry**: [PyPI](https://pypi.org/project/afterlink/)
+* **Installation**:
+  ```bash
+  pip install afterlink
+  ```
+* **Server**:
+  ```python
+  import asyncio
+  from afterlink import Server
+
+  server = Server(port=4000)
+
+  @server.on("users/get")
+  async def get_user(req):
+      return {"id": 1, "username": "ajay"}
+
+  asyncio.run(server.listen())
+  ```
+* **Client**:
+  ```python
+  import asyncio
+  from afterlink import Client
+
+  async def main():
+      client = Client("tcp://localhost:4000")
+      await client.connect()
+      res = await client.request("users/get")
+      print(res)
+      await client.disconnect()
+
+  asyncio.run(main())
+  ```
+
 ---
 
 ## Architecture
