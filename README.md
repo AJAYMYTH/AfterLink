@@ -991,16 +991,16 @@ NODE_ENV=production
 | **Health check endpoint** | `/__health`, `/__health/live`, `/__health/ready`, `/__health/stats` | Done |
 | **Error taxonomy** | 22 typed error classes with `fromError()` and `fromFramePayload()` | Done |
 
-### Phase 3 — v2.0 · Scale & Ecosystem (Weeks 9–16)
+### ~~Phase 3~~ — v2.0 · Scale & Ecosystem (Weeks 9–16) — **COMPLETE**
 
-| Feature | Description |
-|---|---|
-| **`@afterlink/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter |
-| **`@afterlink/python`** | Python client/server SDK (`pip install afterlink`) |
-| **`@afterlink/dart`** | Dart/Flutter client for mobile apps |
-| **Protocol v2 frame** | Extended header with routing key + priority field |
-| **Metrics & observability** | Prometheus-compatible `/metrics` endpoint + OpenTelemetry tracing |
-| **Playground UI** | Browser-based interactive demo at `afterlinkdocs.vercel.app/playground` |
+| Feature | Description | Status |
+|---|---|---|
+| **`@afterlink/cluster`** | Multi-process clustering with shared pub/sub via Redis adapter | Done |
+| **`@afterlink/python`** | Python client/server SDK (`pip install afterlink`) | Done |
+| **`@afterlink/dart`** | Dart/Flutter client for mobile apps | Done |
+| **Protocol v2 frame** | Extended header with routing key + priority field | Done |
+| **Metrics & observability** | Prometheus-compatible `/metrics` endpoint + OpenTelemetry tracing | Done |
+| **Playground UI** | Browser-based interactive demo at `afterlinkdocs.vercel.app/playground` | Done |
 
 ---
 
@@ -1015,11 +1015,11 @@ Week 3–4    [████] Graceful shutdown + CHANGELOG
 Week 5–6    [████] Error taxonomy + TypeScript definitions
 Week 6–7    [████] Health endpoint + Browser SDK
 Week 7–8    [████] CLI tool + integration tests
-Week 9–10   [░░░░] Redis-backed cluster pub/sub
-Week 11–12  [░░░░] Python SDK
-Week 13–14  [░░░░] Dart/Flutter SDK
-Week 15      [░░░░] Protocol v2 frame design + migration guide
-Week 16      [░░░░] Prometheus metrics + playground UI launch
+Week 9–10   [████] Redis-backed cluster pub/sub
+Week 11–12  [████] Python SDK
+Week 13–14  [████] Dart/Flutter SDK
+Week 15      [████] Protocol v2 frame design + migration guide
+Week 16      [████] Prometheus metrics + playground UI launch
 ```
 
 | Milestone | Target Date | Version | Status |
@@ -1029,8 +1029,8 @@ Week 16      [░░░░] Prometheus metrics + playground UI launch
 | JWT auth fixes, TcpClient, ws-bridge hardening | June 2026 | v1.2.1 | ✅ Released |
 | Offline RAG AI assistant (100% accuracy) | June 2026 | v1.2.1 | ✅ Released |
 | **`afterlink upgrade` CLI, workspace fixes, security package hardening** | **June 2026** | **v1.2.4** | **✅ Released** |
-| Cluster + Python + Dart SDKs | August 2026 | v2.0.0 | 🔜 Planned |
-| Metrics, Protocol v2, Playground | August 2026 | v2.0.0 | 🔜 Planned |
+| Cluster + Python + Dart SDKs | July 2026 | v2.0.1 | ✅ Released |
+| Metrics, Protocol v2, Playground | July 2026 | v2.0.1 | ✅ Released |
 
 ---
 
