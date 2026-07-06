@@ -23,12 +23,5 @@
   },
   "devDependencies": {
     "husky": "^9.1.7"
-  },
-  "pnpm": {
-    "overrides": {
-      "esbuild": ">=0.24.3",
-      "vite": ">=6.4.2",
-      "protobufjs": ">=7.2.4"
-    }
   }
 }

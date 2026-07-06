@@ -8,3 +8,8 @@ allowBuilds:
   msgpackr-extract: true
   protobufjs: true
   sharp: true
+
+overrides:
+  esbuild: ">=0.24.3"
+  vite: ">=6.4.2"
+  protobufjs: ">=7.2.4"
