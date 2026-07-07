@@ -1,6 +1,6 @@
 name: afterlink
 description: AfterLink Dart/Flutter client SDK for real-time binary communication
-version: 2.0.1
+version: 2.0.2
 homepage: https://github.com/AJAYMYTH/AfterLink
 repository: https://github.com/AJAYMYTH/AfterLink/tree/main/dart
 
