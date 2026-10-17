@@ -1,20 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-astryx-theme="neutral">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AfterLink — Interactive Demo · Live AL/2 playground</title>
   <meta name="description" content="Interactive, live demo of AfterLink: why it exists, how the binary protocol negotiates AL/2, and a real messaging app running over AfterLink from your browser." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='30' cy='50' r='16' fill='%2300d4ff'/%3E%3Ccircle cx='70' cy='50' r='16' fill='%2310b981'/%3E%3Crect x='38' y='45' width='24' height='10' rx='5' fill='%232a3b4d'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/png" href="brand/favicon.png" />
+  <link rel="icon" type="image/png" href="brand/favicon-dark.png" media="(prefers-color-scheme: dark)" />
+  <!-- Astryx design system — stylesheets copied out of node_modules by server.js -->
+  <link rel="stylesheet" href="astryx/fonts.css" />
+  <link rel="stylesheet" href="astryx/reset.css" />
+  <link rel="stylesheet" href="astryx/astryx.css" />
+  <link rel="stylesheet" href="astryx/theme.css" />
   <link rel="stylesheet" href="style.css" />
+  <script>
+    // Apply a stored light/dark choice before first paint (no flash of the wrong theme).
+    (function () {
+      try {
+        var t = localStorage.getItem('afterlink-demo-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) { /* storage unavailable — stay on the system theme */ }
+    })();
+  </script>
 </head>
 <body id="top">
   <div id="scroll-progress"></div>
 
+  <!-- Icon sprite — Lucide-style stroke set, referenced via <use> from markup and app.js -->
+  <svg class="i-sprite" hidden xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="ic-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+    <symbol id="ic-pause" viewBox="0 0 24 24"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></symbol>
+    <symbol id="ic-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="ic-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+    <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="ic-warn" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+    <symbol id="ic-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+    <symbol id="ic-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="ic-flask" viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></symbol>
+    <symbol id="ic-bomb" viewBox="0 0 24 24"><circle cx="11" cy="13" r="9"/><path d="m19.5 9.5 1.8-1.8"/><path d="M22 22l-1.5-1.5"/><path d="M4.5 4.5 3 3"/><path d="M18 2h.01"/></symbol>
+    <symbol id="ic-unplug" viewBox="0 0 24 24"><path d="m19 5 3-3"/><path d="m2 22 3-3"/><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/></symbol>
+    <symbol id="ic-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></symbol>
+    <symbol id="ic-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  </svg>
+
   <nav class="nav">
     <a class="brand" href="#top">
-      <svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><circle cx="30" cy="50" r="18" fill="#00d4ff"/><circle cx="70" cy="50" r="18" fill="#10b981"/><rect x="38" y="44" width="24" height="12" rx="6" fill="#2a3b4d"/></svg>
-      <span>AfterLink</span>
+      <img class="brand-logo" src="brand/logo.png" alt="AfterLink" width="131" height="28" />
       <em class="ver">v2.0.3</em>
     </a>
     <div class="nav-links">
@@ -26,8 +60,13 @@
       <a href="#challenges">Challenges</a>
       <a href="#usecases">Real world</a>
     </div>
-    <div class="nav-status" id="nav-status" title="State of the local demo server">
-      <span class="dot"></span><span class="txt" id="nav-status-text">connecting…</span>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" title="Switch light / dark theme">
+        <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-moon"/></svg>
+      </button>
+      <div class="nav-status" id="nav-status" title="State of the local demo server">
+        <span class="dot"></span><span class="txt" id="nav-status-text">connecting…</span>
+      </div>
     </div>
   </nav>
 
@@ -70,7 +109,7 @@
 
         <div class="grid four">
           <div class="card">
-            <div class="icon">🧾</div>
+            <div class="icon"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
             <h3>HTTP wasn’t built for streams</h3>
             <p>
               A REST call drags <b>200–800 bytes of headers</b> for a 30-byte message, and servers
@@ -79,7 +118,7 @@
             </p>
           </div>
           <div class="card">
-            <div class="icon">🔌</div>
+            <div class="icon"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></div>
             <h3>Raw WebSockets stop at the pipe</h3>
             <p>
               You get a byte stream. Message framing, correlation IDs, routes, schema validation,
@@ -88,7 +127,7 @@
             </p>
           </div>
           <div class="card">
-            <div class="icon">🧰</div>
+            <div class="icon"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></div>
             <h3>gRPC and MQTT bring an ecosystem</h3>
             <p>
               Proto codegen, browser proxies, brokers to operate. Excellent at scale — <b>heavy</b> for
@@ -96,7 +135,7 @@
             </p>
           </div>
           <div class="card">
-            <div class="icon">🐢</div>
+            <div class="icon"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></div>
             <h3>Socket.IO trades speed for ease</h3>
             <p>
               The easiest start — and the slowest wire. JSON framing adds overhead to every message:
@@ -126,35 +165,35 @@
 
         <div class="grid four tight">
           <div class="card">
-            <h3>📦 10-byte → 16-byte frames</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>10-byte → 16-byte frames</h3>
             <p>Compact binary headers. v2 adds a version byte, priority and routing keys; v1 stays as the universal fallback.</p>
           </div>
           <div class="card">
-            <h3>🛣️ Routes + middleware</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>Routes + middleware</h3>
             <p><code>server.on('chat.send', handler)</code> — three lines to a typed RPC endpoint, with middleware for auth, logging and rate limits.</p>
           </div>
           <div class="card">
-            <h3>✅ Schema validation built in</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>Schema validation built in</h3>
             <p>Attach a zod schema to a route. Bad payloads become typed <code>VALIDATION_ERROR</code> frames <i>before</i> your handler runs. Try it in the playground.</p>
           </div>
           <div class="card">
-            <h3>🚨 A shared error taxonomy</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>A shared error taxonomy</h3>
             <p>Canonical error codes travel on the wire; Node, Python, Dart and Browser SDKs all raise the same typed classes.</p>
           </div>
           <div class="card">
-            <h3>📣 Pub/sub in the protocol</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>Pub/sub in the protocol</h3>
             <p>Topics, subscribe/publish frames, server-side fan-out. The messaging demo below is literally the <code>chat.lobby</code> topic.</p>
           </div>
           <div class="card">
-            <h3>🔁 Sessions, reconnects, keep-alive</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>Sessions, reconnects, keep-alive</h3>
             <p>HELLO/HELLO_ACK establishes a session; clients auto-reconnect with backoff; PING/PONG keeps NATs open.</p>
           </div>
           <div class="card">
-            <h3>🔐 Security &amp; operations</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>Security &amp; operations</h3>
             <p>TLS transport, JWT auth on HELLO, per-connection rate limiting, graceful shutdown and health endpoints.</p>
           </div>
           <div class="card">
-            <h3>🧩 One protocol, four SDKs</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>One protocol, four SDKs</h3>
             <p>Node.js, Browser (via the WebSocket bridge), Python and Dart speak the same bytes — verified by cross-SDK end-to-end tests.</p>
           </div>
         </div>
@@ -167,12 +206,12 @@
             </thead>
             <tbody>
               <tr><td>Setup complexity</td><td class="hl">Very easy</td><td>Easy</td><td>Medium</td><td>Hard</td></tr>
-              <tr><td>Binary protocol</td><td class="hl yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-              <tr><td>Schema validation</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td>Proto only</td></tr>
-              <tr><td>Pub / Sub</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
-              <tr><td>Typed errors</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td>Partial</td></tr>
-              <tr><td>Browser support</td><td class="hl yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
-              <tr><td>Auto-reconnect</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+              <tr><td>Binary protocol</td><td class="hl yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="no">—</td><td class="yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td></tr>
+              <tr><td>Schema validation</td><td class="hl yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="no">—</td><td class="no">—</td><td>Proto only</td></tr>
+              <tr><td>Pub / Sub</td><td class="hl yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+              <tr><td>Typed errors</td><td class="hl yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="no">—</td><td class="no">—</td><td>Partial</td></tr>
+              <tr><td>Browser support</td><td class="hl yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="no">—</td></tr>
+              <tr><td>Auto-reconnect</td><td class="hl yes"><svg class="i cmp-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Yes"><path d="M20 6 9 17l-5-5"/></svg></td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
               <tr><td>Header overhead</td><td class="hl"><b>10 B (v1) · 16 B (v2)</b></td><td>200–800 B</td><td>2–14 B</td><td>5–50 B</td></tr>
             </tbody>
           </table>
@@ -198,9 +237,9 @@
             <h4 id="hs-title">Press play to step through the handshake</h4>
             <p id="hs-body">Five frames take a fresh connection from “raw socket” to “AL/2 session”: HELLO → sniff → HELLO_ACK → ready. The client in the playground below did exactly this when this page loaded.</p>
             <div class="hs-controls">
-              <button class="chip-btn" id="hs-play">▶ Play</button>
-              <button class="chip-btn" id="hs-prev">◀ Back</button>
-              <button class="chip-btn" id="hs-next">Next ▶</button>
+              <button class="chip-btn" id="hs-play"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-play"/></svg><span>Play</span></button>
+              <button class="chip-btn" id="hs-prev"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-chevron-left"/></svg>Back</button>
+              <button class="chip-btn" id="hs-next">Next<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
               <button class="chip-btn" id="hs-reset">Reset</button>
             </div>
           </div>
@@ -288,8 +327,8 @@
               <button class="send" id="send-alice">Send</button>
             </div>
             <div class="cc-actions">
-              <button class="chip-btn" data-hi="alice">👋 Say hi</button>
-              <button class="chip-btn warn" data-drop="alice">🔌 Drop socket</button>
+              <button class="chip-btn" data-hi="alice">Say hi</button>
+              <button class="chip-btn warn" data-drop="alice">Drop socket</button>
             </div>
           </div>
 
@@ -309,8 +348,8 @@
               <button class="send" id="send-bob">Send</button>
             </div>
             <div class="cc-actions">
-              <button class="chip-btn" data-hi="bob">👋 Say hi</button>
-              <button class="chip-btn warn" data-drop="bob">🔌 Drop socket</button>
+              <button class="chip-btn" data-hi="bob">Say hi</button>
+              <button class="chip-btn warn" data-drop="bob">Drop socket</button>
             </div>
           </div>
         </div>
@@ -323,11 +362,11 @@
                 <span class="sub">topic chat.lobby · server-side fan-out</span>
               </div>
               <div class="chat-tools">
-                <button class="chip-btn" id="btn-reply">🤖 Simulate reply</button>
-                <button class="chip-btn" id="btn-push">📣 Server push</button>
-                <button class="chip-btn" id="btn-burst">⚡ Burst ×10</button>
-                <button class="chip-btn danger" id="btn-validate">🧪 Break schema</button>
-                <button class="chip-btn danger" id="btn-boom">💥 Crash route</button>
+                <button class="chip-btn" id="btn-reply">Simulate reply</button>
+                <button class="chip-btn" id="btn-push">Server push</button>
+                <button class="chip-btn" id="btn-burst">Burst ×10</button>
+                <button class="chip-btn danger" id="btn-validate">Break schema</button>
+                <button class="chip-btn danger" id="btn-boom">Crash route</button>
               </div>
             </div>
             <div class="chat-window" id="chat-window"></div>
@@ -469,12 +508,12 @@
         <p class="kicker">Real world</p>
         <h2>Where you’d actually use it</h2>
         <div class="grid three uc-grid">
-          <div class="card uc"><h3>💬 Chat &amp; collaboration</h3><p>Rooms, typing indicators, presence and delivery receipts over topics — exactly what this page runs.</p></div>
-          <div class="card uc"><h3>🎮 Multiplayer &amp; games</h3><p>Low-latency state sync and server-authoritative events, with priority flags in v2 for time-critical frames.</p></div>
-          <div class="card uc"><h3>📈 Fintech &amp; trading</h3><p>Tick feeds and order events over one authenticated connection; typed errors for risk-check rejections.</p></div>
-          <div class="card uc"><h3>📡 IoT &amp; telemetry</h3><p>Many tiny messages love tiny headers — and v2 routing keys split device fleets apart on the broker.</p></div>
-          <div class="card uc"><h3>📊 Live dashboards</h3><p>Subscribe once per widget; the server pushes — no polling loop, no cache-busting, no stale charts.</p></div>
-          <div class="card uc"><h3>🧱 Service-to-service</h3><p>Internal RPC with schemas and middleware, without REST glue code or a proto toolchain.</p></div>
+          <div class="card uc"><h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat &amp; collaboration</h3><p>Rooms, typing indicators, presence and delivery receipts over topics — exactly what this page runs.</p></div>
+          <div class="card uc"><h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Multiplayer &amp; games</h3><p>Low-latency state sync and server-authoritative events, with priority flags in v2 for time-critical frames.</p></div>
+          <div class="card uc"><h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Fintech &amp; trading</h3><p>Tick feeds and order events over one authenticated connection; typed errors for risk-check rejections.</p></div>
+          <div class="card uc"><h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>IoT &amp; telemetry</h3><p>Many tiny messages love tiny headers — and v2 routing keys split device fleets apart on the broker.</p></div>
+          <div class="card uc"><h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>Live dashboards</h3><p>Subscribe once per widget; the server pushes — no polling loop, no cache-busting, no stale charts.</p></div>
+          <div class="card uc"><h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>Service-to-service</h3><p>Internal RPC with schemas and middleware, without REST glue code or a proto toolchain.</p></div>
         </div>
 
         <h3 class="sub-h">The same route, four SDKs</h3>
@@ -553,7 +592,7 @@ Future&lt;void&gt; main() async {
         <h3 class="sub-h">Shipping it for real</h3>
         <div class="grid two">
           <div class="card">
-            <h3>🔐 Security</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>Security</h3>
             <ul class="checklist">
               <li>TLS transport (<code>afterlinks://</code>) with certificate options</li>
               <li>JWT auth carried in the HELLO payload</li>
@@ -561,7 +600,7 @@ Future&lt;void&gt; main() async {
             </ul>
           </div>
           <div class="card">
-            <h3>🛰️ Operations</h3>
+            <h3><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Operations</h3>
             <ul class="checklist">
               <li>Health endpoints: <code>/__health</code>, <code>/live</code>, <code>/ready</code></li>
               <li>Graceful shutdown — the server drains and tells clients why</li>

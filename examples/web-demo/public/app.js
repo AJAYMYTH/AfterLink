@@ -82,6 +82,24 @@
   function fmtSession(id) {
     return id ? String(id) : '—';
   }
+  // Inline SVG icon from the sprite in index.html (#ic-*) — production icon set,
+  // no emoji, inherits currentColor and stroke styling from CSS.
+  function icon(name, cls) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', cls || 'i');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    var use = document.createElementNS(NS, 'use');
+    use.setAttribute('href', '#ic-' + name);
+    svg.appendChild(use);
+    return svg;
+  }
 
   // ──────────────────────────────────────────────────────────────────────────
   // nav chrome: scroll progress, reveal, scrollspy
@@ -145,6 +163,54 @@
     chip.className = 'nav-status ' + mode;
     if (txt) txt.textContent = text || mode;
   }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // theme toggle — Astryx html[data-theme], choice remembered in localStorage
+  // (index.html applies a stored value before first paint to avoid flashing)
+  // ──────────────────────────────────────────────────────────────────────────
+  (function themeToggle() {
+    var KEY = 'afterlink-demo-theme';
+    var btn = $('theme-toggle');
+    var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    function stored() {
+      try {
+        var v = localStorage.getItem(KEY);
+        return v === 'light' || v === 'dark' ? v : null;
+      } catch (e) { return null; }
+    }
+    function current() {
+      return stored() || (mq && mq.matches ? 'dark' : 'light');
+    }
+    function render() {
+      if (!btn) return;
+      var next = current() === 'dark' ? 'light' : 'dark';
+      var use = btn.querySelector('use');
+      if (use) use.setAttribute('href', next === 'dark' ? '#ic-moon' : '#ic-sun');
+      var label = 'Switch to ' + next + ' theme';
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
+    }
+    function apply() {
+      var pref = stored();
+      if (pref) document.documentElement.dataset.theme = pref;
+      else delete document.documentElement.dataset.theme; // follow the system
+      render();
+    }
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        try { localStorage.setItem(KEY, current() === 'dark' ? 'light' : 'dark'); } catch (e) { /* ignore */ }
+        apply();
+      });
+    }
+    if (mq) {
+      var onSystemChange = function () { if (!stored()) apply(); };
+      if (mq.addEventListener) mq.addEventListener('change', onSystemChange);
+      else if (mq.addListener) mq.addListener(onSystemChange);
+    }
+    apply();
+  })();
 
   // ──────────────────────────────────────────────────────────────────────────
   // handshake stepper
@@ -221,16 +287,22 @@
     hsIndex = Math.max(0, Math.min(HS.length - 1, i));
     hsRender();
   }
+  function hsPlayButton(playing) {
+    var btn = $('hs-play');
+    if (!btn) return;
+    var use = btn.querySelector('use');
+    var label = btn.querySelector('span');
+    if (use) use.setAttribute('href', playing ? '#ic-pause' : '#ic-play');
+    if (label) label.textContent = playing ? 'Pause' : 'Play';
+  }
   function hsStop() {
     if (hsTimer) { clearInterval(hsTimer); hsTimer = null; }
-    var btn = $('hs-play');
-    if (btn) btn.textContent = '▶ Play';
+    hsPlayButton(false);
   }
   function hsPlay() {
     if (hsTimer) { hsStop(); return; }
     if (hsIndex >= HS.length - 1) hsIndex = -1;
-    var btn = $('hs-play');
-    if (btn) btn.textContent = '⏸ Pause';
+    hsPlayButton(true);
     hsSet(hsIndex + 1);
     hsTimer = setInterval(function () {
       if (hsIndex >= HS.length - 1) { hsStop(); return; }
@@ -251,20 +323,20 @@
   // ──────────────────────────────────────────────────────────────────────────
   var FIELDS = {
     1: [
-      { key: 'type', name: 'type', start: 0, size: 1, color: '#00d4ff', desc: 'Frame type — 0x01 REQUEST, 0x02 RESPONSE, 0x0C PUBLISH, 0x0F HELLO… The first byte every decoder reads.' },
-      { key: 'flags', name: 'flags', start: 1, size: 1, color: '#f59e0b', desc: 'Bit flags — 0x01 compressed, 0x02 encrypted, 0x04 streaming. Zero means a plain frame.' },
-      { key: 'msgid', name: 'messageId', start: 2, size: 4, color: '#10b981', desc: 'uint32 correlation id — a RESPONSE or typed error carries the same id as its REQUEST.' },
-      { key: 'plen', name: 'payloadLength', start: 6, size: 4, color: '#fb923c', desc: 'uint32 length of the MessagePack payload that follows the header.' }
+      { key: 'type', name: 'type', start: 0, size: 1, family: 'cyan', desc: 'Frame type — 0x01 REQUEST, 0x02 RESPONSE, 0x0C PUBLISH, 0x0F HELLO… The first byte every decoder reads.' },
+      { key: 'flags', name: 'flags', start: 1, size: 1, family: 'yellow', desc: 'Bit flags — 0x01 compressed, 0x02 encrypted, 0x04 streaming. Zero means a plain frame.' },
+      { key: 'msgid', name: 'messageId', start: 2, size: 4, family: 'green', desc: 'uint32 correlation id — a RESPONSE or typed error carries the same id as its REQUEST.' },
+      { key: 'plen', name: 'payloadLength', start: 6, size: 4, family: 'orange', desc: 'uint32 length of the MessagePack payload that follows the header.' }
     ],
     2: [
-      { key: 'type', name: 'type', start: 0, size: 1, color: '#00d4ff', desc: 'Frame type — 0x01 REQUEST, 0x02 RESPONSE, 0x0C PUBLISH, 0x0F HELLO… Same as v1, so the first byte never changes meaning.' },
-      { key: 'flags', name: 'flags', start: 1, size: 1, color: '#f59e0b', desc: 'Bit flags — 0x01 compressed, 0x02 encrypted, 0x04 streaming. Zero means a plain frame.' },
-      { key: 'version', name: 'version', start: 2, size: 1, color: '#a78bfa', desc: 'Protocol version marker: 0x02 declares an AL/2 frame. This is the byte servers sniff during HELLO to pick a dialect.' },
-      { key: 'priority', name: 'priority', start: 3, size: 1, color: '#f472b6', desc: 'uint8 priority — 0 highest … 7 lowest, default 3. Brokers and schedulers can order delivery without decoding the payload.' },
-      { key: 'msgid', name: 'messageId', start: 4, size: 4, color: '#10b981', desc: 'uint32 correlation id — a RESPONSE or typed error carries the same id as its REQUEST.' },
-      { key: 'rkey', name: 'routingKeyLength', start: 8, size: 2, color: '#60a5fa', desc: 'uint16 length of the routing key that precedes the payload; 0 = no key. Keys let brokers shard or target frames without decoding them.' },
-      { key: 'plen', name: 'payloadLength', start: 10, size: 4, color: '#fb923c', desc: 'uint32 length of the MessagePack payload that follows the header (and routing key, if any).' },
-      { key: 'reserved', name: 'reserved', start: 14, size: 2, color: '#64798c', desc: 'Reserved, must be zero — headroom so future flags never need to change the header size again.' }
+      { key: 'type', name: 'type', start: 0, size: 1, family: 'cyan', desc: 'Frame type — 0x01 REQUEST, 0x02 RESPONSE, 0x0C PUBLISH, 0x0F HELLO… Same as v1, so the first byte never changes meaning.' },
+      { key: 'flags', name: 'flags', start: 1, size: 1, family: 'yellow', desc: 'Bit flags — 0x01 compressed, 0x02 encrypted, 0x04 streaming. Zero means a plain frame.' },
+      { key: 'version', name: 'version', start: 2, size: 1, family: 'purple', desc: 'Protocol version marker: 0x02 declares an AL/2 frame. This is the byte servers sniff during HELLO to pick a dialect.' },
+      { key: 'priority', name: 'priority', start: 3, size: 1, family: 'pink', desc: 'uint8 priority — 0 highest … 7 lowest, default 3. Brokers and schedulers can order delivery without decoding the payload.' },
+      { key: 'msgid', name: 'messageId', start: 4, size: 4, family: 'green', desc: 'uint32 correlation id — a RESPONSE or typed error carries the same id as its REQUEST.' },
+      { key: 'rkey', name: 'routingKeyLength', start: 8, size: 2, family: 'blue', desc: 'uint16 length of the routing key that precedes the payload; 0 = no key. Keys let brokers shard or target frames without decoding them.' },
+      { key: 'plen', name: 'payloadLength', start: 10, size: 4, family: 'orange', desc: 'uint32 length of the MessagePack payload that follows the header (and routing key, if any).' },
+      { key: 'reserved', name: 'reserved', start: 14, size: 2, family: 'gray', desc: 'Reserved, must be zero — headroom so future flags never need to change the header size again.' }
     ]
   };
 
@@ -374,7 +446,8 @@
     sum.innerHTML = '';
     var e = document.createElement('div');
     e.className = 'fx-error';
-    e.textContent = '⚠ ' + message;
+    e.appendChild(icon('warn', 'i fx-ic'));
+    e.appendChild(document.createTextNode(message));
     sum.appendChild(e);
   }
 
@@ -408,7 +481,7 @@
       chip.dataset.field = field.key;
       var sw = document.createElement('span');
       sw.className = 'swatch';
-      sw.style.background = field.color;
+      sw.style.background = 'var(--color-text-' + field.family + ')';
       chip.appendChild(sw);
       chip.appendChild(document.createTextNode(field.name + ' · ' + field.size + ' B'));
       chip.addEventListener('click', function () { fxSelectField(field.key); });
@@ -439,7 +512,7 @@
     row('wire size', frame.length + ' B  (' + (version === 2 ? 16 : 10) + ' B header + ' + payload.length + ' B payload)');
     if (version === 2) row('priority', String(frame[3]) + ' (default)');
     row('same payload, other version', 'v1 ' + v1Frame.length + ' B · v2 ' + v2Frame.length + ' B' + (version === 2 ? ' — the AL/2 header costs +6 B' : ''));
-    row('round-trip check', decoded && decoded.type === preset.type ? '✓ decoded back to ' + (TYPE_NAMES[decoded.type] || decoded.type) : 'decode mismatch');
+    row('round-trip check', decoded && decoded.type === preset.type ? 'decoded back to ' + (TYPE_NAMES[decoded.type] || decoded.type) : 'decode mismatch');
 
     var pre = document.createElement('pre');
     pre.textContent = JSON.stringify(payloadObj, null, 2);
@@ -564,7 +637,8 @@
     meta.appendChild(time);
     var body = document.createElement('div');
     body.className = 'body';
-    body.textContent = opts.text;
+    if (opts.icon) body.appendChild(icon(opts.icon, 'i msg-ic'));
+    body.appendChild(document.createTextNode(opts.text));
     e.appendChild(meta); e.appendChild(body);
     if (opts.foot) {
       var f = document.createElement('div');
@@ -578,8 +652,8 @@
     if (nearBottom) w.scrollTop = w.scrollHeight;
     return e;
   }
-  function msgSys(text) { return addMsg({ kind: 'sys', text: text }); }
-  function msgErr(text) { return addMsg({ kind: 'err', user: 'protocol', text: text }); }
+  function msgSys(text, ic) { return addMsg({ kind: 'sys', text: text, icon: ic }); }
+  function msgErr(text, ic) { return addMsg({ kind: 'err', user: 'protocol', text: text, icon: ic }); }
 
   // ── UI state helpers ──────────────────────────────────────────────────────
   function setStatus(user, mode, text) {
@@ -649,7 +723,8 @@
     addMsg({
       kind: 'news',
       user: 'server push',
-      text: '📣 ' + (data.headline || JSON.stringify(data)),
+      text: data.headline || JSON.stringify(data),
+      icon: 'megaphone',
       foot: 'topic demo.news · pushed by the server, no request involved'
     });
     log('rx', 'PUBLISH', who(receiver) + ' ← demo.news · server-initiated push');
@@ -679,7 +754,7 @@
       setStatus(user, 'offline', 'offline');
       updatePageMetrics();
       log('sys', 'CLOSE', who(user) + ' disconnected (code ' + info.code + (info.reason ? ', ' + info.reason : '') + ')');
-      msgSys('⚠️ ' + who(user) + ' lost the connection (code ' + info.code + ')');
+      msgSys(who(user) + ' lost the connection (code ' + info.code + ')', 'warn');
     });
 
     client.on('reconnecting', function (info) {
@@ -693,7 +768,7 @@
       setSession(user, client.getSessionId());
       updatePageMetrics();
       log('rx', 'RECONNECTED', who(user) + ' is back · new session ' + fmtSession(client.getSessionId()) + ' · AL/' + client.getProtocolVersion());
-      msgSys('🔄 ' + who(user) + ' reconnected with backoff — re-subscribing to chat.lobby…');
+      msgSys(who(user) + ' reconnected with backoff — re-subscribing to chat.lobby…', 'refresh');
       subscribeTopics(user).catch(function (err) {
         log('err', 'RESUB', 're-subscribe failed: ' + err.message);
       });
@@ -701,7 +776,7 @@
 
     client.on('server-closing', function () {
       log('err', 'CLOSING', 'Server announced a graceful shutdown (typed CLOSE frame)');
-      msgErr('Server is shutting down — clients receive a typed CLOSE with a reason, then drain.');
+      msgErr('Server is shutting down — clients receive a typed CLOSE with a reason, then drain.', 'warn');
     });
 
     u.client = client;
@@ -743,7 +818,7 @@
       setSession(user, c.getSessionId());
       updatePageMetrics();
       log('rx', 'HELLO_ACK', 'accepted_protocol=' + (v === 2 ? 'v2' : 'v1') + ' · server_version AL/2 · session ' + fmtSession(c.getSessionId()) + ' · handshake ' + fmtMs(took));
-      msgSys('✅ ' + who(user) + ' connected — negotiated AL/' + v + ' (' + (v === 2 ? '16' : '10') + '-byte frames), session ' + fmtSession(c.getSessionId()));
+      msgSys(who(user) + ' connected — negotiated AL/' + v + ' (' + (v === 2 ? '16' : '10') + '-byte frames), session ' + fmtSession(c.getSessionId()), 'check');
       return subscribeTopics(user);
     }).catch(function (err) {
       setStatus(user, 'offline', 'offline');
@@ -761,7 +836,7 @@
     var c = u.client;
     if (!text || !String(text).trim()) return;
     if (!c || !c.isConnected()) {
-      msgSys('⚠️ ' + who(user) + ' is not connected — start the demo server and reload.');
+      msgSys(who(user) + ' is not connected — start the demo server and reload.', 'warn');
       return;
     }
     var body = { user: user, text: String(text).slice(0, 500), room: 'lobby' };
@@ -778,18 +853,18 @@
       log('rx', 'RESPONSE', 'ACK ← delivered (' + fmtMs(rtt) + ') · messageId ' + (ack.messageId || '?'));
     }).catch(function (err) {
       log('err', err.code || 'ERROR', who(user) + ' chat.send failed — ' + err.message);
-      msgErr('chat.send failed — ' + (err.code || 'ERROR') + ': ' + err.message);
+      msgErr('chat.send failed — ' + (err.code || 'ERROR') + ': ' + err.message, 'warn');
     });
   }
 
   var HI_LINES = {
     alice: [
-      'Hey Bob! 👋 this message went through a real AL/2 request → pub/sub round trip',
+      'Hey Bob — this message went through a real AL/2 request → pub/sub round trip',
       'Hi from Alice — encoded, framed, fanned out, and rendered.'
     ],
     bob: [
-      'Hey Alice! Got it — this came back over the chat.lobby topic 📬',
-      'Hi from Bob 👋 tiny frames, instant delivery.'
+      'Hey Alice — got it! This came back over the chat.lobby topic.',
+      'Hi from Bob — tiny frames, instant delivery.'
     ]
   };
   function sayHi(user) {
@@ -799,14 +874,14 @@
 
   var REPLIES = [
     'Nice — that round trip felt instant.',
-    'Confirmed ✅ nothing but bytes and a good protocol.',
+    'Confirmed — nothing but bytes and a good protocol.',
     'This is Bob, replying over chat.send.',
-    '10/16-byte headers beat dragging HTTP everywhere 😄'
+    '10/16-byte headers beat dragging HTTP everywhere.'
   ];
   function simulateReply() {
     var c = users.bob.client;
-    if (!c || !c.isConnected()) { msgSys('⚠️ Bob must be connected first.'); return; }
-    msgSys('🤖 Bob is typing…');
+    if (!c || !c.isConnected()) { msgSys('Bob must be connected first.', 'warn'); return; }
+    msgSys('Bob is typing…', 'bot');
     setTimeout(function () {
       sendMessage('bob', REPLIES[Math.floor(Math.random() * REPLIES.length)]);
     }, 900);
@@ -814,11 +889,11 @@
 
   function serverPush() {
     var c = users.alice.client;
-    if (!c || !c.isConnected()) { msgSys('⚠️ Connect first — the server must be running.'); return; }
+    if (!c || !c.isConnected()) { msgSys('Connect first — the server must be running.', 'warn'); return; }
     log('tx', 'REQUEST', 'Alice → demo.trigger · ' + frameDesc({ route: 'demo.trigger', body: {} }, c));
-    c.request('demo.trigger', { headline: 'AL/2 negotiation just shipped in AfterLink 2.0.3 🎉' }).then(function (ack) {
+    c.request('demo.trigger', { headline: 'AL/2 negotiation just shipped in AfterLink 2.0.3' }).then(function (ack) {
       log('rx', 'RESPONSE', 'scheduled · server will publish to demo.news in ~' + ack.publishInMs + ' ms');
-      msgSys('📣 Scheduled — the server will push to demo.news in ~' + (ack.publishInMs / 1000).toFixed(1) + ' s. Watch both clients receive it.');
+      msgSys('Scheduled — the server will push to demo.news in ~' + (ack.publishInMs / 1000).toFixed(1) + ' s. Watch both clients receive it.', 'megaphone');
     }).catch(function (err) {
       log('err', err.code || 'ERROR', 'demo.trigger failed — ' + err.message);
     });
@@ -826,7 +901,7 @@
 
   function burst() {
     var c = users.alice.client;
-    if (!c || !c.isConnected()) { msgSys('⚠️ Connect first — the server must be running.'); return; }
+    if (!c || !c.isConnected()) { msgSys('Connect first — the server must be running.', 'warn'); return; }
     var n = 10;
     log('sys', 'BURST', n + ' parallel demo.echo requests…');
     var t0 = performance.now();
@@ -835,41 +910,41 @@
     })).then(function (results) {
       var ok = results.filter(function (r) { return r.status === 'fulfilled'; }).length;
       var ms = performance.now() - t0;
-      msgSys('⚡ ' + ok + '/' + n + ' parallel echo requests completed in ' + fmtMs(ms) + ' → ' + Math.round(n / (ms / 1000)) + ' msg/s wall-clock');
+      msgSys(ok + '/' + n + ' parallel echo requests completed in ' + fmtMs(ms) + ' → ' + Math.round(n / (ms / 1000)) + ' msg/s wall-clock', 'zap');
       log('rx', 'BURST', ok + '/' + n + ' responses · ' + fmtMs(ms) + ' total (parallel)');
     });
   }
 
   function schemaBreak() {
     var c = users.alice.client;
-    if (!c || !c.isConnected()) { msgSys('⚠️ Connect first — the server must be running.'); return; }
+    if (!c || !c.isConnected()) { msgSys('Connect first — the server must be running.', 'warn'); return; }
     log('tx', 'REQUEST', 'Alice → chat.send with text:"" (intentionally invalid)');
     c.request('chat.send', { user: 'alice', text: '' }).then(function () {
-      msgSys('Unexpected: the server accepted an invalid payload.');
+      msgSys('Unexpected: the server accepted an invalid payload.', 'warn');
     }).catch(function (err) {
-      msgErr('🧪 ' + (err.code || 'ERROR') + ' — ' + err.message);
+      msgErr((err.code || 'ERROR') + ' — ' + err.message, 'flask');
       log('rx', 'ERROR', (err.code || 'ERROR') + ': ' + err.message + ' · rejected before the handler ran (zod schema)');
     });
   }
 
   function boomRoute() {
     var c = users.alice.client;
-    if (!c || !c.isConnected()) { msgSys('⚠️ Connect first — the server must be running.'); return; }
+    if (!c || !c.isConnected()) { msgSys('Connect first — the server must be running.', 'warn'); return; }
     log('tx', 'REQUEST', 'Alice → demo.boom (this route always throws)');
     c.request('demo.boom', {}).then(function () {
-      msgSys('Unexpected: demo.boom did not fail.');
+      msgSys('Unexpected: demo.boom did not fail.', 'warn');
     }).catch(function (err) {
-      msgErr('💥 ' + (err.code || 'ERROR') + ' — ' + err.message);
+      msgErr((err.code || 'ERROR') + ' — ' + err.message, 'bomb');
       log('rx', 'ERROR', (err.code || 'ERROR') + ' returned instead of a crash · uncaught handler errors become typed frames');
     });
   }
 
   function dropSocket(user) {
     var c = users[user].client;
-    if (!c || !c.ws) { msgSys('⚠️ ' + who(user) + ' has no live socket to drop.'); return; }
+    if (!c || !c.ws) { msgSys(who(user) + ' has no live socket to drop.', 'warn'); return; }
     try {
       log('sys', 'DROP', who(user) + ' socket force-closed locally — simulating a flaky network');
-      msgSys('🔌 ' + who(user) + '’s socket was force-closed. Watch the auto-reconnect with exponential backoff…');
+      msgSys(who(user) + '’s socket was force-closed. Watch the auto-reconnect with exponential backoff…', 'unplug');
       c.ws.close(4001, 'demo drop');
     } catch (err) {
       log('err', 'DROP', err.message);
@@ -1008,7 +1083,7 @@
           'the interesting part is the shape: a fixed 16-byte header and zero per-message JSON overhead.';
 
         log('sys', 'BENCH', N + ' sequential echo → ' + fmtNum(tput) + ' msg/s · avg ' + avg.toFixed(3) + ' ms · p95 ' + p95.toFixed(3) + ' ms');
-        msgSys('📊 Benchmark finished: ' + fmtNum(tput) + ' msg/s · avg ' + avg.toFixed(3) + ' ms · p50 ' + p50.toFixed(3) + ' ms · p95 ' + p95.toFixed(3) + ' ms');
+        msgSys('Benchmark finished: ' + fmtNum(tput) + ' msg/s · avg ' + avg.toFixed(3) + ' ms · p50 ' + p50.toFixed(3) + ' ms · p95 ' + p95.toFixed(3) + ' ms', 'chart');
         btn.disabled = false;
       }).catch(function (err) {
         btn.disabled = false;

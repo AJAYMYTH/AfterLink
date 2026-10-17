@@ -10,6 +10,8 @@
     "@ajaymyth/browser": "workspace:*",
     "@ajaymyth/core": "workspace:*",
     "@ajaymyth/server": "workspace:*",
+    "@astryxdesign/core": "^0.7.1",
+    "@astryxdesign/theme-neutral": "^0.7.1",
     "buffer": "^6.0.3",
     "zod": "3.23.0"
   },

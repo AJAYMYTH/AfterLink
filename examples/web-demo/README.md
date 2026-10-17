@@ -40,11 +40,11 @@ Highlights in the **Live Playground**:
 
 - `chat.send` is a request; the server fans the message out on the `chat.lobby`
   topic over pub/sub — every bubble made a full request → broadcast round trip.
-- **🧪 Break schema** sends an invalid body and shows the typed `VALIDATION_ERROR`
+- **Break schema** sends an invalid body and shows the typed `VALIDATION_ERROR`
   frame the server returns *before* the handler runs.
-- **🔌 Drop socket** force-closes a client's socket and you can watch it auto-reconnect
+- **Drop socket** force-closes a client's socket and you can watch it auto-reconnect
   with backoff and re-negotiate a brand-new AL/2 session (new session id in the log).
-- **📣 Server push** schedules a server-initiated broadcast to `demo.news`.
+- **Server push** schedules a server-initiated broadcast to `demo.news`.
 - Open the page in a second tab and you have four participants in the room.
 
 The **frame explorer** encodes real frames with the bundled codec in your browser:
@@ -58,6 +58,8 @@ examples/web-demo/
 ├── server.js           # static server + AfterLink server + WS bridge + routes
 ├── client/sdk-entry.js # esbuild entry: @ajaymyth/browser + core + Buffer polyfill
 ├── public/             # index.html · style.css · app.js   (no framework)
+│   ├── brand/          # logo lockup + favicons (generated from the repo logo)
+│   ├── astryx/         # design-system CSS copied from node_modules — gitignored
 │   └── sdk.js          # generated at server start — gitignored
 ├── smoke-test.js       # headless verification (no browser needed)
 └── package.json
@@ -72,6 +74,27 @@ examples/web-demo/
   the library's built-in counters are per-TCP-connection, and browser sessions ride
   the WebSocket bridge, so the page labels that metric **tcp clients** and uses the
   middleware count for "requests handled".
+
+## Design system, brand & theming
+
+- **Astryx design system** (`@astryxdesign/core`, `@astryxdesign/theme-neutral`):
+  the page loads the neutral theme's `reset.css`, `astryx.css`, `theme.css` and
+  `fonts.css` (copied out of `node_modules` into `public/astryx/` at server start —
+  gitignored), applies `data-astryx-theme="neutral"` on `<html>`, and styles
+  everything else in `public/style.css` **exclusively with design tokens**
+  (`var(--color-*|--spacing-*|--radius-*|--text-*)`). No raw hex/px in page CSS.
+- **Brand assets** live in `public/brand/`: the nav lockup (`logo.png`) and
+  light/dark favicons, derived from the repository's root `logo.png` by
+  `scratch/make-brand-assets.ps1`. The wordmark is monochrome, so dark mode inverts
+  it with a CSS `filter: invert(1)`; the favicon switches via a `prefers-color-scheme`
+  media attribute.
+- **Icons**: one inline SVG sprite in `index.html` (Lucide-style stroke set,
+  `#ic-*` symbols) referenced from both markup and `app.js`. No emoji anywhere in
+  the UI.
+- **Theme toggle**: the nav sun/moon button flips `html[data-theme="light"|"dark"]`
+  (Astryx's own mechanism) and remembers the choice in `localStorage`
+  (`afterlink-demo-theme`). With no stored choice the page follows the OS setting;
+  a tiny inline script in `<head>` applies a stored choice before first paint.
 
 ## Verify it
 

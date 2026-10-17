@@ -42,3 +42,6 @@ dart/build/
 # Web demo — generated browser SDK bundle (built by examples/web-demo/server.js)
 examples/web-demo/public/sdk.js
 examples/web-demo/public/sdk.js.map
+
+# Web demo — Astryx design-system CSS (copied out of node_modules at server start)
+examples/web-demo/public/astryx/

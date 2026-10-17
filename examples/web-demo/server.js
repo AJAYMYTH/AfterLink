@@ -3,7 +3,9 @@
  *
  * Serves the demo website, runs a live AfterLink server with the WebSocket
  * bridge enabled, and builds the browser SDK bundle (public/sdk.js) from the
- * real workspace sources on startup.
+ * real workspace sources on startup. It also copies the Astryx design-system
+ * stylesheets (public/astryx/*.css) out of node_modules so the page styles
+ * itself with the real design tokens.
  *
  * Run from the repo root:
  *   pnpm demo:web                    (or)
@@ -63,7 +65,29 @@ async function buildSdkBundle() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 2. AfterLink server + demo routes
+// 2. Copy the Astryx stylesheets the page consumes into public/astryx/
+//    (the page styles itself with the real design-system tokens — the files
+//    come from node_modules at startup, like sdk.js, and stay gitignored)
+// ─────────────────────────────────────────────────────────────────────────────
+const ASTRYX_CSS_DIR = path.join(PUBLIC_DIR, 'astryx');
+const ASTRYX_SHEETS = {
+  'fonts.css': '@astryxdesign/theme-neutral/fonts.css',
+  'theme.css': '@astryxdesign/theme-neutral/theme.css',
+  'reset.css': '@astryxdesign/core/reset.css',
+  'astryx.css': '@astryxdesign/core/astryx.css',
+};
+
+function copyDesignSystemCss() {
+  fs.mkdirSync(ASTRYX_CSS_DIR, { recursive: true });
+  for (const [name, spec] of Object.entries(ASTRYX_SHEETS)) {
+    const from = require.resolve(spec, { paths: [ROOT] });
+    fs.copyFileSync(from, path.join(ASTRYX_CSS_DIR, name));
+  }
+  console.log('[demo] Astryx design-system CSS copied  →  public/astryx/');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. AfterLink server + demo routes
 // ─────────────────────────────────────────────────────────────────────────────
 const server = new Server({
   port: TCP_PORT,
@@ -180,7 +204,7 @@ server.on('demo.stats', async (_req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 3. Static website
+// 4. Static website
 // ─────────────────────────────────────────────────────────────────────────────
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -243,15 +267,17 @@ function startStaticServer() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 4. Main
+// 5. Main
 // ─────────────────────────────────────────────────────────────────────────────
 async function main() {
   if (process.argv.includes('--build-only')) {
     await buildSdkBundle();
+    copyDesignSystemCss();
     return;
   }
 
   await buildSdkBundle();
+  copyDesignSystemCss();
   await server.listen();
   await startStaticServer();
 
