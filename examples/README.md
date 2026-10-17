@@ -11,6 +11,9 @@ pnpm install
 # Run the interactive demo showcase (all 7 demos)
 cd examples/demo-runner
 node index.js
+
+# Or run the interactive WEB demo — a live site + browser playground
+pnpm demo:web        # → http://localhost:8080
 ```
 
 ## Demo Projects
@@ -92,6 +95,27 @@ node client.js
 - Middleware chain (request logging with timing)
 - Automatic validation error rejection
 - Full CRUD operations over AfterLink
+
+### 5. Interactive Web Demo
+
+A guided website that explains the protocol — plus a live browser playground where
+real AfterLink sessions do all the work (AL/2 negotiation, request/response, pub/sub,
+typed errors, auto-reconnect).
+
+```bash
+# from the repo root
+pnpm demo:web        # → http://localhost:8080
+```
+
+**Concepts demonstrated:**
+- AL/2 negotiation (HELLO/HELLO_ACK) as a step-by-step visual
+- Byte-accurate frame explorer using the real codec in the browser
+- A messaging app (Alice & Bob) built on `chat.send` → `chat.lobby` pub/sub
+- Schema validation, typed errors, socket-drop auto-reconnect with backoff
+- Live server metrics over the protocol itself + an in-browser benchmark
+
+See [`web-demo/README.md`](web-demo/README.md) for details and how to verify it
+(`node examples/web-demo/smoke-test.js`).
 
 ## How to Write Your Own AfterLink Server
 
@@ -207,5 +231,6 @@ examples/
 ├── demo-chat/           # Real-time chat app
 ├── demo-dashboard/      # Stock price dashboard
 ├── demo-microservice/   # CRUD with validation
+├── web-demo/            # Interactive browser demo (live AL/2 playground)
 └── hello-world/         # Simple ping/pong
 ```

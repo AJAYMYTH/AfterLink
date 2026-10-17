@@ -63,6 +63,9 @@ function handleWsConnection(ws, req, server) {
   const session = {
     id: sessionId,
     version: 'AL/1.1',
+    // 1 = v1 frames (10-byte header), 2 = v2 frames (16-byte header).
+    // Set from the HELLO payload during the handshake.
+    protocol: 1,
     capabilities: ['streaming', 'pubsub'],
     connectedAt: new Date().toISOString(),
     remoteAddress: req.socket.remoteAddress || 'unknown',
@@ -87,7 +90,8 @@ function handleWsConnection(ws, req, server) {
       buffer = Buffer.concat([buffer, data]);
 
       // Try to decode a complete HELLO frame from the buffer.
-      const helloFrame = Frame.decode(buffer);
+      // decodeAuto accepts both v1 (10-byte) and v2 (16-byte) HELLO framing.
+      const helloFrame = Frame.decodeAuto(buffer);
       if (!helloFrame) {
         // Incomplete frame — wait for more data.
         return;
@@ -121,9 +125,9 @@ function handleWsConnection(ws, req, server) {
       buffer = Buffer.concat([buffer, data]);
     }
 
-    // Drain all complete frames from the buffer.
+    // Drain all complete frames from the buffer using the negotiated version.
     while (buffer.length >= 10) {
-      const frame = Frame.decode(buffer);
+      const frame = Frame.decode(buffer, session.protocol === 2 ? 2 : 1);
       if (!frame) break;
 
       buffer = buffer.slice(frame.totalSize);
@@ -149,6 +153,9 @@ function handleWsConnection(ws, req, server) {
 async function handleWsHandshake(frame, ws, session, authConfig) {
   const helloData = Serializer.decode(frame.payload);
   session.version = helloData.version || 'AL/1.1';
+  // Negotiate the frame version from the HELLO payload so responses (and
+  // subsequent client frames) use the matching header size.
+  session.protocol = String(session.version).startsWith('AL/2') ? 2 : 1;
   session.capabilities = helloData.capabilities || [];
 
   // Authenticate the connection if the server is configured with JWT auth.
@@ -167,13 +174,22 @@ async function handleWsHandshake(frame, ws, session, authConfig) {
 
   const ackPayload = Serializer.encode({
     session_id: session.id,
-    server_version: 'AL/1.1',
+    server_version: session.protocol === 2 ? 'AL/2' : 'AL/1.1',
+    accepted_protocol: session.protocol === 2 ? 'v2' : 'v1',
     capabilities: ['streaming', 'pubsub', 'compression'],
     compression: 'none',
   });
 
-  const ackFrame = Frame.encode(FrameTypes.HELLO_ACK, 0, frame.messageId, ackPayload);
-  ws.send(ackFrame, { binary: true });
+  sendWsFrame(ws, session, FrameTypes.HELLO_ACK, 0, frame.messageId, ackPayload);
+}
+
+/**
+ * Send a frame to the WS client using the session's negotiated protocol
+ * version (v2 = 16-byte header, v1 = 10-byte header).
+ */
+function sendWsFrame(ws, session, type, flags, messageId, payload) {
+  const version = session && session.protocol === 2 ? 2 : 1;
+  ws.send(Frame.encode(type, flags, messageId, payload, { version }), { binary: true });
 }
 
 function handleWsFrame(frame, ws, session, router, server) {
@@ -186,15 +202,13 @@ function handleWsFrame(frame, ws, session, router, server) {
   } else if (frame.type === FrameTypes.PUBLISH) {
     handleWsPublish(frame, ws, session, router);
   } else if (frame.type === FrameTypes.PING) {
-    const pongFrame = Frame.encode(FrameTypes.PONG, 0, 0, Buffer.alloc(0));
-    ws.send(pongFrame, { binary: true });
+    sendWsFrame(ws, session, FrameTypes.PONG, 0, 0, Buffer.alloc(0));
   } else {
     const errorPayload = Serializer.encode({
       code: 'UNKNOWN_FRAME_TYPE',
       message: `Frame type 0x${frame.type.toString(16)} not supported over WebSocket`,
     });
-    const errorFrame = Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload);
-    ws.send(errorFrame, { binary: true });
+    sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
   }
 }
 
@@ -206,14 +220,14 @@ function handleWsRequest(frame, ws, session, router, server) {
     body = decoded.body || {};
   } catch {
     const errorPayload = Serializer.encode({ code: 'MALFORMED_PAYLOAD', message: 'Invalid request payload' });
-    ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload), { binary: true });
+    sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
     return;
   }
 
   const routeConfig = router.routes.get(route);
   if (!routeConfig) {
     const errorPayload = Serializer.encode({ code: 'ROUTE_NOT_FOUND', message: `Route '${route}' not found` });
-    ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload), { binary: true });
+    sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
     return;
   }
 
@@ -223,7 +237,7 @@ function handleWsRequest(frame, ws, session, router, server) {
     } catch (err) {
       const { ValidationError } = require('@ajaymyth/core/errors');
       const validationErr = ValidationError.fromZodError(err, { requestId: frame.messageId });
-      ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, Serializer.encode(validationErr.toJSON())), { binary: true });
+      sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, Serializer.encode(validationErr.toJSON()));
       return;
     }
   }
@@ -242,13 +256,13 @@ function handleWsRequest(frame, ws, session, router, server) {
       if (responseSent) return;
       responseSent = true;
       const responsePayload = Serializer.encode({ status: 'ok', body: data });
-      ws.send(Frame.encode(FrameTypes.RESPONSE, 0, frame.messageId, responsePayload), { binary: true });
+      sendWsFrame(ws, session, FrameTypes.RESPONSE, 0, frame.messageId, responsePayload);
     },
     error: (code, message, details) => {
       if (responseSent) return;
       responseSent = true;
       const errorPayload = Serializer.encode({ code, message, details });
-      ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload), { binary: true });
+      sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
     },
   };
 
@@ -257,7 +271,7 @@ function handleWsRequest(frame, ws, session, router, server) {
   }).catch((err) => {
     if (!responseSent) {
       const errorPayload = Serializer.encode({ code: 'INTERNAL_SERVER_ERROR', message: err.message });
-      ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload), { binary: true });
+      sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
     }
   });
 }
@@ -268,13 +282,13 @@ function handleWsSubscribe(frame, ws, session, router) {
     topic = Serializer.decode(frame.payload).topic;
   } catch {
     const errorPayload = Serializer.encode({ code: 'MALFORMED_PAYLOAD', message: 'Invalid subscribe payload' });
-    ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload), { binary: true });
+    sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
     return;
   }
 
   if (!topic || typeof topic !== 'string') {
     const errorPayload = Serializer.encode({ code: 'VALIDATION_ERROR', message: 'Topic must be a non-empty string' });
-    ws.send(Frame.encode(FrameTypes.ERROR, 0, frame.messageId, errorPayload), { binary: true });
+    sendWsFrame(ws, session, FrameTypes.ERROR, 0, frame.messageId, errorPayload);
     return;
   }
 
@@ -282,13 +296,13 @@ function handleWsSubscribe(frame, ws, session, router) {
     session,
     isActive: () => ws.readyState === 1,
     send: (type, flags, msgId, payload) => {
-      ws.send(Frame.encode(type, flags, msgId, payload), { binary: true });
+      sendWsFrame(ws, session, type, flags, msgId, payload);
     },
   };
 
   router.pubSubBroker.subscribe(topic, wsConn);
   const ackPayload = Serializer.encode({ topic, sub_id: `s_${Date.now()}` });
-  ws.send(Frame.encode(FrameTypes.RESPONSE, 0, frame.messageId, ackPayload), { binary: true });
+  sendWsFrame(ws, session, FrameTypes.RESPONSE, 0, frame.messageId, ackPayload);
 }
 
 function handleWsUnsubscribe(frame, ws, session, router) {
@@ -307,7 +321,7 @@ function handleWsUnsubscribe(frame, ws, session, router) {
 
   router.pubSubBroker.unsubscribe(topic, wsConn);
   const ackPayload = Serializer.encode({ topic });
-  ws.send(Frame.encode(FrameTypes.RESPONSE, 0, frame.messageId, ackPayload), { binary: true });
+  sendWsFrame(ws, session, FrameTypes.RESPONSE, 0, frame.messageId, ackPayload);
 }
 
 function handleWsPublish(frame, ws, session, router) {

@@ -10,6 +10,9 @@ class BrowserClient {
       timeout: 30000,
       pingInterval: 30000,
       protocols: ['afterlink'],
+      // 2 = request AL/2 (v2 frames, 16-byte header) during HELLO; the bridge
+      // may negotiate down to v1. 1 = force the v1 protocol (10-byte header).
+      protocolVersion: 2,
       ...options,
     };
 
@@ -23,6 +26,8 @@ class BrowserClient {
     this._handlers = new Map();
     this._eventListeners = new Map();
     this._msgId = 0;
+    // Protocol version negotiated during HELLO/HELLO_ACK via the WS bridge.
+    this._protocol = 1;
     this.sessionId = null;
     this._serverClosing = false;
     this._compression = { enabled: false, algorithm: 'none', level: 6, threshold: 1024 };
@@ -30,6 +35,26 @@ class BrowserClient {
 
   _nextId() {
     return (++this._msgId) >>> 0;
+  }
+
+  /**
+   * Encode a frame using the protocol version negotiated during the handshake.
+   * v1 = 10-byte header, v2 = 16-byte header (priority + routing-key aware).
+   */
+  _encode(type, flags, messageId, payload) {
+    return Frame.encode(type, flags, messageId, payload, { version: this._protocol });
+  }
+
+  /**
+   * Decide the session protocol version from a HELLO_ACK.
+   * Prefers the explicit `accepted_protocol` field; falls back to inferring
+   * from the frame version the bridge used to deliver the ACK.
+   */
+  _resolveProtocol(ackData, ackFrame) {
+    if (this.options.protocolVersion === 1) return 1; // pinned to v1 by the caller
+    if (ackData && ackData.accepted_protocol === 'v2') return 2;
+    if (ackData && ackData.accepted_protocol === 'v1') return 1;
+    return ackFrame && ackFrame.version === 2 ? 2 : 1;
   }
 
   connect() {
@@ -43,6 +68,7 @@ class BrowserClient {
 
       this._connecting = true;
       this._serverClosing = false;
+      this._protocol = 1;
 
       try {
         this.ws = new WebSocket(this.url, this.options.protocols);
@@ -85,8 +111,12 @@ class BrowserClient {
       const id = this._nextId();
       const capabilities = ['streaming', 'pubsub'];
 
+      // Request v2 by default; bridges on v2-capable servers answer with
+      // accepted_protocol: 'v2' and switch both directions to 16-byte frames.
+      const requestedVersion = this.options.protocolVersion === 1 ? 'AL/1.1' : 'AL/2';
+
       const payload = Serializer.encode({
-        version: 'AL/1.1',
+        version: requestedVersion,
         auth: this.options.auth || null,
         capabilities,
         compression: this.options.compression?.enabled
@@ -94,6 +124,9 @@ class BrowserClient {
           : 'none',
       });
 
+      // HELLO is always framed with the v1 header (10 bytes) so that older
+      // bridges can parse it; the negotiated version applies to every frame
+      // exchanged after HELLO_ACK.
       const frame = Frame.encode(FrameTypes.HELLO, 0, id, payload);
 
       const timeout = setTimeout(() => {
@@ -154,6 +187,9 @@ class BrowserClient {
       case FrameTypes.HELLO_ACK: {
         try {
           const data = Serializer.decode(decodedPayload);
+          // Set the negotiated protocol BEFORE resolving the handshake
+          // promise so callers can immediately use the right framing.
+          this._protocol = this._resolveProtocol(data, frame);
           this._resolve(messageId, data);
         } catch (err) {
           this._reject(messageId, new Error(`Failed to decode handshake: ${err.message}`));
@@ -187,7 +223,7 @@ class BrowserClient {
       }
       case FrameTypes.PING: {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          const pongFrame = Frame.encode(FrameTypes.PONG, 0, 0, Buffer.alloc(0));
+          const pongFrame = this._encode(FrameTypes.PONG, 0, 0, Buffer.alloc(0));
           this.ws.send(pongFrame, { binary: true });
         }
         break;
@@ -212,7 +248,7 @@ class BrowserClient {
 
     const id = this._nextId();
     const payload = Serializer.encode({ route, body });
-    const frame = Frame.encode(FrameTypes.REQUEST, 0, id, payload);
+    const frame = this._encode(FrameTypes.REQUEST, 0, id, payload);
 
     return new Promise((resolve, reject) => {
       this._pending.set(id, { resolve, reject });
@@ -226,7 +262,7 @@ class BrowserClient {
 
     const id = this._nextId();
     const payload = Serializer.encode({ topic });
-    const frame = Frame.encode(FrameTypes.SUBSCRIBE, 0, id, payload);
+    const frame = this._encode(FrameTypes.SUBSCRIBE, 0, id, payload);
 
     if (!this._handlers.has(topic)) {
       this._handlers.set(topic, new Set());
@@ -246,7 +282,7 @@ class BrowserClient {
 
     const id = this._nextId();
     const payload = Serializer.encode({ topic });
-    const frame = Frame.encode(FrameTypes.UNSUBSCRIBE, 0, id, payload);
+    const frame = this._encode(FrameTypes.UNSUBSCRIBE, 0, id, payload);
     this.ws.send(frame, { binary: true });
   }
 
@@ -254,7 +290,7 @@ class BrowserClient {
     if (!this._connected) throw new Error('Not connected');
 
     const payload = Serializer.encode({ topic, data });
-    const frame = Frame.encode(FrameTypes.PUBLISH, 0, 0, payload);
+    const frame = this._encode(FrameTypes.PUBLISH, 0, 0, payload);
     this.ws.send(frame, { binary: true });
   }
 
@@ -273,7 +309,7 @@ class BrowserClient {
       }
 
       const id = this._nextId();
-      const frame = Frame.encode(FrameTypes.CLOSE, 0, id, Buffer.alloc(0));
+      const frame = this._encode(FrameTypes.CLOSE, 0, id, Buffer.alloc(0));
 
       let resolved = false;
       const timeout = setTimeout(() => {
@@ -377,7 +413,7 @@ class BrowserClient {
     this._pingTimer = setInterval(() => {
       if (this._connected && this.ws && this.ws.readyState === WebSocket.OPEN) {
         try {
-          const frame = Frame.encode(FrameTypes.PING, 0, 0, Buffer.alloc(0));
+          const frame = this._encode(FrameTypes.PING, 0, 0, Buffer.alloc(0));
           this.ws.send(frame, { binary: true });
         } catch {
           // Socket may have closed between checks
@@ -434,6 +470,14 @@ class BrowserClient {
 
   getSessionId() {
     return this.sessionId;
+  }
+
+  /**
+   * @returns {1|2} The protocol version negotiated with the WS bridge.
+   *   2 = v2 frames (16-byte header), 1 = v1 frames (10-byte header).
+   */
+  getProtocolVersion() {
+    return this._protocol;
   }
 }
 

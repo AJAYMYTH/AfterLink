@@ -29,3 +29,16 @@ skills-lock.json
 
 # One-time publish utility (not needed by contributors)
 publish.ps1
+
+# Python build/test caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Dart build artifacts
+.dart_tool/
+dart/build/
+
+# Web demo — generated browser SDK bundle (built by examples/web-demo/server.js)
+examples/web-demo/public/sdk.js
+examples/web-demo/public/sdk.js.map

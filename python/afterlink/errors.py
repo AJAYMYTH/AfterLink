@@ -19,7 +19,7 @@ class AfterLinkError(Exception):
     SERVER_CLOSING = 18
     PROTOCOL_VERSION_MISMATCH = 19
 
-    ERROR_NAMES = {
+    CODE_NAMES = {
         1: "PROTOCOL_ERROR",
         2: "AUTH_REQUIRED",
         3: "AUTH_FAILED",
@@ -38,13 +38,20 @@ class AfterLinkError(Exception):
         16: "COMPRESSION_ERROR",
         17: "INVALID_FRAME",
         18: "SERVER_CLOSING",
-        19: "PROTOCOL_VERSION_MISMATCH"
+        19: "PROTOCOL_VERSION_MISMATCH",
     }
 
-    def __init__(self, code: int, message: str, details=None, retry_after: int = None, meta: dict = None):
+    # The Node.js SDK (canonical wire format) sends string error codes such as
+    # "ROUTE_NOT_FOUND". Accept those here and normalize to the numeric code.
+    NAME_TO_CODE = {name: code for code, name in CODE_NAMES.items()}
+    ERROR_NAMES = CODE_NAMES
+
+    def __init__(self, code, message: str, details=None, retry_after: int = None, meta: dict = None):
         super().__init__(message)
+        if isinstance(code, str):
+            code = self.NAME_TO_CODE.get(code, code)
         self.code = code
-        self.name = self.ERROR_NAMES.get(code, "UNKNOWN")
+        self.name = self.ERROR_NAMES.get(code, str(code))
         self.message = message
         self.details = details
         self.retry_after = retry_after

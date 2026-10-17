@@ -39,10 +39,16 @@ class Client {
       reconnectMaxDelay: 30000,
       pingInterval: 30000,
       connectTimeout: 5000,
+      // 2 = request AL/2 (v2 frames, 16-byte header) during HELLO; the server
+      // may negotiate down to v1. 1 = force the v1 protocol (10-byte header).
+      protocolVersion: 2,
       ...options,
     };
     this.pending = new PendingRequests(this.options.timeout);
     this._msgId = 0;
+    // Protocol version negotiated during the HELLO/HELLO_ACK exchange.
+    // 1 = v1 frames (10-byte header), 2 = v2 frames (16-byte header).
+    this._protocol = 1;
     this._connected = false;
     this._connecting = false;
     this._reconnectAttempts = 0;
@@ -67,6 +73,29 @@ class Client {
     return (++this._msgId) >>> 0;
   }
 
+  /**
+   * Encode a frame using the protocol version negotiated during the handshake.
+   * Before HELLO_ACK (and whenever v1 is negotiated) this produces v1 frames
+   * with a 10-byte header; after v2 negotiation it produces v2 frames with a
+   * 16-byte header (priority + routing-key aware).
+   */
+  _encode(type, flags, messageId, payload) {
+    return Frame.encode(type, flags, messageId, payload, { version: this._protocol });
+  }
+
+  /**
+   * Decide the session protocol version from a HELLO_ACK.
+   * Prefers the explicit `accepted_protocol` field (sent by servers running
+   * v2-capable builds); falls back to inferring from the frame version the
+   * server used to deliver the ACK (v2 decode results carry `version: 2`).
+   */
+  _resolveProtocol(ackData, ackFrame) {
+    if (this.options.protocolVersion === 1) return 1; // pinned to v1 by the caller
+    if (ackData && ackData.accepted_protocol === 'v2') return 2;
+    if (ackData && ackData.accepted_protocol === 'v1') return 1;
+    return ackFrame && ackFrame.version === 2 ? 2 : 1;
+  }
+
   async connect() {
     if (this._connected) {
       throw new Error('Already connected');
@@ -77,6 +106,7 @@ class Client {
 
     this._connecting = true;
     this._buffer = Buffer.alloc(0);
+    this._protocol = 1;
 
     return new Promise((resolve, reject) => {
       const port = parseInt(this.url.port, 10) || (this._tlsEnabled ? 443 : 4000);
@@ -138,12 +168,19 @@ class Client {
         ? (this.options.compression.algorithm || 'zlib')
         : 'none';
 
+      // Request v2 by default; v2-capable servers answer with
+      // accepted_protocol: 'v2' and switch both directions to 16-byte frames.
+      const requestedVersion = this.options.protocolVersion === 1 ? 'AL/1.1' : 'AL/2';
+
       const payload = Serializer.encode({
-        version: 'AL/1.1',
+        version: requestedVersion,
         auth: this.options.auth || null,
         capabilities,
         compression: clientAlgorithm,
       });
+      // HELLO is always framed with the v1 header (10 bytes) so that older
+      // servers can parse it; the negotiated version applies to every frame
+      // exchanged after HELLO_ACK.
       const frame = Frame.encode(HELLO, 0, id, payload);
 
       const timeout = setTimeout(() => {
@@ -192,7 +229,7 @@ class Client {
       flags = compression.setCompressedFlag(flags, compressed);
     }
 
-    const frame = Frame.encode(REQUEST, flags, id, payload);
+    const frame = this._encode(REQUEST, flags, id, payload);
 
     return new Promise((resolve, reject) => {
       this.pending.add(id, resolve, reject);
@@ -219,7 +256,7 @@ class Client {
       flags = compression.setCompressedFlag(flags, compressed);
     }
 
-    const frame = Frame.encode(SUBSCRIBE, flags, id, payload);
+    const frame = this._encode(SUBSCRIBE, flags, id, payload);
 
     if (!this._handlers.has(topic)) {
       this._handlers.set(topic, new Set());
@@ -252,7 +289,7 @@ class Client {
       flags = compression.setCompressedFlag(flags, compressed);
     }
 
-    const frame = Frame.encode(UNSUBSCRIBE, flags, id, payload);
+    const frame = this._encode(UNSUBSCRIBE, flags, id, payload);
     this.socket.write(frame);
   }
 
@@ -273,7 +310,7 @@ class Client {
       flags = compression.setCompressedFlag(flags, compressed);
     }
 
-    const frame = Frame.encode(PUBLISH, flags, 0, payload);
+    const frame = this._encode(PUBLISH, flags, 0, payload);
     this.socket.write(frame);
   }
 
@@ -292,7 +329,7 @@ class Client {
       }
 
       const id = this._nextId();
-      const frame = Frame.encode(CLOSE, 0, id, Buffer.alloc(0));
+      const frame = this._encode(CLOSE, 0, id, Buffer.alloc(0));
 
       let resolved = false;
       const timeout = setTimeout(() => {
@@ -364,6 +401,9 @@ class Client {
       case HELLO_ACK: {
         try {
           const data = Serializer.decode(decodedPayload);
+          // Set the negotiated protocol BEFORE resolving the handshake
+          // promise so callers can immediately use the right framing.
+          this._protocol = this._resolveProtocol(data, frame);
           this.pending.resolve(messageId, data);
         } catch (err) {
           this.pending.reject(messageId, new Error(`Failed to decode handshake: ${err.message}`));
@@ -396,7 +436,7 @@ class Client {
       }
       case PING: {
         if (this.socket && !this.socket.destroyed) {
-          const pongFrame = Frame.encode(PONG, 0, 0, Buffer.alloc(0));
+          const pongFrame = this._encode(PONG, 0, 0, Buffer.alloc(0));
           this.socket.write(pongFrame);
         }
         break;
@@ -405,7 +445,7 @@ class Client {
         break;
       case CLOSE: {
         if (this.socket && !this.socket.destroyed) {
-          const ackFrame = Frame.encode(CLOSE_ACK, 0, messageId, Buffer.alloc(0));
+          const ackFrame = this._encode(CLOSE_ACK, 0, messageId, Buffer.alloc(0));
           this.socket.write(ackFrame);
           this.socket.end();
         }
@@ -430,7 +470,7 @@ class Client {
     this._pingTimer = setInterval(() => {
       if (this._connected && this.socket && !this.socket.destroyed) {
         try {
-          const frame = Frame.encode(PING, 0, 0, Buffer.alloc(0));
+          const frame = this._encode(PING, 0, 0, Buffer.alloc(0));
           this.socket.write(frame);
         } catch {
           // Socket may have closed between checks
@@ -531,6 +571,14 @@ class Client {
 
   getSessionId() {
     return this.sessionId;
+  }
+
+  /**
+   * @returns {1|2} The protocol version negotiated with the server.
+   *   2 = v2 frames (16-byte header), 1 = v1 frames (10-byte header).
+   */
+  getProtocolVersion() {
+    return this._protocol;
   }
 
   isTLS() {

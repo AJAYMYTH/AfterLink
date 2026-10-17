@@ -640,14 +640,15 @@ Client                              Server
   │                                    │
   │──── TCP Connect ──────────────────▶│
   │──── HELLO Frame ──────────────────▶│
-  │    { version: "AL/1.1",            │
+  │    { version: "AL/2",              │
   │      auth: <JWT token>,            │
   │      capabilities: [...],          │
   │      compression: "zlib" }         │
   │                                    │
   │◀─── HELLO_ACK Frame ──────────────│
   │    { session_id: "...",            │
-  │      server_version: "AL/1.1",     │
+  │      server_version: "AL/2",       │
+  │      accepted_protocol: "v2",      │
   │      compression: "zlib",          │
   │      rateLimit: { rps, burst } }   │
   │                                    │
@@ -658,6 +659,8 @@ Client                              Server
   │──── CLOSE Frame ─────────────────▶│
   │◀─── CLOSE_ACK ────────────────────│
 ```
+
+**Protocol negotiation:** clients request `AL/2` (16-byte v2 frames) by default. Servers that only support v1 answer with `accepted_protocol: "v1"` (or omit the field), and the client transparently falls back to 10-byte v1 framing — no configuration needed. The Node.js, Browser, Python, and Dart clients all negotiate; pass `protocolVersion: 1` (JS) or the equivalent option to force v1.
 
 ---
 

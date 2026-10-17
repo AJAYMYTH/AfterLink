@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { Server } from '@ajaymyth/server';
 import { Frame, FrameTypes, Serializer } from '@ajaymyth/core';
+import FrameV2 from '../../core/src/protocol/frame-v2.js';
 import WebSocket from 'ws';
 
 // Polyfill global WebSocket for the browser client
@@ -59,6 +60,18 @@ describe('Browser Client Integration Tests', () => {
       expect(client.isConnected()).toBe(false);
     });
 
+    it('negotiates protocol v2 with the WS bridge by default', async () => {
+      const client = new Client(`ws://localhost:${wsBridgePort}/ws`, {
+        autoReconnect: false,
+        protocols: [],
+      });
+
+      await client.connect();
+      expect(client.getProtocolVersion()).toBe(2);
+
+      await client.disconnect();
+    });
+
     it('rejects connection to invalid port', async () => {
       const client = new Client('ws://localhost:59999/ws', {
         autoReconnect: false,
@@ -82,6 +95,12 @@ describe('Browser Client Integration Tests', () => {
 
     afterAll(async () => {
       if (client) await client.disconnect();
+    });
+
+    it('uses the negotiated v2 protocol for request/response', async () => {
+      expect(client.getProtocolVersion()).toBe(2);
+      const result = await client.request('echo', { protocol: 'v2' });
+      expect(result).toEqual({ echoed: { protocol: 'v2' } });
     });
 
     it('sends a request and receives a response', async () => {
@@ -217,6 +236,61 @@ describe('Browser Client Integration Tests', () => {
       const response = await responsePromise;
       expect(response.status).toBe('ok');
       expect(response.body).toEqual({ echoed: { test: true } });
+
+      ws.close();
+    });
+
+    it('negotiates v2 via AL/2 HELLO and exchanges 16-byte frames', async () => {
+      const ws = new WebSocket(`ws://localhost:${wsBridgePort}/ws`, {
+        headers: { Origin: 'http://localhost:3000' },
+      });
+
+      let ackFrameVersion, ackPayload, responseFrameVersion;
+
+      const exchange = new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Timeout')), 5000);
+        ws.on('message', (data) => {
+          const buffer = Buffer.from(data);
+          const frame = Frame.decodeAuto(buffer);
+          if (!frame) return;
+
+          if (frame.type === FrameTypes.HELLO_ACK) {
+            ackFrameVersion = frame.version;
+            ackPayload = Serializer.decode(frame.payload);
+
+            // Send the REQUEST with v2 framing (16-byte header)
+            const reqPayload = Serializer.encode({ route: 'echo', body: { version: 2 } });
+            ws.send(FrameV2.encode(FrameTypes.REQUEST, 0, 77, reqPayload));
+          } else if (frame.type === FrameTypes.RESPONSE && frame.messageId === 77) {
+            clearTimeout(timeout);
+            responseFrameVersion = frame.version;
+            resolve(Serializer.decode(frame.payload));
+          } else if (frame.type === FrameTypes.ERROR && frame.messageId === 77) {
+            clearTimeout(timeout);
+            reject(new Error('Server returned error'));
+          }
+        });
+      });
+
+      ws.on('open', () => {
+        const helloPayload = Serializer.encode({
+          version: 'AL/2',
+          capabilities: [],
+          compression: 'none',
+        });
+        // HELLO is v1-framed for compatibility even when requesting v2
+        const helloFrame = Frame.encode(FrameTypes.HELLO, 0, 1, helloPayload);
+        ws.send(helloFrame);
+      });
+
+      const response = await exchange;
+
+      expect(ackFrameVersion).toBe(2);
+      expect(ackPayload.accepted_protocol).toBe('v2');
+      expect(ackPayload.server_version).toBe('AL/2');
+      expect(responseFrameVersion).toBe(2);
+      expect(response.status).toBe('ok');
+      expect(response.body).toEqual({ echoed: { version: 2 } });
 
       ws.close();
     });

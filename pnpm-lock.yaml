@@ -125,6 +125,28 @@ importers:
         specifier: workspace:*
         version: link:../../packages/server
 
+  examples/web-demo:
+    dependencies:
+      '@ajaymyth/browser':
+        specifier: workspace:*
+        version: link:../../packages/browser
+      '@ajaymyth/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ajaymyth/server':
+        specifier: workspace:*
+        version: link:../../packages/server
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
+      zod:
+        specifier: 3.23.0
+        version: 3.23.0
+    devDependencies:
+      esbuild:
+        specifier: '>=0.24.3'
+        version: 0.28.1
+
   packages/afterlink:
     dependencies:
       '@ajaymyth/client':
@@ -1256,6 +1278,9 @@ packages:
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
+
+  buffer@6.0.3:
+    resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
   bytestreamjs@2.0.1:
     resolution: {integrity: sha512-U1Z/ob71V/bXfVABvNr/Kumf5VyeQRBEm6Txb0PQ6S7V5GpBM3w4Cbqz/xPDicR5tN0uvDifng8C+5qECeGwyQ==}
@@ -3113,6 +3138,11 @@ snapshots:
   buffer-equal-constant-time@1.0.1: {}
 
   buffer@5.7.1:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+
+  buffer@6.0.3:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1

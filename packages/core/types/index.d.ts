@@ -123,7 +123,7 @@ export interface TcpClientOptions {
 export interface HelloData {
   /** JWT token string for authenticated servers */
   auth?: string;
-  /** Protocol version string. Default: 'AL/1' */
+  /** Protocol version string. Default: 'AL/2' (negotiates v2; servers may fall back to v1) */
   version?: string;
   /** Capability strings to advertise */
   capabilities?: string[];
@@ -145,6 +145,9 @@ export class TcpClient {
 
   /** Whether the client has an active, authenticated session. */
   readonly connected: boolean;
+
+  /** The protocol version negotiated with the server (2 = v2 frames, 1 = v1). */
+  readonly protocolVersion: number;
 
   /**
    * Open the TCP connection and perform the AfterLink HELLO handshake.

@@ -178,10 +178,17 @@ class AfterLinkClient {
   }
 
   Future<AfterLinkSubscription> subscribe(String topic, Function(Map<String, dynamic>) callback) async {
-    await request<Map<String, dynamic>>('pubsub/subscribe', {'topic': topic});
-    
+    if (!_connected) {
+      throw AfterLinkError(
+        code: AfterLinkErrorCode.connectionClosed,
+        message: 'Client not connected',
+      );
+    }
+
+    await _sendControlFrame(FrameType.subscribe, {'topic': topic});
+
     _subscriptions.putIfAbsent(topic, () => {}).add(callback);
-    
+
     return AfterLinkSubscription(
       topic: topic,
       callback: callback,
@@ -191,7 +198,11 @@ class AfterLinkClient {
           subs.remove(callback);
           if (subs.isEmpty) {
             _subscriptions.remove(topic);
-            await request<Map<String, dynamic>>('pubsub/unsubscribe', {'topic': topic});
+            try {
+              await _sendControlFrame(FrameType.unsubscribe, {'topic': topic});
+            } catch (_) {
+              // Subscription may already be gone; nothing to do.
+            }
           }
         }
       },
@@ -199,7 +210,47 @@ class AfterLinkClient {
   }
 
   Future<void> publish(String topic, Map<String, dynamic> data) async {
-    await request<Map<String, dynamic>>('pubsub/publish', {'topic': topic, 'data': data});
+    if (!_connected) {
+      throw AfterLinkError(
+        code: AfterLinkErrorCode.connectionClosed,
+        message: 'Client not connected',
+      );
+    }
+    final msgId = _nextMessageId();
+    final payloadBytes = MessagePackCodec.serialize({'topic': topic, 'data': data});
+    final frameBytes = _version == 2
+        ? FrameCodec.encodeV2(FrameType.publish, 0, msgId, payloadBytes)
+        : FrameCodec.encodeV1(FrameType.publish, 0, msgId, payloadBytes);
+    _transport!.write(frameBytes);
+  }
+
+  /// Sends a control frame (SUBSCRIBE/UNSUBSCRIBE) and awaits its ack.
+  Future<Map<String, dynamic>> _sendControlFrame(int type, Map<String, dynamic> payload) async {
+    final msgId = _nextMessageId();
+    final payloadBytes = MessagePackCodec.serialize(payload);
+    final frameBytes = _version == 2
+        ? FrameCodec.encodeV2(type, 0, msgId, payloadBytes)
+        : FrameCodec.encodeV1(type, 0, msgId, payloadBytes);
+    _transport!.write(frameBytes);
+
+    final completer = Completer<Map<String, dynamic>>();
+    _pendingRequests[msgId] = completer;
+
+    try {
+      final resFrame = await completer.future.timeout(options.timeout);
+      if (resFrame['type'] == FrameType.error) {
+        final resData = MessagePackCodec.deserialize(resFrame['payload']);
+        throw AfterLinkError.fromMap(resData as Map<String, dynamic>);
+      }
+      return resFrame;
+    } on TimeoutException {
+      throw AfterLinkError(
+        code: AfterLinkErrorCode.connectionTimeout,
+        message: 'Control frame timed out',
+      );
+    } finally {
+      _pendingRequests.remove(msgId);
+    }
   }
 
   Stream<Map<String, dynamic>> stream(String route, [Map<String, dynamic>? body]) {
@@ -228,7 +279,7 @@ class AfterLinkClient {
     final int type = f['type'];
     final int msgId = f['messageId'];
     
-    if (type == FrameType.response || type == FrameType.error) {
+    if (type == FrameType.response || type == FrameType.helloAck || type == FrameType.error) {
       final completer = _pendingRequests[msgId];
       if (completer != null && !completer.isCompleted) {
         completer.complete(f);
@@ -305,7 +356,7 @@ class AfterLinkClient {
       try {
         await connect();
         for (final topic in _subscriptions.keys) {
-          await request<Map<String, dynamic>>('pubsub/subscribe', {'topic': topic});
+          await _sendControlFrame(FrameType.subscribe, {'topic': topic});
         }
         _reconnecting = false;
         break;

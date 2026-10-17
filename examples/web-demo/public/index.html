@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AfterLink — Interactive Demo · Live AL/2 playground</title>
+  <meta name="description" content="Interactive, live demo of AfterLink: why it exists, how the binary protocol negotiates AL/2, and a real messaging app running over AfterLink from your browser." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='30' cy='50' r='16' fill='%2300d4ff'/%3E%3Ccircle cx='70' cy='50' r='16' fill='%2310b981'/%3E%3Crect x='38' y='45' width='24' height='10' rx='5' fill='%232a3b4d'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="top">
+  <div id="scroll-progress"></div>
+
+  <nav class="nav">
+    <a class="brand" href="#top">
+      <svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><circle cx="30" cy="50" r="18" fill="#00d4ff"/><circle cx="70" cy="50" r="18" fill="#10b981"/><rect x="38" y="44" width="24" height="12" rx="6" fill="#2a3b4d"/></svg>
+      <span>AfterLink</span>
+      <em class="ver">v2.0.3</em>
+    </a>
+    <div class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#what">What</a>
+      <a href="#how">How it works</a>
+      <a href="#playground">Live demo</a>
+      <a href="#impact">Impact</a>
+      <a href="#challenges">Challenges</a>
+      <a href="#usecases">Real world</a>
+    </div>
+    <div class="nav-status" id="nav-status" title="State of the local demo server">
+      <span class="dot"></span><span class="txt" id="nav-status-text">connecting…</span>
+    </div>
+  </nav>
+
+  <!-- ────────────────────────────── HERO ────────────────────────────── -->
+  <header class="hero">
+    <div class="wrap">
+      <p class="kicker">Interactive demo — this page runs on a real AfterLink server on your machine</p>
+      <h1>Real-time apps need a protocol,<br /><span class="grad">not a pile of plumbing.</span></h1>
+      <p class="lead">
+        AfterLink is a binary application protocol for request/response and pub/sub over one persistent
+        connection. Everything on this page is live: your browser is already talking to a local AfterLink
+        server over <b>AL/2</b> — the newest protocol revision, negotiated automatically — and the
+        messaging app below is built on it.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#playground">Open the live playground</a>
+        <a class="btn ghost" href="#how">See how the protocol works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="pill"><span class="label">protocol</span><span class="value cyan" id="hero-protocol">—</span></div>
+        <div class="pill"><span class="label">browser sessions</span><span class="value" id="hero-sessions">0</span></div>
+        <div class="pill"><span class="label">server requests</span><span class="value" id="hero-requests">—</span></div>
+        <div class="pill"><span class="label">avg handler</span><span class="value" id="hero-latency">—</span></div>
+        <div class="pill"><span class="label">uptime</span><span class="value" id="hero-uptime">—</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ────────────────────────────── WHY ────────────────────────────── -->
+    <section class="section" id="why">
+      <div class="wrap">
+        <p class="kicker">Why AfterLink exists</p>
+        <h2>Real-time is easy to demo — and expensive to ship</h2>
+        <p class="lead">
+          Every product eventually needs the same eight things: push, presence, delivery confirmation,
+          retries, reconnects, validation, typed errors and observability. Each common transport forces
+          a choice between “too heavy” and “too bare”.
+        </p>
+
+        <div class="grid four">
+          <div class="card">
+            <div class="icon">🧾</div>
+            <h3>HTTP wasn’t built for streams</h3>
+            <p>
+              A REST call drags <b>200–800 bytes of headers</b> for a 30-byte message, and servers
+              can’t initiate — so clients poll. Polling burns bandwidth and battery, and adds latency
+              exactly where it hurts.
+            </p>
+          </div>
+          <div class="card">
+            <div class="icon">🔌</div>
+            <h3>Raw WebSockets stop at the pipe</h3>
+            <p>
+              You get a byte stream. Message framing, correlation IDs, routes, schema validation,
+              error types, pub/sub, heartbeats and reconnects are <b>all still ahead of you</b> —
+              in every project, rebuilt from scratch.
+            </p>
+          </div>
+          <div class="card">
+            <div class="icon">🧰</div>
+            <h3>gRPC and MQTT bring an ecosystem</h3>
+            <p>
+              Proto codegen, browser proxies, brokers to operate. Excellent at scale — <b>heavy</b> for
+              an app that just needs reliable real-time between a handful of services and clients.
+            </p>
+          </div>
+          <div class="card">
+            <div class="icon">🐢</div>
+            <h3>Socket.IO trades speed for ease</h3>
+            <p>
+              The easiest start — and the slowest wire. JSON framing adds overhead to every message:
+              about <b>10k msg/s</b> in benchmarks, versus 30k+ for AfterLink.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <b>The gap:</b> nothing small, binary, schema-aware and browser-friendly out of the box.
+          AfterLink’s answer: put the missing features <b>in the protocol itself</b> — routes, validation,
+          typed errors, pub/sub, sessions — so no team has to rebuild them again.
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────────────────────────── WHAT ────────────────────────────── -->
+    <section class="section alt" id="what">
+      <div class="wrap">
+        <p class="kicker">What it is</p>
+        <h2>One connection. The whole real-time toolbox.</h2>
+        <p class="lead">
+          AfterLink is an application protocol over TCP or WebSocket: compact binary frames,
+          request/response routing, pub/sub topics, sessions with version negotiation, and typed
+          errors — with SDKs for Node.js, the browser, Python and Dart.
+        </p>
+
+        <div class="grid four tight">
+          <div class="card">
+            <h3>📦 10-byte → 16-byte frames</h3>
+            <p>Compact binary headers. v2 adds a version byte, priority and routing keys; v1 stays as the universal fallback.</p>
+          </div>
+          <div class="card">
+            <h3>🛣️ Routes + middleware</h3>
+            <p><code>server.on('chat.send', handler)</code> — three lines to a typed RPC endpoint, with middleware for auth, logging and rate limits.</p>
+          </div>
+          <div class="card">
+            <h3>✅ Schema validation built in</h3>
+            <p>Attach a zod schema to a route. Bad payloads become typed <code>VALIDATION_ERROR</code> frames <i>before</i> your handler runs. Try it in the playground.</p>
+          </div>
+          <div class="card">
+            <h3>🚨 A shared error taxonomy</h3>
+            <p>Canonical error codes travel on the wire; Node, Python, Dart and Browser SDKs all raise the same typed classes.</p>
+          </div>
+          <div class="card">
+            <h3>📣 Pub/sub in the protocol</h3>
+            <p>Topics, subscribe/publish frames, server-side fan-out. The messaging demo below is literally the <code>chat.lobby</code> topic.</p>
+          </div>
+          <div class="card">
+            <h3>🔁 Sessions, reconnects, keep-alive</h3>
+            <p>HELLO/HELLO_ACK establishes a session; clients auto-reconnect with backoff; PING/PONG keeps NATs open.</p>
+          </div>
+          <div class="card">
+            <h3>🔐 Security &amp; operations</h3>
+            <p>TLS transport, JWT auth on HELLO, per-connection rate limiting, graceful shutdown and health endpoints.</p>
+          </div>
+          <div class="card">
+            <h3>🧩 One protocol, four SDKs</h3>
+            <p>Node.js, Browser (via the WebSocket bridge), Python and Dart speak the same bytes — verified by cross-SDK end-to-end tests.</p>
+          </div>
+        </div>
+
+        <h3 class="sub-h">How it compares</h3>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead>
+              <tr><th></th><th class="hl">AfterLink</th><th>HTTP / REST</th><th>WebSocket</th><th>gRPC</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Setup complexity</td><td class="hl">Very easy</td><td>Easy</td><td>Medium</td><td>Hard</td></tr>
+              <tr><td>Binary protocol</td><td class="hl yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+              <tr><td>Schema validation</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td>Proto only</td></tr>
+              <tr><td>Pub / Sub</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+              <tr><td>Typed errors</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td>Partial</td></tr>
+              <tr><td>Browser support</td><td class="hl yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+              <tr><td>Auto-reconnect</td><td class="hl yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+              <tr><td>Header overhead</td><td class="hl"><b>10 B (v1) · 16 B (v2)</b></td><td>200–800 B</td><td>2–14 B</td><td>5–50 B</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">
+          The 16-byte v2 header buys version sniffing, per-frame priority and routing keys —
+          six bytes well spent. Latency is a different story: see <a href="#impact">Impact</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ────────────────────────────── HOW ────────────────────────────── -->
+    <section class="section" id="how">
+      <div class="wrap">
+        <p class="kicker">How it works</p>
+        <h2>Watch a session agree on a dialect — then look inside a frame</h2>
+
+        <h3 class="sub-h">1 · The handshake (interactive — press play)</h3>
+        <div class="handshake">
+          <div class="hs-steps panel" id="hs-steps"></div>
+          <div class="hs-detail panel" id="hs-detail">
+            <div class="hs-dir" id="hs-dir">—</div>
+            <h4 id="hs-title">Press play to step through the handshake</h4>
+            <p id="hs-body">Five frames take a fresh connection from “raw socket” to “AL/2 session”: HELLO → sniff → HELLO_ACK → ready. The client in the playground below did exactly this when this page loaded.</p>
+            <div class="hs-controls">
+              <button class="chip-btn" id="hs-play">▶ Play</button>
+              <button class="chip-btn" id="hs-prev">◀ Back</button>
+              <button class="chip-btn" id="hs-next">Next ▶</button>
+              <button class="chip-btn" id="hs-reset">Reset</button>
+            </div>
+          </div>
+        </div>
+        <div class="callout small">
+          <b>Backwards compatibility is the trick:</b> HELLO always travels with the <b>old 10-byte v1 header</b>,
+          so even servers shipped before AL/2 existed can parse it. v2-capable servers answer with
+          <code>accepted_protocol: 'v2'</code>; v1-only servers simply don’t — and the client stays on v1
+          without noticing anything changed. Both fallback paths are covered by tests.
+        </div>
+
+        <h3 class="sub-h">2 · Inside a frame (byte-accurate, encoded live in your browser)</h3>
+        <p class="lead small">
+          Pick a version and a preset; the bytes below are encoded by the <b>real AfterLink codec</b>
+          running in this tab, then decoded back to prove the round-trip. Click any byte to inspect its field.
+        </p>
+
+        <div class="fx">
+          <div class="fx-controls">
+            <div class="seg" id="fx-seg">
+              <button id="fx-seg-v1" data-v="1">v1 · 10-byte</button>
+              <button id="fx-seg-v2" data-v="2" class="on">v2 · 16-byte</button>
+            </div>
+            <div class="chip-row" id="fx-presets">
+              <button class="chip-btn on" data-preset="request">REQUEST · demo.echo</button>
+              <button class="chip-btn" data-preset="response">RESPONSE</button>
+              <button class="chip-btn" data-preset="publish">PUBLISH · chat.lobby</button>
+              <button class="chip-btn" data-preset="hello">HELLO (handshake)</button>
+            </div>
+          </div>
+          <div class="fx-inputs">
+            <label>route <input class="input" id="fx-route" value="demo.echo" spellcheck="false" /></label>
+            <label class="grow">body (JSON) <input class="input mono-input" id="fx-body" value='{"echo": true}' spellcheck="false" /></label>
+          </div>
+
+          <div class="hex" id="fx-hex"></div>
+          <div class="legend" id="fx-legend"></div>
+
+          <div class="fx-bottom">
+            <div class="panel field-detail" id="fx-detail">
+              <p class="dim">Click a byte above to inspect the field it belongs to.</p>
+            </div>
+            <div class="panel frame-summary" id="fx-summary"></div>
+          </div>
+
+          <p class="caption">
+            Encoded with the exact <code>Frame.encode()</code> the SDKs ship. The handshake preset is
+            always shown v1-framed — that’s the compatibility trick described above.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────── PLAYGROUND ──────────────────────────── -->
+    <section class="section alt" id="playground">
+      <div class="wrap">
+        <p class="kicker">Live playground — real protocol, your browser</p>
+        <h2>A messaging app built on AfterLink</h2>
+        <p class="lead">
+          Alice and Bob each hold an independent <b>AL/2 session</b> to the server on your machine.
+          Sending is a <code>chat.send</code> request; the server fans it out to the
+          <code>chat.lobby</code> topic over pub/sub — so messages even make the full round trip.
+          Open this page in a second tab and you have four participants in the same room.
+        </p>
+
+        <div class="offline-hint" id="offline-hint" hidden>
+          Can’t reach the demo server. Start it from the repo root with
+          <code>pnpm demo:web</code> (or <code>node examples/web-demo/server.js</code>), then reload this page.
+        </div>
+
+        <div class="clients-grid">
+          <div class="client-card panel" data-user="alice">
+            <div class="cc-head">
+              <span class="avatar a">A</span>
+              <div class="cc-id">
+                <strong>Alice</strong>
+                <span class="status" id="status-alice"><span class="dot"></span><span class="txt">connecting…</span></span>
+              </div>
+              <span class="proto-badge" id="proto-alice">…</span>
+            </div>
+            <div class="cc-meta"><span>session</span> <code id="session-alice">—</code></div>
+            <div class="cc-stats" id="stats-alice">sent 0 · last RTT —</div>
+            <div class="cc-compose">
+              <input class="input" id="input-alice" type="text" maxlength="200" placeholder="Message as Alice…" />
+              <button class="send" id="send-alice">Send</button>
+            </div>
+            <div class="cc-actions">
+              <button class="chip-btn" data-hi="alice">👋 Say hi</button>
+              <button class="chip-btn warn" data-drop="alice">🔌 Drop socket</button>
+            </div>
+          </div>
+
+          <div class="client-card panel" data-user="bob">
+            <div class="cc-head">
+              <span class="avatar b">B</span>
+              <div class="cc-id">
+                <strong>Bob</strong>
+                <span class="status" id="status-bob"><span class="dot"></span><span class="txt">connecting…</span></span>
+              </div>
+              <span class="proto-badge" id="proto-bob">…</span>
+            </div>
+            <div class="cc-meta"><span>session</span> <code id="session-bob">—</code></div>
+            <div class="cc-stats" id="stats-bob">sent 0 · last RTT —</div>
+            <div class="cc-compose">
+              <input class="input" id="input-bob" type="text" maxlength="200" placeholder="Message as Bob…" />
+              <button class="send" id="send-bob">Send</button>
+            </div>
+            <div class="cc-actions">
+              <button class="chip-btn" data-hi="bob">👋 Say hi</button>
+              <button class="chip-btn warn" data-drop="bob">🔌 Drop socket</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="play-grid">
+          <div class="panel chat-panel">
+            <div class="panel-head">
+              <div>
+                <h3># lobby</h3>
+                <span class="sub">topic chat.lobby · server-side fan-out</span>
+              </div>
+              <div class="chat-tools">
+                <button class="chip-btn" id="btn-reply">🤖 Simulate reply</button>
+                <button class="chip-btn" id="btn-push">📣 Server push</button>
+                <button class="chip-btn" id="btn-burst">⚡ Burst ×10</button>
+                <button class="chip-btn danger" id="btn-validate">🧪 Break schema</button>
+                <button class="chip-btn danger" id="btn-boom">💥 Crash route</button>
+              </div>
+            </div>
+            <div class="chat-window" id="chat-window"></div>
+          </div>
+
+          <div class="panel log-panel">
+            <div class="panel-head">
+              <div>
+                <h3>Live wire log</h3>
+                <span class="sub">every frame the SDKs send &amp; receive</span>
+              </div>
+              <button class="chip-btn" id="btn-clear-log">Clear</button>
+            </div>
+            <div class="log-window" id="log-window"></div>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><div class="k">page sessions</div><div class="v cyan" id="met-sessions">0</div></div>
+          <div class="metric"><div class="k">messages sent</div><div class="v" id="met-sent">0</div></div>
+          <div class="metric"><div class="k">broadcasts received</div><div class="v" id="met-recv">0</div></div>
+          <div class="metric"><div class="k">avg RTT · last 50</div><div class="v" id="met-rtt">—</div></div>
+          <div class="metric"><div class="k">requests handled</div><div class="v" id="met-srv-reqs">—</div></div>
+          <div class="metric"><div class="k">requests / sec</div><div class="v" id="met-srv-rps">—</div></div>
+          <div class="metric"><div class="k">avg handler time</div><div class="v" id="met-srv-lat">—</div></div>
+          <div class="metric"><div class="k">tcp clients</div><div class="v" id="met-srv-tcp">—</div></div>
+          <div class="metric"><div class="k">protocol</div><div class="v cyan" id="met-protocol">—</div></div>
+          <div class="metric"><div class="k">server uptime</div><div class="v" id="met-srv-uptime">—</div></div>
+        </div>
+        <p class="caption">
+          “tcp clients” counts raw-TCP sessions — browser clients ride the WebSocket bridge, which is
+          why it stays near zero here. Everything else updates live via <code>demo.stats</code>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ────────────────────────────── IMPACT ────────────────────────────── -->
+    <section class="section" id="impact">
+      <div class="wrap">
+        <p class="kicker">Impact</p>
+        <h2>What the numbers look like</h2>
+        <p class="lead">
+          From the repo’s benchmark suite — 10,000 request/response iterations on localhost
+          (Node.js v24) — AfterLink averages <b>0.033 ms</b> per round trip: <b>76.9% faster than raw
+          WebSocket</b> and <b>190.4% faster than Socket.IO</b>, at ~30k messages/second.
+        </p>
+
+        <div class="grid four stats-big">
+          <div class="stat"><div class="n">0.033<small>ms</small></div><div class="l">average round trip — less than a blink’s millionth</div></div>
+          <div class="stat"><div class="n">30,167</div><div class="l">messages per second, single connection</div></div>
+          <div class="stat"><div class="n">76.9<small>%</small></div><div class="l">faster than raw WebSocket</div></div>
+          <div class="stat"><div class="n">190.4<small>%</small></div><div class="l">faster than Socket.IO</div></div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>Latency benchmark</th><th>Avg</th><th>P50</th><th>P99</th><th>Throughput</th></tr></thead>
+            <tbody>
+              <tr><td class="hl"><b>AfterLink</b></td><td class="hl"><b>0.033 ms</b></td><td class="hl">0.028 ms</td><td class="hl">0.122 ms</td><td class="hl"><b>30,167 msg/s</b></td></tr>
+              <tr><td>WebSocket (ws)</td><td>0.058 ms</td><td>0.037 ms</td><td>0.199 ms</td><td>17,054 msg/s</td></tr>
+              <tr><td>Socket.IO</td><td>0.096 ms</td><td>0.061 ms</td><td>0.362 ms</td><td>10,387 msg/s</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel bench">
+          <div class="bench-head">
+            <div>
+              <h3>Now measure your own</h3>
+              <p class="dim">200 sequential <code>demo.echo</code> requests from <b>Alice</b>, over your real browser connection.</p>
+            </div>
+            <button class="btn primary" id="bench-run">Run benchmark</button>
+          </div>
+          <div class="bench-progress"><div class="bar" id="bench-bar"></div></div>
+          <div class="grid four bench-results">
+            <div class="metric"><div class="k">average</div><div class="v cyan" id="bench-avg">—</div></div>
+            <div class="metric"><div class="k">p50</div><div class="v" id="bench-p50">—</div></div>
+            <div class="metric"><div class="k">p95</div><div class="v" id="bench-p95">—</div></div>
+            <div class="metric"><div class="k">throughput</div><div class="v green" id="bench-tput">—</div></div>
+          </div>
+          <p class="caption" id="bench-note">
+            Localhost flatters every protocol — the interesting part is the shape: a fixed 10/16-byte
+            header and zero per-message JSON overhead. Real networks add latency; AfterLink adds almost none of its own.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────── CHALLENGES ──────────────────────────── -->
+    <section class="section alt" id="challenges">
+      <div class="wrap">
+        <p class="kicker">Challenges</p>
+        <h2>What building it actually took</h2>
+        <p class="lead">
+          A protocol only counts if every SDK emits byte-identical frames. These are real problems
+          from the changelog — each one now has a test that would catch it again.
+        </p>
+
+        <div class="grid three">
+          <div class="story card">
+            <div class="story-tags"><span class="tag-chip">4 SDKs</span><span class="tag-chip">wire format</span></div>
+            <h3>One wire format, four runtimes</h3>
+            <p><b>Problem —</b> Node, Python, Dart and the browser must agree on every byte.</p>
+            <p><b>What happened —</b> Python packed an <b>18-byte</b> v2 header (an extra reserved field) while Node and Dart packed 16 — cross-SDK tests failed on frame length.</p>
+            <p><b>Fix —</b> one shared protocol-vector fixture that every SDK must decode and re-encode identically, enforced in CI.</p>
+          </div>
+          <div class="story card">
+            <div class="story-tags"><span class="tag-chip">AL/2</span><span class="tag-chip">compatibility</span></div>
+            <h3>Changing the header under live traffic</h3>
+            <p><b>Problem —</b> v2 grew the header from 10 to 16 bytes. A v1 decoder reading a v2 frame would misread lengths and corrupt the stream.</p>
+            <p><b>Fix —</b> negotiation, not breaking changes: HELLO stays v1-framed, servers sniff byte 2 (<code>0x02</code> = AL/2), HELLO_ACK carries <code>accepted_protocol</code>, and each session’s framing is fixed independently.</p>
+            <p><b>Proof —</b> fallback paths are tested: legacy v1 ACK, v1-framed v2 stub (like the Python bridge), and clients pinned to v1.</p>
+          </div>
+          <div class="story card">
+            <div class="story-tags"><span class="tag-chip">errors</span><span class="tag-chip">Python</span><span class="tag-chip">Dart</span></div>
+            <h3>One error taxonomy, three languages</h3>
+            <p><b>Problem —</b> Node raised typed classes for everything; Python and Dart raised generic errors with different shapes — the same failure looked different in each SDK.</p>
+            <p><b>Fix —</b> canonical string codes travel on the wire (<code>ROUTE_NOT_FOUND</code>, <code>VALIDATION_ERROR</code>, <code>INTERNAL_SERVER_ERROR</code>…); every SDK maps them back to the same typed classes.</p>
+          </div>
+          <div class="story card">
+            <div class="story-tags"><span class="tag-chip">Dart</span><span class="tag-chip">msgpack</span></div>
+            <h3>MsgPack maps that Dart refused</h3>
+            <p><b>Problem —</b> Dart’s msgpack decodes into <code>Map&lt;dynamic, dynamic&gt;</code>, which crashes every <code>Map&lt;String, dynamic&gt;</code> call-site.</p>
+            <p><b>Fix —</b> recursively normalize decoded maps at the client boundary. One test now covers nested message payloads end to end.</p>
+          </div>
+          <div class="story card">
+            <div class="story-tags"><span class="tag-chip">testing</span><span class="tag-chip">CI</span></div>
+            <h3>Trusting bytes you can’t click</h3>
+            <p><b>Problem —</b> you can’t eyeball a 16-byte header, and “looks fine on my machine” doesn’t survive a mixed fleet.</p>
+            <p><b>Fix —</b> the suite checks raw wire bytes: 138 JS tests including raw-socket negotiation, cross-SDK E2E (Node ↔ Python ↔ Dart), and hex dumps asserting exact headers like <code>10 00 02 03 …</code>. If a byte moves, CI notices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────── USE CASES ──────────────────────────── -->
+    <section class="section" id="usecases">
+      <div class="wrap">
+        <p class="kicker">Real world</p>
+        <h2>Where you’d actually use it</h2>
+        <div class="grid three uc-grid">
+          <div class="card uc"><h3>💬 Chat &amp; collaboration</h3><p>Rooms, typing indicators, presence and delivery receipts over topics — exactly what this page runs.</p></div>
+          <div class="card uc"><h3>🎮 Multiplayer &amp; games</h3><p>Low-latency state sync and server-authoritative events, with priority flags in v2 for time-critical frames.</p></div>
+          <div class="card uc"><h3>📈 Fintech &amp; trading</h3><p>Tick feeds and order events over one authenticated connection; typed errors for risk-check rejections.</p></div>
+          <div class="card uc"><h3>📡 IoT &amp; telemetry</h3><p>Many tiny messages love tiny headers — and v2 routing keys split device fleets apart on the broker.</p></div>
+          <div class="card uc"><h3>📊 Live dashboards</h3><p>Subscribe once per widget; the server pushes — no polling loop, no cache-busting, no stale charts.</p></div>
+          <div class="card uc"><h3>🧱 Service-to-service</h3><p>Internal RPC with schemas and middleware, without REST glue code or a proto toolchain.</p></div>
+        </div>
+
+        <h3 class="sub-h">The same route, four SDKs</h3>
+        <div class="tabs" id="code-tabs">
+          <button class="tab-btn on" data-tab="server">Server · Node</button>
+          <button class="tab-btn" data-tab="browser">Browser</button>
+          <button class="tab-btn" data-tab="python">Python</button>
+          <button class="tab-btn" data-tab="dart">Dart</button>
+        </div>
+
+        <div class="code-wrap" data-code="server">
+          <div class="code-head"><span>server.js</span><em>Node.js</em></div>
+          <pre class="code">const { Server } = require('@afterlink/server');
+
+const server = new Server({ port: 4000 });
+
+server.on('chat.send', async (req, res) =&gt; {
+  // Fan out to everyone subscribed to the room
+  server.publish('chat.lobby', {
+    user: req.body.user,
+    text: req.body.text,
+  });
+  res.send({ delivered: true });
+});
+
+await server.listen();
+// → afterlink://localhost:4000  ·  health at /__health</pre>
+        </div>
+        <div class="code-wrap" data-code="browser" hidden>
+          <div class="code-head"><span>browser-app.js</span><em>Browser SDK — this page uses the same client</em></div>
+          <pre class="code">import { Client } from '@afterlink/browser';
+
+const client = new Client('ws://localhost:4001/ws');
+
+await client.connect();                     // HELLO → AL/2 negotiated
+console.log(client.getProtocolVersion());   // 2
+
+await client.subscribe('chat.lobby', (msg) =&gt; {
+  console.log(msg.user, ':', msg.text);
+});
+
+await client.request('chat.send', { user: 'alice', text: 'hello!' });</pre>
+        </div>
+        <div class="code-wrap" data-code="python" hidden>
+          <div class="code-head"><span>chat.py</span><em>Python SDK</em></div>
+          <pre class="code">import asyncio
+from afterlink import Client
+
+async def main():
+    client = Client("tcp://localhost:4000")
+    await client.connect()
+    print(f"protocol v{client.version}")          # 2
+
+    await client.subscribe("chat.lobby", lambda m: print(m))
+    await client.request("chat.send", {"user": "alice", "text": "hello!"})
+    await client.disconnect()
+
+asyncio.run(main())</pre>
+        </div>
+        <div class="code-wrap" data-code="dart" hidden>
+          <div class="code-head"><span>chat.dart</span><em>Dart SDK</em></div>
+          <pre class="code">import 'package:afterlink/afterlink.dart';
+
+Future&lt;void&gt; main() async {
+  final client = AfterLinkClient(url: 'tcp://localhost:4000');
+  await client.connect();
+  print('protocol v${client.version}');        // 2
+
+  client.subscribe('chat.lobby', (msg) =&gt; print(msg));
+  await client.request&lt;Map&lt;String, dynamic&gt;&gt;(
+    'chat.send', {'user': 'alice', 'text': 'hello!'},
+  );
+}</pre>
+        </div>
+
+        <h3 class="sub-h">Shipping it for real</h3>
+        <div class="grid two">
+          <div class="card">
+            <h3>🔐 Security</h3>
+            <ul class="checklist">
+              <li>TLS transport (<code>afterlinks://</code>) with certificate options</li>
+              <li>JWT auth carried in the HELLO payload</li>
+              <li>Per-connection rate limiting, enforced before handlers run</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>🛰️ Operations</h3>
+            <ul class="checklist">
+              <li>Health endpoints: <code>/__health</code>, <code>/live</code>, <code>/ready</code></li>
+              <li>Graceful shutdown — the server drains and tells clients why</li>
+              <li>Cluster mode with a Redis adapter for multi-node pub/sub</li>
+              <li>Compression thresholds for large payloads (zlib / brotli)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap foot-grid">
+      <div>
+        <p class="foot-brand">AfterLink <em>v2.0.3</em> · protocol AL/2</p>
+        <p class="dim">This page is served by <code>examples/web-demo/server.js</code> — the same Node process runs this website, the AfterLink TCP server and the WebSocket bridge your browser is talking to.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#why">Why</a>
+        <a href="#how">How it works</a>
+        <a href="#playground">Live demo</a>
+        <a href="#challenges">Challenges</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="smoke" hidden></div>
+
+  <script src="config.js"></script>
+  <script src="sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

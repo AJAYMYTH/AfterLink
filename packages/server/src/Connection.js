@@ -152,6 +152,7 @@ class Connection {
       this.session = {
         id: sessionId,
         version: data.version || 'AL/1',
+        protocol: String(data.version || 'AL/1').startsWith('AL/2') ? 2 : 1,
         capabilities: data.capabilities || [],
         connectedAt: new Date().toISOString(),
         remoteAddress: this.getRemoteAddress(),
@@ -163,7 +164,8 @@ class Connection {
 
       const ackPayload = Serializer.encode({
         session_id: sessionId,
-        server_version: 'AL/1.1',
+        server_version: this.session.protocol === 2 ? 'AL/2' : 'AL/1.1',
+        accepted_protocol: this.session.protocol === 2 ? 'v2' : 'v1',
         capabilities: ['streaming', 'pubsub', 'compression', 'rate-limit'],
         compression: agreedAlgorithm,
         rateLimit: this.options.rateLimit?.enabled
@@ -223,7 +225,9 @@ class Connection {
         finalFlags = compression.setCompressedFlag(flags, compressed);
       }
 
-      const frame = Frame.encode(type, finalFlags, messageId, finalPayload);
+      const frame = Frame.encode(type, finalFlags, messageId, finalPayload, {
+        version: this.session?.protocol === 2 ? 2 : 1,
+      });
       this.socket.write(frame);
 
       // Track response sent - remove from active requests

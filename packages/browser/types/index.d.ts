@@ -7,6 +7,8 @@ export interface BrowserClientOptions {
   timeout?:               number;
   pingInterval?:          number;
   protocols?:             string[];
+  /** Requested protocol version. 2 (default) negotiates v2 frames (16-byte header); 1 forces v1. */
+  protocolVersion?:       1 | 2;
   auth?:                  string;
   compression?:           CompressionOptions;
 }
@@ -56,6 +58,8 @@ export class Client {
   off(event: string, listener: (...args: unknown[]) => void): this;
 
   getSessionId(): string | null;
+  /** The protocol version negotiated with the WS bridge (2 = v2 frames, 1 = v1). */
+  getProtocolVersion(): 1 | 2;
 }
 
 // ─── Error Re-exports ──────────────────────────────────────────────────────

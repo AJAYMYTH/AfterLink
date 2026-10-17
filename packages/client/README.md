@@ -384,14 +384,15 @@ Client                              Server
   │                                    │
   │──── TCP Connect ──────────────────▶│
   │──── HELLO Frame ──────────────────▶│
-  │    { version: "AL/1.1",            │
+  │    { version: "AL/2",              │
   │      auth: <JWT token>,            │
   │      capabilities: [...],          │
   │      compression: "zlib" }         │
   │                                    │
   │◀─── HELLO_ACK Frame ──────────────│
   │    { session_id: "...",            │
-  │      server_version: "AL/1.1",     │
+  │      server_version: "AL/2",       │
+  │      accepted_protocol: "v2",      │
   │      compression: "zlib",          │
   │      rateLimit: { rps, burst } }   │
   │                                    │
@@ -402,6 +403,8 @@ Client                              Server
   │──── CLOSE Frame ─────────────────▶│
   │◀─── CLOSE_ACK ────────────────────│
 ```
+
+**Protocol negotiation:** the client requests `AL/2` (16-byte v2 frames) by default. Servers that only support v1 answer with `accepted_protocol: "v1"` (or omit the field), and the client transparently falls back to 10-byte v1 framing for that session — no configuration needed. Pass `protocolVersion: 1` to force v1, and read the outcome via `client.getProtocolVersion()`.
 
 ---
 
@@ -482,6 +485,7 @@ const client = new Client('afterlinks://localhost:4000', {
   maxReconnectAttempts: 5,
   reconnectDelay: 1000,
   pingInterval: 30000,
+  protocolVersion: 2, // request AL/2 (default); use 1 to pin v1
   compression: { enabled: true, algorithm: 'zlib', level: 6, threshold: 1024 },
   tls: { ca: fs.readFileSync('./ca.cert'), rejectUnauthorized: true },
 });
@@ -495,6 +499,7 @@ client.on('disconnected', ({ graceful }) => { ... });
 await client.disconnect();
 client.isConnected();
 client.isTLS();
+client.getProtocolVersion(); // 2 = v2 frames (16-byte header), 1 = v1 fallback
 ```
 
 ---

@@ -141,23 +141,48 @@ class Client:
         finally:
             self._pending_requests.pop(msg_id, None)
 
+    async def _send_frame_and_wait(self, frame_type: int, payload: dict) -> dict:
+        """Send a control frame (SUBSCRIBE/UNSUBSCRIBE/...) and await its ack."""
+        msg_id = self._next_message_id()
+        payload_bytes = codec.serialize(payload)
+        frame_bytes = frame.encode(
+            version=self.version,
+            frame_type=frame_type,
+            flags=0,
+            message_id=msg_id,
+            payload_bytes=payload_bytes
+        )
+        self.writer.write(frame_bytes)
+        await self.writer.drain()
+
+        fut = asyncio.get_running_loop().create_future()
+        self._pending_requests[msg_id] = fut
+        try:
+            res_frame = await asyncio.wait_for(fut, timeout=self.timeout)
+            if res_frame["type"] == frame.ERROR:
+                res_data = codec.deserialize(res_frame["payload"])
+                raise AfterLinkError(res_data.get("code", 6), res_data.get("message", "Control frame failed"))
+            return res_frame
+        finally:
+            self._pending_requests.pop(msg_id, None)
+
     async def subscribe(self, topic: str, callback: Callable[[Any], None]) -> Callable[[], None]:
         if not self.connected:
             raise AfterLinkError(AfterLinkError.CONNECTION_CLOSED, "Client not connected")
-            
-        await self.request("pubsub/subscribe", {"topic": topic})
-        
+
+        await self._send_frame_and_wait(frame.SUBSCRIBE, {"topic": topic})
+
         if topic not in self._subscriptions:
             self._subscriptions[topic] = set()
         self._subscriptions[topic].add(callback)
-        
+
         async def unsubscribe():
             if topic in self._subscriptions:
                 self._subscriptions[topic].discard(callback)
                 if len(self._subscriptions[topic]) == 0:
                     del self._subscriptions[topic]
                     try:
-                        await self.request("pubsub/unsubscribe", {"topic": topic})
+                        await self._send_frame_and_wait(frame.UNSUBSCRIBE, {"topic": topic})
                     except Exception:
                         pass
         return unsubscribe
@@ -165,7 +190,18 @@ class Client:
     async def publish(self, topic: str, data: Any):
         if not self.connected:
             raise AfterLinkError(AfterLinkError.CONNECTION_CLOSED, "Client not connected")
-        await self.request("pubsub/publish", {"topic": topic, "data": data})
+
+        msg_id = self._next_message_id()
+        payload_bytes = codec.serialize({"topic": topic, "data": data})
+        frame_bytes = frame.encode(
+            version=self.version,
+            frame_type=frame.PUBLISH,
+            flags=0,
+            message_id=msg_id,
+            payload_bytes=payload_bytes
+        )
+        self.writer.write(frame_bytes)
+        await self.writer.drain()
 
     async def stream(self, route: str, body: Any = None) -> AsyncGenerator[Any, None]:
         if not self.connected:
@@ -246,7 +282,7 @@ class Client:
         ftype = f["type"]
         msg_id = f["messageId"]
         
-        if ftype in (frame.RESPONSE, frame.ERROR, frame.STREAM_DATA, frame.STREAM_END):
+        if ftype in (frame.RESPONSE, frame.HELLO_ACK, frame.ERROR, frame.STREAM_DATA, frame.STREAM_END):
             dest = self._pending_requests.get(msg_id)
             if dest:
                 if isinstance(dest, asyncio.Future):
@@ -299,7 +335,7 @@ class Client:
             try:
                 await self.connect()
                 for topic in list(self._subscriptions.keys()):
-                    await self.request("pubsub/subscribe", {"topic": topic})
+                    await self._send_frame_and_wait(frame.SUBSCRIBE, {"topic": topic})
                 logger.info("Reconnection successful.")
                 break
             except Exception as err:

@@ -70,7 +70,7 @@ def encode_v2(frame_type: int, flags: int, message_id: int, payload_bytes: bytes
         final_flags |= FLAGS_HAS_ROUTING_KEY
 
     header = struct.pack(
-        '!BBBBIHII',
+        '!BBBBIHIH',
         frame_type,
         final_flags,
         0x02,  # version
@@ -87,7 +87,7 @@ def decode_v2(buffer: bytes) -> dict | None:
         return None
     
     frame_type, flags, version, priority, message_id, routing_key_len, payload_len, _ = struct.unpack(
-        '!BBBBIHII',
+        '!BBBBIHIH',
         buffer[:V2_HEADER_SIZE]
     )
 

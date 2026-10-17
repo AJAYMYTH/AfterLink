@@ -8,6 +8,8 @@ export interface ClientOptions {
   timeout?:               number;
   pingInterval?:          number;
   connectTimeout?:        number;
+  /** Requested protocol version. 2 (default) negotiates v2 frames (16-byte header); 1 forces v1. */
+  protocolVersion?:       1 | 2;
   autoThrottle?:          boolean;
   auth?:                  string;
   tls?: {
@@ -64,6 +66,8 @@ export class Client {
 
   getSessionId(): string | null;
   isTLS(): boolean;
+  /** The protocol version negotiated with the server (2 = v2 frames, 1 = v1). */
+  getProtocolVersion(): 1 | 2;
 }
 
 // ─── Error Re-exports ──────────────────────────────────────────────────────

@@ -44,6 +44,9 @@ class TcpClient extends EventEmitter {
     this._connected = false;
     this._sessionId = null;
     this._msgCounter = 1;
+    // Protocol version negotiated during HELLO/HELLO_ACK.
+    // 1 = v1 frames (10-byte header), 2 = v2 frames (16-byte header).
+    this._protocol = 1;
     // Map<messageId, { resolve, reject, timer }>
     this._pending = new Map();
   }
@@ -59,6 +62,7 @@ class TcpClient extends EventEmitter {
     return new Promise((resolve, reject) => {
       const socket = net.createConnection({ host: this.host, port: this.port });
       this._socket = socket;
+      this._protocol = 1;
 
       // Timeout if the server never replies with HELLO_ACK.
       const connectTimer = setTimeout(() => {
@@ -67,13 +71,16 @@ class TcpClient extends EventEmitter {
       }, this.connectTimeout);
 
       socket.on('connect', () => {
-        // Send HELLO frame.
+        // Send HELLO frame. Defaults to requesting v2; pass
+        // `{ version: 'AL/1.1' }` in helloData to stay on v1.
         const msgId = this._nextMsgId();
         const payload = Serializer.encode({
-          version: 'AL/1',
+          version: 'AL/2',
           capabilities: [],
           ...helloData,
         });
+        // HELLO is always v1-framed (10-byte header) so older servers can
+        // parse it; the negotiated version applies to subsequent frames.
         socket.write(Frame.encode(FrameTypes.HELLO, 0, msgId, payload));
 
         // Wait for HELLO_ACK specifically — handled in _onData below.
@@ -119,7 +126,7 @@ class TcpClient extends EventEmitter {
 
       const msgId = this._nextMsgId();
       const payload = Serializer.encode({ route, body });
-      this._socket.write(Frame.encode(FrameTypes.REQUEST, 0, msgId, payload));
+      this._socket.write(Frame.encode(FrameTypes.REQUEST, 0, msgId, payload, { version: this._protocol }));
 
       const timer = setTimeout(() => {
         this._pending.delete(msgId);
@@ -142,6 +149,11 @@ class TcpClient extends EventEmitter {
     return this._connected;
   }
 
+  /** @returns {1|2} The protocol version negotiated with the server. */
+  get protocolVersion() {
+    return this._protocol;
+  }
+
   // ─── Private ────────────────────────────────────────────────────────────────
 
   _nextMsgId() {
@@ -154,11 +166,23 @@ class TcpClient extends EventEmitter {
     this._buffer = Buffer.concat([this._buffer, data]);
 
     while (this._buffer.length >= Frame.headerSize()) {
-      const frame = Frame.decode(this._buffer);
+      // decodeAuto accepts both v1 (10-byte) and v2 (16-byte) frame headers.
+      const frame = Frame.decodeAuto(this._buffer);
       if (!frame) break; // Incomplete frame — wait for more data.
       this._buffer = this._buffer.slice(frame.totalSize);
       this._handleFrame(frame);
     }
+  }
+
+  /**
+   * Decide the session protocol version from a HELLO_ACK.
+   * Prefers the explicit `accepted_protocol` field; falls back to inferring
+   * from the frame version the server used to deliver the ACK.
+   */
+  _resolveProtocol(ackData, ackFrame) {
+    if (ackData && ackData.accepted_protocol === 'v2') return 2;
+    if (ackData && ackData.accepted_protocol === 'v1') return 1;
+    return ackFrame && ackFrame.version === 2 ? 2 : 1;
   }
 
   _handleFrame(frame) {
@@ -167,6 +191,8 @@ class TcpClient extends EventEmitter {
         if (this._pendingHello) {
           clearTimeout(this._pendingHello.timer);
           const ackData = Serializer.decode(frame.payload);
+          // Set the negotiated protocol BEFORE resolving the connect promise.
+          this._protocol = this._resolveProtocol(ackData, frame);
           this._sessionId = ackData.session_id;
           this._connected = true;
           this._pendingHello.resolve(ackData);
@@ -213,7 +239,7 @@ class TcpClient extends EventEmitter {
         const pongPayload = frame.payload.length > 0
           ? frame.payload
           : Serializer.encode({ timestamp: Date.now() });
-        this._socket.write(Frame.encode(FrameTypes.PONG, 0, frame.messageId, pongPayload));
+        this._socket.write(Frame.encode(FrameTypes.PONG, 0, frame.messageId, pongPayload, { version: this._protocol }));
         break;
       }
 
