@@ -4,6 +4,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      only:
+        description: 'Optional pnpm --filter selector for a partial publish (e.g. "afterlink")'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -60,7 +65,13 @@ jobs:
           done
 
       - name: Publish packages
-        run: pnpm -r publish --access public --no-git-checks --provenance --registry=https://registry.npmjs.org
+        run: |
+          FILTER=""
+          if [ -n "${{ inputs.only }}" ]; then
+            FILTER="--filter ${{ inputs.only }}"
+          fi
+          echo "pnpm $FILTER -r publish"
+          pnpm $FILTER -r publish --access public --no-git-checks --provenance --registry=https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
