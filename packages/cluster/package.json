@@ -1,6 +1,6 @@
 {
   "name": "@ajaymyth/cluster",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "AfterLink Cluster — Multi-process clustering with Redis pub/sub",
   "main": "src/index.js",
   "types": "index.d.ts",

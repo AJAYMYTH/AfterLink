@@ -7,6 +7,55 @@ Versioning: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [Unreleased]
+
+_No unreleased changes yet._
+
+---
+
+## [2.0.3] — 2026-10-17
+
+### Changed
+- **Node.js client — protocol v2 negotiation**: `@afterlink/client` now requests `AL/2` in the HELLO handshake; once the server confirms with `accepted_protocol: 'v2'` all subsequent frames use the 16-byte v2 header (routing key / priority capable). HELLO itself stays v1-framed so older servers can parse it, and v1-only servers fall back per session. Adds the `protocolVersion` client option (`2` default, `1` to pin v1) and `getProtocolVersion()`.
+- **Browser client + WebSocket bridge — protocol v2 negotiation**: `@afterlink/browser` negotiates AL/2 the same way; the server's WS bridge decodes both frame versions, returns `accepted_protocol` (`v1`/`v2`) and `server_version: AL/2` in `HELLO_ACK`, and encodes all subsequent frames with the session's negotiated format.
+- **`TcpClient` (`@afterlink/core`)**: requests `AL/2` by default with automatic v1 fallback, exposing the negotiated version via the `protocolVersion` getter.
+
+### Fixed
+- **Python SDK — Protocol v2 frame header**: `encode_v2`/`decode_v2` packed an 18-byte header (4-byte reserved field) instead of the 16-byte layout defined by `test/protocol-vectors.json`, so v2 frames were not byte-identical to the Node.js and Dart encoders and `struct.unpack` failed on decode.
+- **Python/Dart clients — HELLO_ACK handshake**: `HELLO_ACK` frames now resolve the pending handshake future. Previously only `RESPONSE`/`ERROR` frames were matched, so every connect timed out against a real server.
+- **Dart client — MessagePack maps**: `MessagePackCodec.deserialize` now normalizes decoded maps to `Map<String, dynamic>`, fixing the `type '_Map<dynamic, dynamic>' is not a subtype of type 'Map<String, dynamic>'` crash in `request()`.
+- **Cross-SDK error codes**: Python and Dart clients now map the canonical string error codes sent by Node.js servers (e.g. `ROUTE_NOT_FOUND`); the Python server now emits string codes over the wire so Node.js clients resolve typed errors.
+- **Python/Dart clients — pub/sub**: `subscribe()`/`unsubscribe()`/`publish()` now use the protocol's `SUBSCRIBE`/`UNSUBSCRIBE`/`PUBLISH` frame types instead of `pubsub/*` routes that were never registered on Node.js servers.
+- **Node.js server — protocol negotiation**: `HELLO_ACK` now includes `accepted_protocol` (`v1`/`v2`) and server responses are encoded with the negotiated frame version, so v2-capable clients (Python/Dart) can use routing keys and priorities.
+
+### Added
+- **Negotiation test coverage** — raw-socket tests for `@afterlink/client` (v2 ACK, legacy v1 fallback, v1-framed ACK containing `accepted_protocol: v2` as sent by the Python server, pinned v1, reconnect re-negotiation), WS-bridge v2 integration tests for `@afterlink/browser`, and `TcpClient` negotiation tests.
+- **Python server — pub/sub broker**: `SUBSCRIBE`/`UNSUBSCRIBE`/`PUBLISH` frames are now handled with per-topic subscriber tracking (no echo to the publisher, matching the Node.js broker).
+- **Python regression test** for pub/sub round-trip and AL/2 negotiation.
+- **Dart `tool/e2e_check.dart`** — live cross-SDK smoke check (request, routing key, typed errors, pub/sub) against a running Node.js server.
+
+---
+
+## [2.0.2] — 2026-07-07
+
+### Changed
+- Bumped all packages (JS, Python, Dart) to 2.0.2.
+- README updated with detailed package documentation and SDK guides for Python, Dart, and the other packages.
+
+---
+
+## [2.0.1] — 2026-07-06
+
+### Added
+- **Redis Cluster support** in `@afterlink/cluster` — cluster-wide pub/sub and slot routing when configured with a `nodes` array or `cluster` flag.
+
+### Fixed
+- **npm publishing** — renamed the root workspace package to avoid a name collision and made the scope-renaming script replace scope names recursively inside code and documentation.
+- **Dart SDK** — migrated from the streaming-only `messagepack` dependency to `msgpack_dart`, resolving compilation issues and ensuring standard-compliant MessagePack serialization.
+- **CI** — aligned the Node.js version matrix with pnpm v11 and fixed a server unit test.
+
+---
+
 ## [2.0.0] — 2026-07-03
 
 ### Added
